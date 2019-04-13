@@ -6,16 +6,18 @@ import {
 } from 'react-navigation';
 
 import TabBarIcon from '../components/TabBarIcon';
-import HomeScreen from '../screens/HomeScreen';
-import LinksScreen from '../screens/LinksScreen';
+import SearchScreen from '../screens/SearchScreen';
+import ChatScreen from '../screens/ChatScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import CollectionScreen from '../screens/CollectionScreen';
+import StampsScreen from '../screens/StampsScreen';
 
-const HomeStack = createStackNavigator({
-  Home: HomeScreen
+const CollectionStack = createStackNavigator({
+  Collection: CollectionScreen
 });
 
-HomeStack.navigationOptions = {
-  tabBarLabel: 'Home',
+CollectionStack.navigationOptions = {
+  tabBarLabel: '적립',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
@@ -28,12 +30,36 @@ HomeStack.navigationOptions = {
   )
 };
 
-const LinksStack = createStackNavigator({
-  Links: LinksScreen
+const SearchStack = createStackNavigator(
+  {
+    Search: SearchScreen,
+    Stamps: StampsScreen
+  },
+  {
+    mode: 'card'
+  }
+);
+
+SearchStack.navigationOptions = {
+  tabBarLabel: '매장검색',
+  tabBarIcon: ({ focused }) => (
+    <TabBarIcon
+      focused={focused}
+      name={
+        Platform.OS === 'ios'
+          ? `ios-information-circle${focused ? '' : '-outline'}`
+          : 'md-information-circle'
+      }
+    />
+  )
+};
+
+const ChatStack = createStackNavigator({
+  Chat: ChatScreen
 });
 
-LinksStack.navigationOptions = {
-  tabBarLabel: 'Links',
+ChatStack.navigationOptions = {
+  tabBarLabel: '1:1문의',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
@@ -47,7 +73,7 @@ const SettingsStack = createStackNavigator({
 });
 
 SettingsStack.navigationOptions = {
-  tabBarLabel: 'Settings',
+  tabBarLabel: '내 정보',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
@@ -57,7 +83,8 @@ SettingsStack.navigationOptions = {
 };
 
 export default createBottomTabNavigator({
-  HomeStack,
-  LinksStack,
+  CollectionStack,
+  SearchStack,
+  ChatStack,
   SettingsStack
 });
