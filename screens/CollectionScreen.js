@@ -1,17 +1,19 @@
 import React, { Component } from 'react';
-import { AsyncStorage, View, Modal } from 'react-native';
-import { Button, ListItem, Text, ThemeProvider } from 'react-native-elements';
+import { View, Modal } from 'react-native';
+import {
+  Button,
+  ListItem,
+  Text,
+  ThemeProvider,
+  Header
+} from 'react-native-elements';
 import { ScrollView } from 'react-native-gesture-handler';
 
 export default class CollectionScreen extends Component {
   static navigationOptions = {
-    // header: null
-    title: '컴포즈 성수',
-    headerTitleStyle: {
-      // fontWeight: 'bold',
-      fontSize: 30
-    }
+    header: null
   };
+
   theme = {
     View: {
       style: {
@@ -28,11 +30,6 @@ export default class CollectionScreen extends Component {
   state = {
     modalVisible: false,
     message: '사장님이 쿠폰을 확인중입니다...'
-  };
-
-  onPressLogout = async () => {
-    await AsyncStorage.clear();
-    this.props.navigation.navigate('AuthLoading');
   };
 
   setModalVisible(visible) {
@@ -98,11 +95,19 @@ export default class CollectionScreen extends Component {
 
     return (
       <ThemeProvider theme={theme}>
+        <Header
+          placement={'center'}
+          centerComponent={{ text: '컴포즈 성수', style: { fontSize: 30 } }}
+          backgroundColor={'white'}
+        />
         {/* modal 창 */}
+        {/* TODO: Modal 대신 elements의 Overlay 사용 고려해볼것 */}
         <Modal
           animationType="slide"
           transparent={true}
           visible={this.state.modalVisible}
+          onRequestClose={() => {}}
+          style={{ backgroundColor: '#000000aa' }}
         >
           <View
             style={{
@@ -214,7 +219,6 @@ export default class CollectionScreen extends Component {
                 this.waitForComplete();
               }}
             />
-            <Button title={'임시 로그아웃'} onPress={onPressLogout} />
           </View>
         </View>
       </ThemeProvider>

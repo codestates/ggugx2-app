@@ -47,6 +47,7 @@ export default class SearchScreen extends Component {
     const { search } = this.state;
     const list = [
       {
+        storeID: 0,
         storeName: '스벅 성수',
         distance: '234m',
         stamps: 10,
@@ -56,6 +57,7 @@ export default class SearchScreen extends Component {
           'https://www.royalparks.org.uk/_media/images/the-regents-park-and-primrose-hill/the-broad-walk-cafe/The-Broad-Walk-Cafe-Interior.jpg/w_1200.jpg'
       },
       {
+        storeID: 1,
         storeName: '이디야 성수',
         distance: '646m',
         stamps: 8,
@@ -64,6 +66,7 @@ export default class SearchScreen extends Component {
         img: 'http://www.jacobsamuelhotel.com/files//Cafe_Popular_bar.jpg'
       },
       {
+        storeID: 2,
         storeName: '컴포즈커피 성수점',
         distance: '700m',
         stamps: 3,
@@ -73,6 +76,7 @@ export default class SearchScreen extends Component {
           'http://composecoffee.com/bizdemo58464/component/board/board_6/u_image/1/2051342575_thumb-01.jpg'
       },
       {
+        storeID: 3,
         storeName: '할리스커피 건대입구점',
         distance: '1.3km',
         stamps: 5,
@@ -82,6 +86,7 @@ export default class SearchScreen extends Component {
           'http://danmee.chosun.com/site/data/img_dir/2013/07/17/2013071700688_0.jpg'
       },
       {
+        storeID: 5,
         storeName: '스벅 성수',
         distance: '234m',
         stamps: 10,
@@ -91,6 +96,7 @@ export default class SearchScreen extends Component {
           'https://www.royalparks.org.uk/_media/images/the-regents-park-and-primrose-hill/the-broad-walk-cafe/The-Broad-Walk-Cafe-Interior.jpg/w_1200.jpg'
       },
       {
+        storeID: 8,
         storeName: '스벅 성수',
         distance: '234m',
         stamps: 10,
@@ -100,6 +106,7 @@ export default class SearchScreen extends Component {
           'https://www.royalparks.org.uk/_media/images/the-regents-park-and-primrose-hill/the-broad-walk-cafe/The-Broad-Walk-Cafe-Interior.jpg/w_1200.jpg'
       },
       {
+        storeID: 13,
         storeName: '스벅 성수',
         distance: '234m',
         stamps: 10,
@@ -109,6 +116,7 @@ export default class SearchScreen extends Component {
           'https://www.royalparks.org.uk/_media/images/the-regents-park-and-primrose-hill/the-broad-walk-cafe/The-Broad-Walk-Cafe-Interior.jpg/w_1200.jpg'
       },
       {
+        storeID: 21,
         storeName: '스벅 성수',
         distance: '234m',
         stamps: 10,
@@ -118,6 +126,7 @@ export default class SearchScreen extends Component {
           'https://www.royalparks.org.uk/_media/images/the-regents-park-and-primrose-hill/the-broad-walk-cafe/The-Broad-Walk-Cafe-Interior.jpg/w_1200.jpg'
       },
       {
+        storeID: 413,
         storeName: '스벅 성수',
         distance: '234m',
         stamps: 10,
@@ -163,12 +172,13 @@ export default class SearchScreen extends Component {
               // height: 40,
               backgroundColor: '#adf',
               // padding: 10,
-              justifyContent: 'space-between',
+              justifyContent: 'space-around',
               flexDirection: 'row',
               flexWrap: 'nowrap',
               padding: 0
             }}
           >
+            {/* TODO: elements의 ButtonGroup 컴포넌트 사용? */}
             <Button style={{ width: 74 }} title={'거리'} />
             <Button style={{ width: 74 }} title={'스탬프'} />
             <Button style={{ width: 74 }} title={'가격'} />
