@@ -23,6 +23,9 @@ export default class StampsScreen extends Component {
       }
     };
   };
+  onPressTossButton = storeName => {
+    this.props.navigation.navigate('Toss', storeName);
+  };
   render() {
     const REQUIRED = 10; // Stores.STAMP
     const {
@@ -37,6 +40,7 @@ export default class StampsScreen extends Component {
       width: Dimensions.get('window').width,
       height: Dimensions.get('window').width * 0.65 // 16:9 size = 0.65
     };
+    const { onPressTossButton } = this;
     // TODO: 1) navigation에서 전달받은 storeID를 가지고, 서버에서 Stores 테이블의 내용을 다 긁어와야 함
     //// 긁어온 내용을 StoreInfo 오브젝트로 만들어 StoreInfo 컴포넌트에 props로 넘겨줘야 함
     // TODO: 2) 한편, CustomerID, StoreID로 Stamps 테이블에 쿼리해서 사용가능한 쿠폰 개수를 받아와야 함
@@ -48,7 +52,12 @@ export default class StampsScreen extends Component {
         <StampsPaper countsObject={{ REQUIRED, count: stamps }} />
 
         <RedeemStamps />
-        <Button title={'Toss하기'} />
+        <Button
+          title={'Toss하기'}
+          onPress={() => {
+            onPressTossButton(storeName);
+          }}
+        />
         <Button title={'내 쿠폰함'} />
         <Image
           source={{ uri: img }}

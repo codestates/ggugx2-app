@@ -11,19 +11,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignContent: 'space-between'
   },
-  input: {
-    width: '50%',
-    height: 30,
-    borderRadius: 4,
-    borderWidth: 1,
-    borderColor: 'gray',
-    margin: 2
-  },
   welcomeImage: {
     width: 50,
     height: 50
   },
-  button: {
+  buttonKakao: {
     backgroundColor: 'rgb(255, 205, 55)'
   }
 });
@@ -38,8 +30,14 @@ const theme = {
     inputContinerStyle: {
       padding: 10
     },
+    placeholderTextColor: '#666',
     style: {
-      // fontSize: 50
+      width: '50%',
+      height: 30,
+      borderRadius: 4,
+      borderWidth: 1,
+      borderColor: 'gray',
+      margin: 2
     }
   }
 };
@@ -68,22 +66,15 @@ export default class SignInScreen extends React.Component {
         />
         <ThemeProvider theme={theme}>
           <Input
-            style={styles.input}
             placeholder={'전화번호'}
-            placeholderTextColor={'#333'}
             textContentType={'telephoneNumber'}
             keyboardType={'numeric'}
           />
-          <Input
-            style={styles.input}
-            placeholder={'비밀번호'}
-            placeholderTextColor={'#333'}
-            secureTextEntry={true}
-          />
+          <Input placeholder={'비밀번호'} secureTextEntry={true} />
           <Button
             title={'로그인'}
             onPress={onPressLogin}
-            buttonStyle={styles.button}
+            buttonStyle={styles.buttonKakao}
           />
           <Button title={'가입'} onPress={onPressSignup} />
           <Button

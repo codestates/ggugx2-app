@@ -1,8 +1,34 @@
 import React, { Component } from 'react';
-import { View, TouchableOpacity, Image } from 'react-native';
+import { View, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import { Text } from 'react-native-elements';
 import { Avatar } from 'react-native-elements';
-// import {iconOpenPng} from '../../assets/images/icon-open.png'
+
+const s = StyleSheet.create({
+  containerTouchable: {
+    height: 100,
+    borderWidth: 1,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'flex-start'
+  },
+  storeImageView: {
+    flex: 0,
+    width: 100,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  storeInfoTextsView: {
+    flex: 4,
+    flexDirection: 'column',
+    justifyContent: 'space-between'
+  },
+  iconsView: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    alignItems: 'center'
+  }
+});
 
 export default class SearchResultEntry extends Component {
   render() {
@@ -23,35 +49,13 @@ export default class SearchResultEntry extends Component {
       : require('../../assets/images/icon-redeem-x.png');
     const iconSize = 40;
     return (
-      <TouchableOpacity
-        style={{
-          height: 100,
-          borderWidth: 1,
-          flexDirection: 'row',
-          flexWrap: 'wrap',
-          justifyContent: 'flex-start'
-        }}
-        onPress={onPress}
-      >
+      <TouchableOpacity style={s.containerTouchable} onPress={onPress}>
         {/* 왼쪽: 매장사진 */}
-        <View
-          style={{
-            flex: 0,
-            width: 100,
-            justifyContent: 'center',
-            alignItems: 'center'
-          }}
-        >
+        <View style={s.storeImageView}>
           <Avatar size={90} rounded source={{ uri: img }} />
         </View>
         {/* 중간: 매장명, 거리, 스탬프수 */}
-        <View
-          style={{
-            flex: 4,
-            flexDirection: 'column',
-            justifyContent: 'space-between'
-          }}
-        >
+        <View style={s.storeInfoTextsView}>
           <Text style={{ fontSize: 20, fontWeight: 'bold', height: 30 }}>
             {storeName}
           </Text>
@@ -62,14 +66,7 @@ export default class SearchResultEntry extends Component {
           </Text>
         </View>
         {/* 오른쪽: 운영중, 교환권여부 */}
-        <View
-          style={{
-            flex: 1,
-            flexDirection: 'column',
-            justifyContent: 'space-around',
-            alignItems: 'center'
-          }}
-        >
+        <View style={s.iconsView}>
           <Image
             source={iconOpen}
             style={{ width: iconSize, height: iconSize }}

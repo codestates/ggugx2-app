@@ -10,14 +10,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignContent: 'space-between'
   },
-  input: {
-    width: '50%',
-    height: 30,
-    borderRadius: 4,
-    borderWidth: 1,
-    borderColor: 'gray',
-    margin: 2
-  },
   welcomeImage: {
     width: 50,
     height: 50
@@ -35,11 +27,12 @@ const theme = {
   },
   Input: {
     inputContinerStyle: {
-      padding: 10
+      padding: 20
     },
-    style: {
-      // fontSize: 50
-    }
+    containerStyle: {
+      margin: 5
+    },
+    placeholderTextColor: '#666'
   }
 };
 
@@ -51,7 +44,7 @@ export default class SignUpScreen extends React.Component {
     alert('가입!');
   };
   render() {
-    const { onPressLogin, onPressSignup, onPressKaKao } = this;
+    const { onPressSignup } = this;
     return (
       <View style={styles.container}>
         <Image
@@ -60,31 +53,23 @@ export default class SignUpScreen extends React.Component {
         />
         <ThemeProvider theme={theme}>
           <Input
-            style={styles.input}
-            label={'이름'}
+            // label={'이름'}
             placeholder={'이름'}
-            placeholderTextColor={'#333'}
             textContentType={'telephoneNumber'}
           />
           <Input
-            style={styles.input}
-            label={'전화번호'}
+            // label={'전화번호'}
             placeholder={'전화번호'}
-            placeholderTextColor={'#333'}
             textContentType={'telephoneNumber'}
           />
           <Input
-            style={styles.input}
-            label={'비밀번호'}
+            // label={'비밀번호'}
             placeholder={'비밀번호'}
-            placeholderTextColor={'#333'}
             textContentType={'telephoneNumber'}
           />
           <Input
-            style={styles.input}
-            label={'비밀번호 확인'}
+            // label={'비밀번호 확인'}
             placeholder={'비밀번호 확인'}
-            placeholderTextColor={'#333'}
             textContentType={'telephoneNumber'}
           />
           <Button title={'가입'} onPress={onPressSignup} />

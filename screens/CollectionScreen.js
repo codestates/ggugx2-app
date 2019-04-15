@@ -101,7 +101,7 @@ export default class CollectionScreen extends Component {
           backgroundColor={'white'}
         />
         {/* modal 창 */}
-        {/* TODO: Modal 대신 elements의 Overlay 사용 고려해볼것 */}
+        {/* TODO: Modal 대신 elements의 Overlay 사용 고려해볼것 / 혹은 display:'none' 이용하는 컴포넌트 만들기 */}
         <Modal
           animationType="slide"
           transparent={true}

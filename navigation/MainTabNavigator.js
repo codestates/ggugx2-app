@@ -11,6 +11,7 @@ import ChatScreen from '../screens/ChatScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import CollectionScreen from '../screens/CollectionScreen';
 import StampsScreen from '../screens/StampsScreen';
+import TossScreen from '../screens/TossScreen';
 
 const CollectionStack = createStackNavigator({
   Collection: CollectionScreen
@@ -33,7 +34,8 @@ CollectionStack.navigationOptions = {
 const SearchStack = createStackNavigator(
   {
     Search: SearchScreen,
-    Stamps: StampsScreen
+    Stamps: StampsScreen,
+    Toss: TossScreen
   },
   {
     mode: 'card'

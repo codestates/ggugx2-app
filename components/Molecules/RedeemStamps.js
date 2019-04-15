@@ -20,8 +20,9 @@ export default class RedeemStamps extends Component {
           source={stampImgChecked}
           style={{ width: stampSize, height: stampSize }}
         />
-        <Text h3> x [10] = </Text>
-        <Text h3>[아메리카노]</Text>
+        <Text h4> x [10] = </Text>
+        <Text h4>[아메리카노]</Text>
+        <Text h3> ⑤</Text>
       </View>
     );
   }
