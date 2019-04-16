@@ -64,11 +64,14 @@ export default class SignInScreen extends React.Component {
         password
       })
       .then(async response => {
-        console.log('로그인 성공 - token : ', response.data.token);
-        await AsyncStorage.setItem('ggugCustomerToken', response.data.token);
+        const token = response.data.token;
+        console.log('로그인 성공 - token : ', token);
+        await AsyncStorage.setItem('ggugCustomerToken', token);
+        // 헤더의 Authorization에 토큰을 항상 포함시키도록 함
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         this.props.navigation.navigate('AuthLoading');
       })
-      .catch(function(error) {
+      .catch(error => {
         console.log('로그인 실패 : ', error.message);
         alert(`실패! ${error}`);
       });
@@ -77,14 +80,7 @@ export default class SignInScreen extends React.Component {
     this.props.navigation.navigate('SignUp');
   };
   onPressKaKao = () => {
-    axios
-      .get('/tests')
-      .then(response => {
-        alert(`성공! ${response.data.message}`);
-      })
-      .catch(function(error) {
-        alert(`실패! ${error}`);
-      });
+    alert('카카오 OAuth!');
   };
   handleInputChange = (text, name) => {
     this.setState({

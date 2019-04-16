@@ -65,11 +65,11 @@ export default class SignUpScreen extends React.Component {
         username,
         password
       })
-      .then(function(response) {
+      .then(response => {
         alert('성공', response);
         navigate('AuthLoading');
       })
-      .catch(function(error) {
+      .catch(error => {
         alert('실패', error);
       });
   };
