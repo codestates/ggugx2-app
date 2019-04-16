@@ -6,6 +6,7 @@ import {
   View,
   Text
 } from 'react-native';
+import axios from '../modules/axios-connector';
 
 export default class AuthLoadingScreen extends React.Component {
   constructor() {
@@ -15,18 +16,25 @@ export default class AuthLoadingScreen extends React.Component {
 
   // Fetch the token from storage then navigate to our appropriate place
   _bootstrapAsync = async () => {
-    // TODO: 토큰을 갖고있는것 뿐만 아니라, 유효한 토큰인지 서버에 검사해야 하지 않나?
-    // 만약 자동로그인으로 앱을 오래 켜놓는 사이 유효기간이 끝났고
-    // 어떤 API요청을 날렸더니 fail이 오면(내용에 auth만료인걸 알수있게 응답이 오면 다시 로그인하라고 signin페이지로 넘겨주면되겠다)
-    //
     const userToken = await AsyncStorage.getItem('ggugCustomerToken');
-
-    // This will switch to the App screen or Auth screen and this loading
-    // screen will be unmounted and thrown away.
-    this.props.navigation.navigate(userToken ? 'Main' : 'Auth');
+    if (!userToken) {
+      // 토큰이 없으면 로그인 화면으로
+      this.props.navigation.navigate('Auth');
+    } else {
+      // 토큰이 있으면 서버에 유효성 검사 요청
+      axios
+        .get('/tests')
+        .then(() => {
+          // 유효하면 로그인 성공
+          this.props.navigation.navigate('Main');
+        })
+        .catch(() => {
+          // 유효하지 않으면 로그인 화면으로->로그인해 새토큰 받도록
+          this.props.navigation.navigate('Auth');
+        });
+    }
   };
 
-  // Render any loading content that you like here
   render() {
     return (
       <View
