@@ -1,6 +1,9 @@
 import React from 'react';
 import { Image, StyleSheet, View } from 'react-native';
-import { Button, Input, ThemeProvider } from 'react-native-elements';
+import { Text, Button, Input, ThemeProvider } from 'react-native-elements';
+import axios from '../modules/axios-connector';
+
+// import console = require('console');
 
 const styles = StyleSheet.create({
   container: {
@@ -37,14 +40,41 @@ const theme = {
 };
 
 export default class SignUpScreen extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      phone: null,
+      username: null,
+      password: null
+    };
+  }
   static navigationOptions = {
     title: '회원가입'
   };
+  handleInputChange = (text, name) => {
+    this.setState({
+      [name]: text
+    });
+  };
   onPressSignup = () => {
-    alert('가입!');
+    const { phone, username, password } = this.state;
+    const { navigate } = this.props.navigation;
+    axios
+      .post('/users/signup', {
+        phone,
+        username,
+        password
+      })
+      .then(response => {
+        alert('성공', response);
+        navigate('AuthLoading');
+      })
+      .catch(error => {
+        alert('실패', error);
+      });
   };
   render() {
-    const { onPressSignup } = this;
+    const { onPressSignup, handleInputChange } = this;
     return (
       <View style={styles.container}>
         <Image
@@ -53,24 +83,34 @@ export default class SignUpScreen extends React.Component {
         />
         <ThemeProvider theme={theme}>
           <Input
-            // label={'이름'}
             placeholder={'이름'}
-            textContentType={'telephoneNumber'}
+            textContentType={'name'}
+            onChangeText={e => {
+              handleInputChange(e, 'username');
+            }}
           />
           <Input
-            // label={'전화번호'}
             placeholder={'전화번호'}
             textContentType={'telephoneNumber'}
+            onChangeText={e => {
+              handleInputChange(e, 'phone');
+            }}
           />
           <Input
-            // label={'비밀번호'}
             placeholder={'비밀번호'}
-            textContentType={'telephoneNumber'}
+            textContentType={'password'}
+            onChangeText={e => {
+              handleInputChange(e, 'password');
+            }}
+            secureTextEntry={true}
           />
           <Input
-            // label={'비밀번호 확인'}
             placeholder={'비밀번호 확인'}
-            textContentType={'telephoneNumber'}
+            textContentType={'password'}
+            onChangeText={e => {
+              handleInputChange(e, 'passwordConfirm');
+            }}
+            secureTextEntry={true}
           />
           <Button title={'가입'} onPress={onPressSignup} />
         </ThemeProvider>

@@ -6,6 +6,7 @@ import {
   View,
   Text
 } from 'react-native';
+import axios from '../modules/axios-connector';
 
 export default class AuthLoadingScreen extends React.Component {
   constructor() {
@@ -15,14 +16,25 @@ export default class AuthLoadingScreen extends React.Component {
 
   // Fetch the token from storage then navigate to our appropriate place
   _bootstrapAsync = async () => {
-    const userToken = await AsyncStorage.getItem('userToken');
-
-    // This will switch to the App screen or Auth screen and this loading
-    // screen will be unmounted and thrown away.
-    this.props.navigation.navigate(userToken ? 'Main' : 'Auth');
+    const userToken = await AsyncStorage.getItem('ggugCustomerToken');
+    if (!userToken) {
+      // 토큰이 없으면 로그인 화면으로
+      this.props.navigation.navigate('Auth');
+    } else {
+      // 토큰이 있으면 서버에 유효성 검사 요청
+      axios
+        .get('/tests')
+        .then(() => {
+          // 유효하면 로그인 성공
+          this.props.navigation.navigate('Main');
+        })
+        .catch(() => {
+          // 유효하지 않으면 로그인 화면으로->로그인해 새토큰 받도록
+          this.props.navigation.navigate('Auth');
+        });
+    }
   };
 
-  // Render any loading content that you like here
   render() {
     return (
       <View

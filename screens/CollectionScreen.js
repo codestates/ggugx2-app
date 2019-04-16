@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Modal } from 'react-native';
+import { View, Modal, ScrollView } from 'react-native';
 import {
   Button,
   ListItem,
@@ -7,7 +7,8 @@ import {
   ThemeProvider,
   Header
 } from 'react-native-elements';
-import { ScrollView } from 'react-native-gesture-handler';
+import axios from '../modules/axios-connector';
+// import axios from '../modules/axios-connector';
 
 export default class CollectionScreen extends Component {
   static navigationOptions = {
@@ -215,8 +216,16 @@ export default class CollectionScreen extends Component {
             <Button
               title={'적립하기'}
               onPress={() => {
-                this.setModalVisible(true);
-                this.waitForComplete();
+                // this.setModalVisible(true);
+                // this.waitForComplete();
+                //
+                // FIXME: API에 토큰 검사하도록 요청날리기 테스트임
+                axios
+                  .get('/tests')
+                  .then(response => {
+                    console.log(response.data);
+                  })
+                  .catch(error => console.log(error));
               }}
             />
           </View>
