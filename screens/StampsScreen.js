@@ -7,12 +7,38 @@ import StoreInfo from '../components/Organisms/StoreInfo';
 import StoreLargeMap from '../components/Organisms/StoreLargeMap';
 import StampsCountsDisplay from '../components/Molecules/StampsCountsDisplay';
 
+// SearchSreen에서 매장을 선택하면 navigation.state.params를 통해 storeID와 customerID를 전달받는다.
+// storeID와 customerID를 갖고 데이터들을 받아온다.
+
+// storeID + customerID -> 매장에 적립한 스탬프 수, 교환권 수
+
+//
+
+// storeID -> 가게 정보
+//// (가게 이름), 보상 정보, ..
 const storeInfo = {
   // 서버에서 컴포즈커피 성수점의 정보를 받아왔다 치자.
   address: '서울시 성동구 뚝섬역 근처',
   shopHours: '매일 09:00 ~ 20:00 (일요일 휴무)',
   contact: '02-123-2342'
 };
+
+// storeID -> 메뉴 정보
+// Menus 테이블에서, SELECT NAME, PRICE FROM MENUS WHERE STORE_ID = ?;
+const menuList = [
+  {
+    NAME: '아메리카노',
+    PRICE: 4000
+  },
+  {
+    NAME: '카페라뗴',
+    PRICE: 4500
+  },
+  {
+    NAME: '민트초코프라푸치노',
+    PRICE: 5000
+  }
+];
 
 export default class StampsScreen extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -49,7 +75,7 @@ export default class StampsScreen extends Component {
       <ScrollView style={{ flex: 1 }}>
         <StampsCountsDisplay stampsCounts={stampsCounts} />
         {/* TODO: StampPaper 컴포넌트의 props 형식 정리할것. Stamps 컴포넌트 제대로 구현할것 */}
-        <StampsPaper countsObject={{ REQUIRED, count: stamps }} />
+        <StampsPaper stampsObject={{ REQUIRED, count: stamps }} />
 
         <RedeemStamps />
         <Button
@@ -58,14 +84,14 @@ export default class StampsScreen extends Component {
             onPressTossButton(storeName);
           }}
         />
-        <Button title={'내 쿠폰함'} />
+        {/* <Button title={'내 쿠폰함'} /> */}
         <Image
           source={{ uri: img }}
           PlaceholderContent={<ActivityIndicator />}
           resizeMode={'cover'}
           style={{ width: storeImageSize.width, height: storeImageSize.height }}
         />
-        <StoreInfo storeInfo={storeInfo} />
+        <StoreInfo storeInfo={storeInfo} menuList={menuList} />
         <StoreLargeMap />
       </ScrollView>
     );

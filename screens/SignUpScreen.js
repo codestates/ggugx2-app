@@ -38,14 +38,15 @@ const theme = {
     placeholderTextColor: '#666'
   }
 };
-
+// TODO: 패스워드 확인 기능, 입력 validation, ..
 export default class SignUpScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       phone: null,
       username: null,
-      password: null
+      password: null,
+      passwordConfirm: ''
     };
   }
   static navigationOptions = {

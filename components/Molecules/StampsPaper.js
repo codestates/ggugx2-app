@@ -5,7 +5,7 @@ import StampEntry from '../Atoms/StampEntry';
 
 export default class StampsPaper extends Component {
   render() {
-    const { REQUIRED, count } = this.props.countsObject;
+    const { REQUIRED, count } = this.props.stampsObject;
     const coupons = [];
     for (let i = 0; i < count; i++) {
       coupons.push(true);

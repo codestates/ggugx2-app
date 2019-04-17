@@ -7,9 +7,56 @@ import {
   ThemeProvider,
   Header
 } from 'react-native-elements';
+import StoresEntry from '../components/Molecules/TextTextEntry';
 import axios from '../modules/axios-connector';
 // import axios from '../modules/axios-connector';
 
+const nearbyStoresList = [
+  {
+    storeName: '스벅 성수',
+    distance: '234'
+  },
+  {
+    storeName: '스벅 성수',
+    distance: '2341'
+  },
+  {
+    storeName: '스벅 성수',
+    distance: '2343'
+  },
+  {
+    storeName: '스벅 성수',
+    distance: '2344'
+  },
+  {
+    storeName: '스벅 성수',
+    distance: '2343'
+  },
+  {
+    storeName: '스벅 성수',
+    distance: '234'
+  },
+  {
+    storeName: '스벅 성수',
+    distance: '234'
+  },
+  {
+    storeName: '스벅 성수',
+    distance: '234'
+  },
+  {
+    storeName: '스벅 성수',
+    distance: '234'
+  },
+  {
+    storeName: '스벅 성수',
+    distance: '234'
+  },
+  {
+    storeName: '스벅 성수',
+    distance: '234'
+  }
+];
 export default class CollectionScreen extends Component {
   static navigationOptions = {
     header: null
@@ -47,52 +94,6 @@ export default class CollectionScreen extends Component {
   };
   render() {
     const { onPressLogout, theme } = this;
-    const list = [
-      {
-        storeName: '스벅 성수',
-        distance: '234m'
-      },
-      {
-        storeName: '스벅 성수',
-        distance: '234m'
-      },
-      {
-        storeName: '스벅 성수',
-        distance: '234m'
-      },
-      {
-        storeName: '스벅 성수',
-        distance: '234m'
-      },
-      {
-        storeName: '스벅 성수',
-        distance: '234m'
-      },
-      {
-        storeName: '스벅 성수',
-        distance: '234m'
-      },
-      {
-        storeName: '스벅 성수',
-        distance: '234m'
-      },
-      {
-        storeName: '스벅 성수',
-        distance: '234m'
-      },
-      {
-        storeName: '스벅 성수',
-        distance: '234m'
-      },
-      {
-        storeName: '스벅 성수',
-        distance: '234m'
-      },
-      {
-        storeName: '스벅 성수',
-        distance: '234m'
-      }
-    ];
 
     return (
       <ThemeProvider theme={theme}>
@@ -102,7 +103,7 @@ export default class CollectionScreen extends Component {
           backgroundColor={'white'}
         />
         {/* modal 창 */}
-        {/* TODO: Modal 대신 elements의 Overlay 사용 고려해볼것 / 혹은 display:'none' 이용하는 컴포넌트 만들기 */}
+        {/* TODO: Modal 대신 elements의 Overlay 사용 고려해볼것 / 혹은 display:'none' 이용하는 컴포넌트 만들기 / 혹은 Portal로 만들기 */}
         <Modal
           animationType="slide"
           transparent={true}
@@ -196,10 +197,16 @@ export default class CollectionScreen extends Component {
           >
             <Text>지금 계신 매장이 아닌가요?</Text>
             <ScrollView style={{ borderWidth: 1 }}>
-              {list.map((item, i) => (
-                <ListItem
+              {nearbyStoresList.map((item, i) => (
+                <StoresEntry
+                  list={{
+                    LEFT: item.storeName,
+                    RIGHT: item.distance
+                  }}
+                  suffix={'m'}
                   key={i}
-                  title={`${item.storeName} ${item.distance}`}
+                  styleLeft={{ fontSize: 23 }}
+                  styleRight={{ fontSize: 20 }}
                 />
               ))}
             </ScrollView>
