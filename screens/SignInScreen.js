@@ -1,5 +1,14 @@
 import React from 'react';
-import { Image, StyleSheet, View, AsyncStorage } from 'react-native';
+import {
+  Image,
+  StyleSheet,
+  View,
+  AsyncStorage,
+  KeyboardAvoidingView,
+  Platform,
+  Keyboard,
+  TouchableWithoutFeedback
+} from 'react-native';
 import { Button, Input, ThemeProvider } from 'react-native-elements';
 import axios from '../modules/axios-connector';
 // import console = require('console');
@@ -32,14 +41,16 @@ const theme = {
     inputContinerStyle: {
       padding: 10
     },
-    placeholderTextColor: '#666',
+    containerStyle: {
+      margin: 5
+    },
+    placeholderTextColor: '#999',
     style: {
       width: '50%',
       height: 30,
       borderRadius: 4,
       borderWidth: 1,
-      borderColor: 'gray',
-      margin: 2
+      borderColor: 'gray'
     }
   }
 };
@@ -64,12 +75,15 @@ export default class SignInScreen extends React.Component {
         password
       })
       .then(async response => {
-        const token = response.data.token;
-        console.log('로그인 성공 - token : ', token);
-        await AsyncStorage.setItem('ggugCustomerToken', token);
-        // 헤더의 Authorization에 토큰을 항상 포함시키도록 함
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        this.props.navigation.navigate('AuthLoading');
+        const userToken = response.data.token;
+        console.log('로그인 성공 - token : ', userToken);
+        // TODO: 로그인 성공시 응답에 customerID를 포함시켜야 함.
+        const customerID = 1;
+        await AsyncStorage.setItem(
+          'ggugCustomerToken',
+          JSON.stringify({ userToken, customerID })
+        );
+        this.props.navigation.navigate('AuthLoading', { customerID });
       })
       .catch(error => {
         console.log('로그인 실패 : ', error.message);
@@ -95,40 +109,44 @@ export default class SignInScreen extends React.Component {
       handleInputChange
     } = this;
     return (
-      <View style={styles.container}>
-        <Image
-          source={require('../assets/images/muziLogin.png')}
-          style={styles.welcomeImage}
-        />
-        <ThemeProvider theme={theme}>
-          <Input
-            placeholder={'전화번호'}
-            textContentType={'telephoneNumber'}
-            keyboardType={'numeric'}
-            onChangeText={e => {
-              handleInputChange(e, 'phone');
-            }}
-          />
-          <Input
-            placeholder={'비밀번호'}
-            secureTextEntry={true}
-            onChangeText={e => {
-              handleInputChange(e, 'password');
-            }}
-          />
-          <Button
-            title={'로그인'}
-            onPress={onPressLogin}
-            buttonStyle={styles.buttonKakao}
-          />
-          <Button title={'가입'} onPress={onPressSignup} />
-          <Button
-            title={'카카오톡으로 로그인'}
-            onPress={onPressKaKao}
-            type={'outline'}
-          />
-        </ThemeProvider>
-      </View>
+      <KeyboardAvoidingView style={styles.container} behavior={'padding'}>
+        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+          <View>
+            <Image
+              source={require('../assets/images/muziLogin.png')}
+              style={styles.welcomeImage}
+            />
+            <ThemeProvider theme={theme}>
+              <Input
+                placeholder={'010-1234-1234'}
+                textContentType={'telephoneNumber'}
+                keyboardType={'numeric'}
+                onChangeText={e => {
+                  handleInputChange(e, 'phone');
+                }}
+              />
+              <Input
+                placeholder={'비밀번호'}
+                secureTextEntry={true}
+                onChangeText={e => {
+                  handleInputChange(e, 'password');
+                }}
+              />
+              <Button
+                title={'로그인'}
+                onPress={onPressLogin}
+                buttonStyle={styles.buttonKakao}
+              />
+              <Button title={'가입'} onPress={onPressSignup} />
+              <Button
+                title={'카카오톡으로 로그인'}
+                onPress={onPressKaKao}
+                type={'outline'}
+              />
+            </ThemeProvider>
+          </View>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
     );
   }
 }

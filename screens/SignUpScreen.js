@@ -1,5 +1,12 @@
 import React from 'react';
-import { Image, StyleSheet, View } from 'react-native';
+import {
+  Image,
+  StyleSheet,
+  View,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Keyboard
+} from 'react-native';
 import { Text, Button, Input, ThemeProvider } from 'react-native-elements';
 import axios from '../modules/axios-connector';
 
@@ -9,6 +16,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+    paddingTop: 0,
     padding: 30,
     justifyContent: 'center',
     alignContent: 'space-between'
@@ -38,14 +46,15 @@ const theme = {
     placeholderTextColor: '#666'
   }
 };
-
+// TODO: 패스워드 확인 기능, 입력 validation, ..
 export default class SignUpScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       phone: null,
       username: null,
-      password: null
+      password: null,
+      passwordConfirm: ''
     };
   }
   static navigationOptions = {
@@ -76,45 +85,49 @@ export default class SignUpScreen extends React.Component {
   render() {
     const { onPressSignup, handleInputChange } = this;
     return (
-      <View style={styles.container}>
-        <Image
-          source={require('../assets/images/muziLogin.png')}
-          style={styles.welcomeImage}
-        />
-        <ThemeProvider theme={theme}>
-          <Input
-            placeholder={'이름'}
-            textContentType={'name'}
-            onChangeText={e => {
-              handleInputChange(e, 'username');
-            }}
-          />
-          <Input
-            placeholder={'전화번호'}
-            textContentType={'telephoneNumber'}
-            onChangeText={e => {
-              handleInputChange(e, 'phone');
-            }}
-          />
-          <Input
-            placeholder={'비밀번호'}
-            textContentType={'password'}
-            onChangeText={e => {
-              handleInputChange(e, 'password');
-            }}
-            secureTextEntry={true}
-          />
-          <Input
-            placeholder={'비밀번호 확인'}
-            textContentType={'password'}
-            onChangeText={e => {
-              handleInputChange(e, 'passwordConfirm');
-            }}
-            secureTextEntry={true}
-          />
-          <Button title={'가입'} onPress={onPressSignup} />
-        </ThemeProvider>
-      </View>
+      <KeyboardAvoidingView style={styles.container} behavior={'padding'}>
+        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+          <View style={styles.container}>
+            <Image
+              source={require('../assets/images/muziLogin.png')}
+              style={styles.welcomeImage}
+            />
+            <ThemeProvider theme={theme}>
+              <Input
+                placeholder={'홍길동'}
+                textContentType={'name'}
+                onChangeText={e => {
+                  handleInputChange(e, 'username');
+                }}
+              />
+              <Input
+                placeholder={'010-1234-1234'}
+                textContentType={'telephoneNumber'}
+                onChangeText={e => {
+                  handleInputChange(e, 'phone');
+                }}
+              />
+              <Input
+                placeholder={'비밀번호'}
+                textContentType={'password'}
+                onChangeText={e => {
+                  handleInputChange(e, 'password');
+                }}
+                secureTextEntry={true}
+              />
+              <Input
+                placeholder={'비밀번호 확인'}
+                textContentType={'password'}
+                onChangeText={e => {
+                  handleInputChange(e, 'passwordConfirm');
+                }}
+                secureTextEntry={true}
+              />
+              <Button title={'가입하기'} onPress={onPressSignup} />
+            </ThemeProvider>
+          </View>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
     );
   }
 }

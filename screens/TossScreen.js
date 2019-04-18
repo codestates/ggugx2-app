@@ -46,6 +46,15 @@ const theme = {
     containerStyle: {
       backgroundColor: 'white'
     }
+  },
+  Input: {
+    inputContinerStyle: {
+      padding: 20
+    },
+    containerStyle: {
+      margin: 5
+    },
+    placeholderTextColor: '#999'
   }
 };
 
@@ -70,15 +79,13 @@ export default class TossScreen extends Component {
         {/* 최상위 View */}
         <View style={s.container}>
           <Text h3>{this.props.navigation.state.params}</Text>
-          <View>
-            <Text>쿠폰을 보내고 싶은 분의 핸드폰 번호를 입력해 검색하세요</Text>
-            <Input
-              placeholder={'전화번호'}
-              textContentType={'telephoneNumber'}
-              keyboardType={'numeric'}
-            />
-            <Button title={'찾기'} />
-          </View>
+          <Input
+            placeholder={'010-1234-1234'}
+            textContentType={'telephoneNumber'}
+            keyboardType={'numeric'}
+          />
+          <Button title={'찾기'} />
+          <Text>스탬프를 보내고 싶은 분의 핸드폰 번호를 입력해 검색하세요</Text>
         </View>
       </ThemeProvider>
     );

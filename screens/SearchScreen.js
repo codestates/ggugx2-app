@@ -19,98 +19,24 @@ import {
   Header
 } from 'react-native-elements';
 import SearchResultEntry from '../components/Molecules/SearchResultEntry';
+import axios from '../modules/axios-connector';
 
-const list = [
-  {
-    storeID: 0,
-    storeName: '스벅 성수',
-    distance: '234m',
-    stamps: 10,
-    isOpen: true,
-    haveRewards: true,
-    img:
-      'https://www.royalparks.org.uk/_media/images/the-regents-park-and-primrose-hill/the-broad-walk-cafe/The-Broad-Walk-Cafe-Interior.jpg/w_1200.jpg'
-  },
-  {
-    storeID: 1,
-    storeName: '이디야 성수',
-    distance: '646m',
-    stamps: 8,
-    isOpen: true,
-    haveRewards: true,
-    img: 'http://www.jacobsamuelhotel.com/files//Cafe_Popular_bar.jpg'
-  },
-  {
-    storeID: 2,
-    storeName: '컴포즈커피 성수점',
-    distance: '700m',
-    stamps: 3,
-    isOpen: false,
-    haveRewards: false,
-    img:
-      'http://composecoffee.com/bizdemo58464/component/board/board_6/u_image/1/2051342575_thumb-01.jpg'
-  },
-  {
-    storeID: 3,
-    storeName: '할리스커피 건대입구점',
-    distance: '1.3km',
-    stamps: 5,
-    isOpen: true,
-    haveRewards: false,
-    img:
-      'http://danmee.chosun.com/site/data/img_dir/2013/07/17/2013071700688_0.jpg'
-  },
-  {
-    storeID: 5,
-    storeName: '스벅 성수',
-    distance: '234m',
-    stamps: 10,
-    isOpen: true,
-    haveRewards: true,
-    img:
-      'https://www.royalparks.org.uk/_media/images/the-regents-park-and-primrose-hill/the-broad-walk-cafe/The-Broad-Walk-Cafe-Interior.jpg/w_1200.jpg'
-  },
-  {
-    storeID: 8,
-    storeName: '스벅 성수',
-    distance: '234m',
-    stamps: 10,
-    isOpen: true,
-    haveRewards: true,
-    img:
-      'https://www.royalparks.org.uk/_media/images/the-regents-park-and-primrose-hill/the-broad-walk-cafe/The-Broad-Walk-Cafe-Interior.jpg/w_1200.jpg'
-  },
-  {
-    storeID: 13,
-    storeName: '스벅 성수',
-    distance: '234m',
-    stamps: 10,
-    isOpen: true,
-    haveRewards: true,
-    img:
-      'https://www.royalparks.org.uk/_media/images/the-regents-park-and-primrose-hill/the-broad-walk-cafe/The-Broad-Walk-Cafe-Interior.jpg/w_1200.jpg'
-  },
-  {
-    storeID: 21,
-    storeName: '스벅 성수',
-    distance: '234m',
-    stamps: 10,
-    isOpen: true,
-    haveRewards: true,
-    img:
-      'https://www.royalparks.org.uk/_media/images/the-regents-park-and-primrose-hill/the-broad-walk-cafe/The-Broad-Walk-Cafe-Interior.jpg/w_1200.jpg'
-  },
-  {
-    storeID: 413,
-    storeName: '스벅 성수',
-    distance: '234m',
-    stamps: 10,
-    isOpen: true,
-    haveRewards: true,
-    img:
-      'https://www.royalparks.org.uk/_media/images/the-regents-park-and-primrose-hill/the-broad-walk-cafe/The-Broad-Walk-Cafe-Interior.jpg/w_1200.jpg'
-  }
-];
+// TODO: 검색 결과를 서버에서 받아온다
+// 1. 검색어 미입력시 가까운 10개 매장의 리스트를 받는다
+// 2. 검색어(메뉴명)가 있다면, 해당 메뉴를 등록한 카페들 중 가까운 10개 매장의 리스트를 받는다
+// 3. sort와 filter 기능은 나중에 생각하자..
+// const searchResult = [
+//   {
+//     storeID: 0,
+//     storeName: '스벅 성수',
+//     distance: '234m',
+//     stamps: 10,
+//     isOpen: true,
+//     haveRewards: true,
+//     img:
+//       'https://www.royalparks.org.uk/_media/images/the-regents-park-and-primrose-hill/the-broad-walk-cafe/The-Broad-Walk-Cafe-Interior.jpg/w_1200.jpg'
+//   }
+// ];
 
 const theme = {
   View: {
@@ -170,8 +96,11 @@ export default class SearchScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      searchInputValue: ''
+      searchInputValue: '',
+      searchResult: []
     };
+    this.getCustomerID();
+    this.getSearchResult();
   }
   static navigationOptions = {
     header: null
@@ -181,9 +110,35 @@ export default class SearchScreen extends Component {
     this.setState({ searchInputValue: text });
   };
 
+  getCustomerID = async () => {
+    const { customerID } = JSON.parse(
+      await AsyncStorage.getItem('ggugCustomerToken')
+    );
+
+    console.log('TCL: SearchScreen -> getCustomerID -> customerID', customerID);
+
+    this.setState({ customerID });
+  };
+
+  getSearchResult = () => {
+    axios.defaults.baseURL = 'http://localhost:3000';
+    const uri = '/search-result';
+    axios
+      .get(uri)
+      .then(response => {
+        console.log(`${uri} 성공`);
+        this.setState({ searchResult: response.data });
+      })
+      .catch(error => {
+        console.log(`${uri} 실패`, error);
+      });
+    axios.defaults.baseURL =
+      'http://ec2-13-115-51-251.ap-northeast-1.compute.amazonaws.com:3000';
+  };
+
   render() {
     const { onPressLogout } = this;
-    const { searchInputValue } = this.state;
+    const { searchInputValue, searchResult, customerID } = this.state;
 
     return (
       <ThemeProvider theme={theme}>
@@ -215,12 +170,15 @@ export default class SearchScreen extends Component {
           {/* 검색 결과 */}
           <View style={s.searchResultsView}>
             <ScrollView style={{ borderWidth: 1 }}>
-              {list.map((item, i) => (
+              {searchResult.map((item, i) => (
                 <SearchResultEntry
                   itemObject={item}
                   key={i}
                   onPress={() => {
-                    this.props.navigation.navigate('Stamps', item);
+                    this.props.navigation.navigate('Stamps', {
+                      ...item,
+                      customerID
+                    });
                   }}
                 />
               ))}
