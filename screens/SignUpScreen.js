@@ -1,5 +1,12 @@
 import React from 'react';
-import { Image, StyleSheet, View } from 'react-native';
+import {
+  Image,
+  StyleSheet,
+  View,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Keyboard
+} from 'react-native';
 import { Text, Button, Input, ThemeProvider } from 'react-native-elements';
 import axios from '../modules/axios-connector';
 
@@ -77,45 +84,49 @@ export default class SignUpScreen extends React.Component {
   render() {
     const { onPressSignup, handleInputChange } = this;
     return (
-      <View style={styles.container}>
-        <Image
-          source={require('../assets/images/muziLogin.png')}
-          style={styles.welcomeImage}
-        />
-        <ThemeProvider theme={theme}>
-          <Input
-            placeholder={'이름'}
-            textContentType={'name'}
-            onChangeText={e => {
-              handleInputChange(e, 'username');
-            }}
-          />
-          <Input
-            placeholder={'전화번호'}
-            textContentType={'telephoneNumber'}
-            onChangeText={e => {
-              handleInputChange(e, 'phone');
-            }}
-          />
-          <Input
-            placeholder={'비밀번호'}
-            textContentType={'password'}
-            onChangeText={e => {
-              handleInputChange(e, 'password');
-            }}
-            secureTextEntry={true}
-          />
-          <Input
-            placeholder={'비밀번호 확인'}
-            textContentType={'password'}
-            onChangeText={e => {
-              handleInputChange(e, 'passwordConfirm');
-            }}
-            secureTextEntry={true}
-          />
-          <Button title={'가입'} onPress={onPressSignup} />
-        </ThemeProvider>
-      </View>
+      <KeyboardAvoidingView style={styles.container} behavior={'padding'}>
+        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+          <View style={styles.container}>
+            <Image
+              source={require('../assets/images/muziLogin.png')}
+              style={styles.welcomeImage}
+            />
+            <ThemeProvider theme={theme}>
+              <Input
+                placeholder={'이름'}
+                textContentType={'name'}
+                onChangeText={e => {
+                  handleInputChange(e, 'username');
+                }}
+              />
+              <Input
+                placeholder={'전화번호'}
+                textContentType={'telephoneNumber'}
+                onChangeText={e => {
+                  handleInputChange(e, 'phone');
+                }}
+              />
+              <Input
+                placeholder={'비밀번호'}
+                textContentType={'password'}
+                onChangeText={e => {
+                  handleInputChange(e, 'password');
+                }}
+                secureTextEntry={true}
+              />
+              <Input
+                placeholder={'비밀번호 확인'}
+                textContentType={'password'}
+                onChangeText={e => {
+                  handleInputChange(e, 'passwordConfirm');
+                }}
+                secureTextEntry={true}
+              />
+              <Button title={'가입'} onPress={onPressSignup} />
+            </ThemeProvider>
+          </View>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
     );
   }
 }

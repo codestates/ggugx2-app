@@ -6,36 +6,16 @@ import axios from '../modules/axios-connector';
 
 // GPS 현위치를 서버에 보내 (가까운 순서로) storeID, storeName, distance를 응답해주는 API 필요
 // -> 받아온 배열의 0번 인덱스가 가장 가까운 매장이므로, nearbyStoresList[0].storeID를 자동선택된 매장 ID로 주면됨.
-const nearbyStoresList = [
-  {
-    storeID: 0,
-    storeName: '스벅 성수',
-    distance: '234'
-  },
-  {
-    storeID: 1,
-    storeName: '이디야 성수',
-    distance: '431'
-  },
-  {
-    storeID: 3,
-    storeName: '컴포즈커피 성수',
-    distance: '1013'
-  },
-  {
-    storeID: 5,
-    storeName: '컴포즈커피 성수',
-    distance: '1013'
-  },
-  {
-    storeID: 10,
-    storeName: '컴포즈커피 성수',
-    distance: '1013'
-  }
-];
+// const nearbyStoresList = [
+//   {
+//     storeID: 0,
+//     storeName: '스벅 성수',
+//     distance: '234'
+//   }
+// ];
 
 // 받아온 가까운 매장들 리스트에서 가장 가까운 매장의 storeID를 현 화면의 매장으로 자동선택
-const currentStoreID = nearbyStoresList[0].storeID;
+// const currentStoreID = nearbyStoresList[0].storeID;
 
 // currentStoreID와 customerID로 요청보내서 스탬프와 교환권 수를 응답해주는 API 필요
 // const stampsObject = {
@@ -52,10 +32,12 @@ export default class CollectionScreen extends Component {
     this.state = {
       customerID: null,
       modalVisible: false,
-      stampsObject: {}
+      stampsObject: {},
+      nearbyStoresList: []
     };
     this.getCustomerID();
     this.getStampsRedeemsCounts();
+    this.getNearbyStoresList();
   }
 
   theme = {
@@ -90,15 +72,33 @@ export default class CollectionScreen extends Component {
   };
 
   getStampsRedeemsCounts = () => {
+    // const response = await axiosGet('/get-stamps-redeems-counts');
+    // this.setState({ stampsObject: response.data });
+
     axios.defaults.baseURL = 'http://localhost:3000';
     axios
       .get('/get-stamps-redeems-counts')
       .then(response => {
         console.log('getStampsRedeemsCount 성공');
-        this.setState({ stampsObject: response.data[0] });
+        this.setState({ stampsObject: response.data });
       })
       .catch(error => {
         console.log('getStampsRedeemsCount 실패', error);
+      });
+    axios.defaults.baseURL =
+      'http://ec2-13-115-51-251.ap-northeast-1.compute.amazonaws.com:3000';
+  };
+
+  getNearbyStoresList = () => {
+    axios.defaults.baseURL = 'http://localhost:3000';
+    axios
+      .get('/nearby-stores-list')
+      .then(response => {
+        console.log('nearby-stores-list 성공');
+        this.setState({ nearbyStoresList: response.data });
+      })
+      .catch(error => {
+        console.log('nearby-stores-list 실패', error);
       });
     axios.defaults.baseURL =
       'http://ec2-13-115-51-251.ap-northeast-1.compute.amazonaws.com:3000';
@@ -118,7 +118,7 @@ export default class CollectionScreen extends Component {
   };
   render() {
     const { theme } = this;
-    const { stampsObject } = this.state;
+    const { stampsObject, nearbyStoresList } = this.state;
     console.log(
       'CollectionScreen] render() customerID : ',
       this.state.customerID

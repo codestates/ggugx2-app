@@ -18,14 +18,15 @@ export default class AuthLoadingScreen extends React.Component {
   // Fetch the token from storage then navigate to our appropriate place
   _bootstrapAsync = async () => {
     const AuthObject = await AsyncStorage.getItem('ggugCustomerToken');
-    const { token: userToken, customerID } = JSON.parse(AuthObject);
-    console.log('AsyncStorage에 저장돼있는 토큰 : ', userToken);
-    console.log('AsyncStorage에 저장돼있는 손님 ID : ', customerID);
-    if (!userToken) {
+    if (!AuthObject) {
       // 토큰이 없으면 로그인 화면으로
       console.log('토큰없음. 로그인으로');
       this.props.navigation.navigate('Auth');
     } else {
+      console.log('토큰있음 -> 유효성검사');
+      const { userToken, customerID } = JSON.parse(AuthObject);
+      console.log('AsyncStorage에 저장돼있는 토큰 : ', userToken);
+      console.log('AsyncStorage에 저장돼있는 손님 ID : ', customerID);
       // 토큰이 있으면 서버에 유효성 검사 요청
       axios
         .get('/tests', {
@@ -58,7 +59,7 @@ export default class AuthLoadingScreen extends React.Component {
       <View
         style={{
           flex: 1,
-          flexDirection: 'col',
+          flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center'
         }}
