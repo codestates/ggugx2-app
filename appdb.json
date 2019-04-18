@@ -109,5 +109,25 @@
       "storeName": "컴포즈커피 성수",
       "distance": "1013"
     }
-  ]
+  ],
+  "get-menu-list": [
+    {
+      "NAME": "아메리카노",
+      "PRICE": 4000
+    },
+    {
+      "NAME": "카페라뗴",
+      "PRICE": 4500
+    },
+    {
+      "NAME": "민트초코프라푸치노",
+      "PRICE": 5000
+    }
+  ],
+  "get-store-info": {
+    "address": "서울시 성동구 뚝섬역 근처",
+    "shopHours": "매일 09:00 ~ 20:00",
+    "dayOff": "일",
+    "contact": "02-123-2342"
+  }
 }

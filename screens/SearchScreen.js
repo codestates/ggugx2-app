@@ -99,6 +99,7 @@ export default class SearchScreen extends Component {
       searchInputValue: '',
       searchResult: []
     };
+    this.getCustomerID();
     this.getSearchResult();
   }
   static navigationOptions = {
@@ -107,6 +108,16 @@ export default class SearchScreen extends Component {
 
   updateSearch = text => {
     this.setState({ searchInputValue: text });
+  };
+
+  getCustomerID = async () => {
+    const { customerID } = JSON.parse(
+      await AsyncStorage.getItem('ggugCustomerToken')
+    );
+
+    console.log('TCL: SearchScreen -> getCustomerID -> customerID', customerID);
+
+    this.setState({ customerID });
   };
 
   getSearchResult = () => {
@@ -127,7 +138,7 @@ export default class SearchScreen extends Component {
 
   render() {
     const { onPressLogout } = this;
-    const { searchInputValue, searchResult } = this.state;
+    const { searchInputValue, searchResult, customerID } = this.state;
 
     return (
       <ThemeProvider theme={theme}>
@@ -164,7 +175,10 @@ export default class SearchScreen extends Component {
                   itemObject={item}
                   key={i}
                   onPress={() => {
-                    this.props.navigation.navigate('Stamps', item);
+                    this.props.navigation.navigate('Stamps', {
+                      ...item,
+                      customerID
+                    });
                   }}
                 />
               ))}
