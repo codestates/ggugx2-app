@@ -44,7 +44,7 @@ const theme = {
     containerStyle: {
       margin: 5
     },
-    placeholderTextColor: '#666',
+    placeholderTextColor: '#999',
     style: {
       width: '50%',
       height: 30,
@@ -118,7 +118,7 @@ export default class SignInScreen extends React.Component {
             />
             <ThemeProvider theme={theme}>
               <Input
-                placeholder={'전화번호'}
+                placeholder={'010-1234-1234'}
                 textContentType={'telephoneNumber'}
                 keyboardType={'numeric'}
                 onChangeText={e => {

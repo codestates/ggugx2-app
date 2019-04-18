@@ -16,6 +16,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+    paddingTop: 0,
     padding: 30,
     justifyContent: 'center',
     alignContent: 'space-between'
@@ -93,14 +94,14 @@ export default class SignUpScreen extends React.Component {
             />
             <ThemeProvider theme={theme}>
               <Input
-                placeholder={'이름'}
+                placeholder={'홍길동'}
                 textContentType={'name'}
                 onChangeText={e => {
                   handleInputChange(e, 'username');
                 }}
               />
               <Input
-                placeholder={'전화번호'}
+                placeholder={'010-1234-1234'}
                 textContentType={'telephoneNumber'}
                 onChangeText={e => {
                   handleInputChange(e, 'phone');
@@ -122,7 +123,7 @@ export default class SignUpScreen extends React.Component {
                 }}
                 secureTextEntry={true}
               />
-              <Button title={'가입'} onPress={onPressSignup} />
+              <Button title={'가입하기'} onPress={onPressSignup} />
             </ThemeProvider>
           </View>
         </TouchableWithoutFeedback>
