@@ -31,6 +31,10 @@ export default class AuthLoadingScreen extends React.Component {
         .then(response => {
           // 유효하면 로그인 성공
           console.log('유효한 토큰. Main으로', response.data);
+          // 헤더의 Authorization에 토큰을 항상 포함시키도록 함
+          axios.defaults.headers.common[
+            'Authorization'
+          ] = `Bearer ${userToken}`;
           this.props.navigation.navigate('Main');
         })
         .catch(error => {
@@ -46,14 +50,14 @@ export default class AuthLoadingScreen extends React.Component {
       <View
         style={{
           flex: 1,
-          flexDirection: 'row',
+          flexDirection: 'col',
           justifyContent: 'center',
           alignItems: 'center'
         }}
       >
-        <ActivityIndicator />
+        <ActivityIndicator size={'large'} color={'gray'} />
         <StatusBar barStyle="default" />
-        <Text> 인증 정보를 확인중입니다.</Text>
+        <Text style={{ margin: 10 }}> 인증 정보를 확인중입니다.</Text>
       </View>
     );
   }

@@ -67,8 +67,7 @@ export default class SignInScreen extends React.Component {
         const token = response.data.token;
         console.log('로그인 성공 - token : ', token);
         await AsyncStorage.setItem('ggugCustomerToken', token);
-        // 헤더의 Authorization에 토큰을 항상 포함시키도록 함
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        // TODO: 로그인 성공시 응답에 customerID를 포함시켜야 함.
         this.props.navigation.navigate('AuthLoading');
       })
       .catch(error => {
