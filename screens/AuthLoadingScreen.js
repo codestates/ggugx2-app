@@ -12,12 +12,15 @@ export default class AuthLoadingScreen extends React.Component {
   constructor() {
     super();
     this._bootstrapAsync();
+    // AsyncStorage.clear();
   }
 
   // Fetch the token from storage then navigate to our appropriate place
   _bootstrapAsync = async () => {
-    const userToken = await AsyncStorage.getItem('ggugCustomerToken');
+    const AuthObject = await AsyncStorage.getItem('ggugCustomerToken');
+    const { token: userToken, customerID } = JSON.parse(AuthObject);
     console.log('AsyncStorage에 저장돼있는 토큰 : ', userToken);
+    console.log('AsyncStorage에 저장돼있는 손님 ID : ', customerID);
     if (!userToken) {
       // 토큰이 없으면 로그인 화면으로
       console.log('토큰없음. 로그인으로');
@@ -35,7 +38,12 @@ export default class AuthLoadingScreen extends React.Component {
           axios.defaults.headers.common[
             'Authorization'
           ] = `Bearer ${userToken}`;
-          this.props.navigation.navigate('Main');
+          console.log(
+            'AuthLoading] Main으로 넘길 customerID: ',
+            customerID || 99
+          );
+          // 일단 params 넣긴했는데, switchNavagator는 스크린간 params 전달이 안된다.
+          this.props.navigation.navigate('Main', { customerID });
         })
         .catch(error => {
           // 유효하지 않으면 로그인 화면으로->로그인해 새토큰 받도록

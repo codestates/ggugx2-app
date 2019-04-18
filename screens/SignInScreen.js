@@ -66,9 +66,13 @@ export default class SignInScreen extends React.Component {
       .then(async response => {
         const token = response.data.token;
         console.log('로그인 성공 - token : ', token);
-        await AsyncStorage.setItem('ggugCustomerToken', token);
         // TODO: 로그인 성공시 응답에 customerID를 포함시켜야 함.
-        this.props.navigation.navigate('AuthLoading');
+        const customerID = 1;
+        await AsyncStorage.setItem(
+          'ggugCustomerToken',
+          JSON.stringify({ token, customerID })
+        );
+        this.props.navigation.navigate('AuthLoading', { customerID });
       })
       .catch(error => {
         console.log('로그인 실패 : ', error.message);
