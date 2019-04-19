@@ -82,7 +82,7 @@ export default class CollectionScreen extends Component {
   };
 
   emitRegister = id => {
-    this.socket.emit('register', { id: id });
+    this.socket.emit('register', { id, type: 'customer' });
   };
 
   emitRequestStamp = storeID => {
