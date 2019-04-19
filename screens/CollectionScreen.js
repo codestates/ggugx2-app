@@ -34,7 +34,7 @@ import io from 'socket.io-client';
 // currentStoreID와 customerID로 요청보내서 스탬프와 교환권 수를 응답해주는 API 필요
 // const stampsObject = {
 //   stamps: 3,
-//   redeems: 1
+//   rewards: 1
 // };
 
 export default class CollectionScreen extends Component {
@@ -52,9 +52,9 @@ export default class CollectionScreen extends Component {
     };
     this.isComplete = false;
     this.getCustomerID();
-    this.getStampsRedeemsCounts();
+    this.getStampsRewardsCounts();
     this.getNearbyStoresList();
-    this.socket = io('http://localhost:3333');
+    this.socket = io('http://localhost:3000');
     this.socket.on('stamp add complete', msg => {
       if (msg && msg.confirm) {
         console.log('stamp add complete :: ', msg);
@@ -104,26 +104,23 @@ export default class CollectionScreen extends Component {
     this.emitRegister(`CSTM:${customerID}:`);
   };
 
-  getStampsRedeemsCounts = () => {
-    // const response = await axiosGet('/get-stamps-redeems-counts');
-    // this.setState({ stampsObject: response.data });
-
-    axios.defaults.baseURL = 'http://localhost:3000';
+  getStampsRewardsCounts = () => {
+    axios.defaults.baseURL = 'http://localhost:3030';
     axios
-      .get('/get-stamps-redeems-counts')
+      .get('/customers-get-stamps-rewards-counts')
       .then(response => {
-        console.log('getStampsRedeemsCount 성공');
+        console.log('getStampsRewardsCounts 성공');
         this.setState({ stampsObject: response.data });
       })
       .catch(error => {
-        console.log('getStampsRedeemsCount 실패', error);
+        console.log('getStampsRewardsCounts 실패', error);
       });
     axios.defaults.baseURL =
       'http://ec2-13-115-51-251.ap-northeast-1.compute.amazonaws.com:3000';
   };
 
   getNearbyStoresList = () => {
-    axios.defaults.baseURL = 'http://localhost:3000';
+    axios.defaults.baseURL = 'http://localhost:3030';
     axios
       .get('/nearby-stores-list')
       .then(response => {
@@ -216,7 +213,7 @@ export default class CollectionScreen extends Component {
               }}
             >
               <Text h4>쿠폰🐾: {stampsObject.stamps}개</Text>
-              <Text h4>교환권💵: {stampsObject.redeems}개</Text>
+              <Text h4>교환권💵: {stampsObject.rewards}개</Text>
             </View>
           </View>
           {/* 근처 매장 리스트 */}

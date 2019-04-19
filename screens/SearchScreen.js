@@ -121,7 +121,7 @@ export default class SearchScreen extends Component {
   };
 
   getSearchResult = () => {
-    axios.defaults.baseURL = 'http://localhost:3000';
+    axios.defaults.baseURL = 'http://localhost:3030';
     const uri = '/search-result';
     axios
       .get(uri)

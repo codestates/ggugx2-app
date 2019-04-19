@@ -67,7 +67,7 @@ export default class StampsScreen extends Component {
   };
 
   getStoreInfo = () => {
-    axios.defaults.baseURL = 'http://localhost:3000';
+    axios.defaults.baseURL = 'http://localhost:3030';
     const uri = '/get-store-info';
     axios
       .get(uri)
@@ -83,7 +83,7 @@ export default class StampsScreen extends Component {
   };
 
   getMenuList = () => {
-    axios.defaults.baseURL = 'http://localhost:3000';
+    axios.defaults.baseURL = 'http://localhost:3030';
     const uri = '/get-menu-list';
     axios
       .get(uri)

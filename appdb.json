@@ -1,5 +1,5 @@
 {
-  "get-stamps-redeems-counts": { "stamps": 3, "redeems": 1 },
+  "customers-get-stamps-rewards-counts": { "stamps": 3, "rewards": 1 },
   "search-result": [
     {
       "storeID": 0,
