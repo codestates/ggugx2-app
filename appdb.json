@@ -127,7 +127,7 @@
   "get-store-info": {
     "address": "서울시 성동구 뚝섬역 근처",
     "shopHours": "매일 09:00 ~ 20:00",
-    "dayOff": "일",
+    "dayOff": "토일",
     "contact": "02-123-2342"
   }
 }

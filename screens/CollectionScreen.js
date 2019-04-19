@@ -1,8 +1,22 @@
 import React, { Component } from 'react';
-import { View, Modal, ScrollView, AsyncStorage } from 'react-native';
-import { Button, Text, ThemeProvider, Header } from 'react-native-elements';
+import {
+  View,
+  Modal,
+  ScrollView,
+  AsyncStorage,
+  ActivityIndicator
+} from 'react-native';
+import {
+  Button,
+  Text,
+  ThemeProvider,
+  Header,
+  Overlay
+} from 'react-native-elements';
 import StoresEntry from '../components/Molecules/TextTextEntry';
 import axios from '../modules/axios-connector';
+// import socket from '../modules/socket-connector';
+import io from 'socket.io-client';
 
 // GPS 현위치를 서버에 보내 (가까운 순서로) storeID, storeName, distance를 응답해주는 API 필요
 // -> 받아온 배열의 0번 인덱스가 가장 가까운 매장이므로, nearbyStoresList[0].storeID를 자동선택된 매장 ID로 주면됨.
@@ -31,13 +45,22 @@ export default class CollectionScreen extends Component {
     super(props);
     this.state = {
       customerID: null,
+      storeID: 0,
       modalVisible: false,
       stampsObject: {},
       nearbyStoresList: []
     };
+    this.isComplete = false;
     this.getCustomerID();
     this.getStampsRedeemsCounts();
     this.getNearbyStoresList();
+    this.socket = io('http://localhost:3333');
+    this.socket.on('stamp add complete', msg => {
+      if (msg && msg.confirm) {
+        console.log('stamp add complete :: ', msg);
+        this.setState({ modalVisible: true, isComplete: true });
+      }
+    });
   }
 
   theme = {
@@ -58,6 +81,14 @@ export default class CollectionScreen extends Component {
     message: '사장님이 쿠폰을 확인중입니다...'
   };
 
+  emitRegister = id => {
+    this.socket.emit('register', { id: id });
+  };
+
+  emitRequestStamp = storeID => {
+    this.socket.emit('stamp add from user', { store: storeID });
+  };
+
   getCustomerID = async () => {
     // customerID를 읽어온다 (switchNavigator는 params로 전달 불가)
     const { customerID } = JSON.parse(
@@ -69,6 +100,8 @@ export default class CollectionScreen extends Component {
       customerID
     );
     this.setState({ customerID });
+
+    this.emitRegister(`CSTM:${customerID}:`);
   };
 
   getStampsRedeemsCounts = () => {
@@ -104,21 +137,15 @@ export default class CollectionScreen extends Component {
       'http://ec2-13-115-51-251.ap-northeast-1.compute.amazonaws.com:3000';
   };
 
-  setModalVisible(visible) {
-    this.setState({ modalVisible: visible });
-  }
-  waitForComplete = () => {
-    this.setState({ message: '사장님이 쿠폰을 확인중입니다...' });
-    setTimeout(() => {
-      this.setState({ message: '쿠폰 꾹꾹이가 완료되었습니다!' });
-    }, 2000);
-    setTimeout(() => {
-      this.setModalVisible(!this.state.modalVisible);
-    }, 4000);
-  };
   render() {
-    const { theme } = this;
-    const { stampsObject, nearbyStoresList } = this.state;
+    const { theme, emitRequestStamp } = this;
+    const {
+      stampsObject,
+      nearbyStoresList,
+      customerID,
+      storeID,
+      isComplete
+    } = this.state;
     console.log(
       'CollectionScreen] render() customerID : ',
       this.state.customerID
@@ -132,38 +159,32 @@ export default class CollectionScreen extends Component {
         />
         {/* modal 창 */}
         {/* TODO: Modal 대신 elements의 Overlay 사용 고려해볼것 / 혹은 display:'none' 이용하는 컴포넌트 만들기 / 혹은 Portal로 만들기 */}
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={this.state.modalVisible}
-          onRequestClose={() => {}}
-          style={{ backgroundColor: '#000000aa' }}
+        <Overlay
+          isVisible={this.state.modalVisible}
+          width={'80%'}
+          height={200}
+          onBackdropPress={() => {
+            isComplete &&
+              this.setState({ modalVisible: false, isComplete: false });
+          }}
         >
-          <View
-            style={{
-              flex: 1,
-              justifyContent: 'center'
-            }}
-          >
-            <View
-              style={{
-                backgroundColor: 'lightgray',
-                width: 300,
-                height: 100,
-                alignSelf: 'center'
-              }}
-            >
-              <Text style={{ height: '60%' }}>{this.state.message}</Text>
-
+          {!isComplete ? (
+            <View>
+              <ActivityIndicator />
+              <Text>사장님의 확인을 기다리는 중입니다.</Text>
+            </View>
+          ) : (
+            <View>
+              <Text>적립이 완료됐습니다</Text>
               <Button
-                title={'확인'}
+                title={'닫기'}
                 onPress={() => {
-                  this.setModalVisible(!this.state.modalVisible);
+                  this.setState({ modalVisible: false, isComplete: false });
                 }}
               />
             </View>
-          </View>
-        </Modal>
+          )}
+        </Overlay>
         {/* 최상위 View */}
         <View
           style={{
@@ -220,6 +241,9 @@ export default class CollectionScreen extends Component {
                   key={i}
                   styleLeft={{ fontSize: 23 }}
                   styleRight={{ fontSize: 20 }}
+                  onPress={() => {
+                    this.setState({ storeID: item.storeId });
+                  }}
                 />
               ))}
             </ScrollView>
@@ -239,14 +263,8 @@ export default class CollectionScreen extends Component {
                 // this.setModalVisible(true);
                 // this.waitForComplete();
                 //
-                // FIXME: API에 토큰 검사하도록 요청날리기 테스트임
-                axios
-                  .get('/tests')
-                  .then(response => {
-                    console.log(response.data);
-                    this.setModalVisible(true);
-                  })
-                  .catch(error => console.log(error));
+                emitRequestStamp(storeID);
+                this.setState({ modalVisible: true });
               }}
             />
           </View>
