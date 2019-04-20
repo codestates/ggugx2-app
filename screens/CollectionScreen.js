@@ -54,7 +54,9 @@ export default class CollectionScreen extends Component {
     this.getCustomerID();
     this.getStampsRewardsCounts();
     this.getNearbyStoresList();
-    this.socket = io('http://localhost:3000');
+    this.socket = io(
+      'http://ec2-13-115-51-251.ap-northeast-1.compute.amazonaws.com:3000'
+    );
     this.socket.on('stamp add complete', msg => {
       if (msg && msg.confirm) {
         console.log('stamp add complete :: ', msg);
@@ -101,7 +103,7 @@ export default class CollectionScreen extends Component {
     );
     this.setState({ customerID });
 
-    this.emitRegister(`CSTM:${customerID}:`);
+    this.emitRegister(`${customerID}`);
   };
 
   getStampsRewardsCounts = () => {
@@ -109,7 +111,7 @@ export default class CollectionScreen extends Component {
     axios
       .get('/customers-get-stamps-rewards-counts')
       .then(response => {
-        console.log('getStampsRewardsCounts 성공');
+        console.log('getStampsRewardsCounts 성공', response.data);
         this.setState({ stampsObject: response.data });
       })
       .catch(error => {

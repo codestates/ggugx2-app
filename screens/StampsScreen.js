@@ -1,5 +1,11 @@
 import React, { Component } from 'react';
-import { View, ScrollView, ActivityIndicator, Dimensions } from 'react-native';
+import {
+  View,
+  ScrollView,
+  ActivityIndicator,
+  Dimensions,
+  AsyncStorage
+} from 'react-native';
 import { Text, Button, Image } from 'react-native-elements';
 import StampsPaper from '../components/Molecules/StampsPaper';
 import RedeemStamps from '../components/Molecules/RedeemStamps';
@@ -55,12 +61,31 @@ export default class StampsScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      rewards: null,
       storeInfo: {},
       menuList: []
     };
     this.getStoreInfo();
     this.getMenuList();
+    this.getStampsRewards();
   }
+
+  getStampsRewards = () => {
+    const { customerID, storeID } = this.props.navigation.state.params;
+    axios.defaults.baseURL = 'http://localhost:3030';
+    const uri = '/customers-get-stamps-rewards-counts';
+    axios
+      .get(uri) // TODO: JSON서버 사용중일땐 그냥 GET으로 보내서 고정데이터를 받음. 실제 API 사용할땐 post로 바꿔야함
+      .then(response => {
+        console.log(`${uri} 성공`, response.data);
+        this.setState({ rewards: response.data.rewards });
+      })
+      .catch(error => {
+        console.log(`${uri} 실패`, error);
+      });
+    axios.defaults.baseURL =
+      'http://ec2-13-115-51-251.ap-northeast-1.compute.amazonaws.com:3000';
+  };
 
   onPressTossButton = storeName => {
     this.props.navigation.navigate('Toss', storeName);
@@ -114,7 +139,7 @@ export default class StampsScreen extends Component {
       height: Dimensions.get('window').width * 0.65 // 16:9 size = 0.65
     };
     const { onPressTossButton } = this;
-    const { storeInfo, menuList } = this.state;
+    const { storeInfo, menuList, rewards } = this.state;
     // TODO: 1) navigation에서 전달받은 storeID를 가지고, 서버에서 Stores 테이블의 내용을 다 긁어와야 함
     //// 긁어온 내용을 StoreInfo 오브젝트로 만들어 StoreInfo 컴포넌트에 props로 넘겨줘야 함
     // TODO: 2) 한편, CustomerID, StoreID로 Stamps 테이블에 쿼리해서 사용가능한 쿠폰 개수를 받아와야 함
@@ -125,8 +150,12 @@ export default class StampsScreen extends Component {
         {/* TODO: StampPaper 컴포넌트의 props 형식 정리할것. Stamps 컴포넌트 제대로 구현할것 */}
         <StampsPaper stampsObject={{ REQUIRED, count: stamps }} />
 
-        <RedeemStamps />
-        <Text>손님ID:{customerID}</Text>
+        <RedeemStamps
+          rewards={rewards}
+          customerID={customerID}
+          storeID={storeID}
+        />
+        <Text>FIXME:손님ID:{customerID}</Text>
         <Button
           title={'Toss하기'}
           onPress={() => {
