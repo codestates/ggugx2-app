@@ -95,6 +95,11 @@ export default class TossScreen extends Component {
   onPressFind = async () => {
     this.setState({ remainStamps: null });
     const { phone } = this.state;
+    if (phone === null || phone.length < 11) {
+      // FIXME: 번호형식이 맞는지 validation 필요
+      alert('번호를 입력해주세요');
+      return;
+    }
     const uri = '/customers/exist';
     console.log('입력받은 전화번호 : ', phone);
     try {
