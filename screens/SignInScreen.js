@@ -75,10 +75,8 @@ export default class SignInScreen extends React.Component {
         password
       })
       .then(async response => {
-        const userToken = response.data.token;
+        const { token: userToken, customerID } = response.data;
         console.log('로그인 성공 - token : ', userToken);
-        // TODO: 로그인 성공시 응답에 customerID를 포함시켜야 함.
-        const customerID = 1;
         await AsyncStorage.setItem(
           'ggugCustomerToken',
           JSON.stringify({ userToken, customerID })
