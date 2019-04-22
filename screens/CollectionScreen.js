@@ -4,7 +4,8 @@ import {
   Modal,
   ScrollView,
   AsyncStorage,
-  ActivityIndicator
+  ActivityIndicator,
+  TouchableOpacity
 } from 'react-native';
 import {
   Button,
@@ -156,11 +157,13 @@ export default class CollectionScreen extends Component {
       <ThemeProvider theme={theme}>
         <Header
           placement={'center'}
-          centerComponent={{ text: '컴포즈 성수', style: { fontSize: 30 } }}
+          centerComponent={{
+            text: '컴포즈 성수' + storeID,
+            style: { fontSize: 30 }
+          }}
           backgroundColor={'white'}
         />
-        {/* modal 창 */}
-        {/* TODO: Modal 대신 elements의 Overlay 사용 고려해볼것 / 혹은 display:'none' 이용하는 컴포넌트 만들기 / 혹은 Portal로 만들기 */}
+
         <Overlay
           isVisible={this.state.modalVisible}
           width={'80%'}
@@ -234,19 +237,22 @@ export default class CollectionScreen extends Component {
             <Text>지금 계신 매장이 아닌가요?</Text>
             <ScrollView style={{ borderWidth: 1 }}>
               {nearbyStoresList.map((item, i) => (
-                <StoresEntry
-                  list={{
-                    LEFT: item.storeName,
-                    RIGHT: item.distance
-                  }}
-                  suffix={'m'}
-                  key={i}
-                  styleLeft={{ fontSize: 23 }}
-                  styleRight={{ fontSize: 20 }}
+                <TouchableOpacity
                   onPress={() => {
-                    this.setState({ storeID: item.storeId });
+                    this.setState({ storeID: item.storeID });
                   }}
-                />
+                  key={i}
+                >
+                  <StoresEntry
+                    list={{
+                      LEFT: item.storeName,
+                      RIGHT: item.distance
+                    }}
+                    suffix={'m'}
+                    styleLeft={{ fontSize: 23 }}
+                    styleRight={{ fontSize: 20 }}
+                  />
+                </TouchableOpacity>
               ))}
             </ScrollView>
           </View>

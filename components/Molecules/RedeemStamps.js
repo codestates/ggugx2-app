@@ -11,6 +11,7 @@ export default class RedeemStamps extends Component {
     this.state = {
       modalVisible: false,
       modalVisibleUse: false,
+      modalVisibleError: false,
       isComplete: false,
       stage: 0,
       status: '완료!'
@@ -41,15 +42,22 @@ export default class RedeemStamps extends Component {
       }
     });
     socket.on('errors', msg => {
-      console.log(`[socket.io error] ${msg.message}`);
+      console.log(`RedeemStamps] [socket.io error] ${msg.message}`);
+      this.setState({
+        modalVisible: false,
+        modalVisibleUse: false,
+        modalVisibleError: true,
+        status: msg.message
+      });
     });
   }
 
   render() {
-    const { customerID, storeID, onUpdateCounts, rewards } = this.props;
+    const { customerID, storeID, onUpdateCounts, stamps, rewards } = this.props;
     const {
       modalVisible,
       modalVisibleUse,
+      modalVisibleError,
       isComplete,
       stage,
       status
@@ -67,6 +75,22 @@ export default class RedeemStamps extends Component {
           borderWidth: 1
         }}
       >
+        <Overlay
+          isVisible={modalVisibleError}
+          width={'80%'}
+          height={200}
+          onBackdropPress={() => {
+            this.setState({
+              modalVisible: false,
+              modalVisibleError: false,
+              modalVisibleUse: false,
+              isComplete: false
+            });
+          }}
+        >
+          <Text>에러 발생! {status}</Text>
+        </Overlay>
+
         <Overlay
           isVisible={modalVisible}
           width={'80%'}
@@ -100,7 +124,7 @@ export default class RedeemStamps extends Component {
                     console.log('message: ', error.response.data.message);
                     this.setState({
                       isComplete: true,
-                      status: '실패!'
+                      status: '실패!' + error.response.data.message
                     });
                   }
                 }}
@@ -194,6 +218,10 @@ export default class RedeemStamps extends Component {
           }
           onPress={() => {
             console.log(`손님:${customerID}, 가게:${storeID}`);
+            if (stamps === 0) {
+              alert('스탬프가 없슴');
+              return;
+            }
             this.setState({ modalVisible: true });
           }}
         />
@@ -201,6 +229,10 @@ export default class RedeemStamps extends Component {
           rewards={rewards}
           storeID={storeID}
           onPress={() => {
+            if (rewards === 0) {
+              alert('교환권이 없슴');
+              return;
+            }
             this.setState({ modalVisibleUse: true });
           }}
         />
