@@ -46,7 +46,7 @@ const theme = {
     placeholderTextColor: '#666'
   }
 };
-// TODO: 패스워드 확인 기능, 입력 validation, ..
+// TODO: 입력 validation, ..
 export default class SignUpScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -66,8 +66,12 @@ export default class SignUpScreen extends React.Component {
     });
   };
   onPressSignup = () => {
-    const { phone, username, password } = this.state;
+    const { phone, username, password, passwordConfirm } = this.state;
     const { navigate } = this.props.navigation;
+    if (password !== passwordConfirm) {
+      alert('패스워드가 일치하지 않음');
+      return;
+    }
     axios
       .post('/customers/signup', {
         phone,

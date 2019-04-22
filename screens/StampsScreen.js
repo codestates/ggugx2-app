@@ -91,7 +91,8 @@ export default class StampsScreen extends Component {
   };
 
   onPressTossButton = storeName => {
-    this.props.navigation.navigate('Toss', storeName);
+    const { storeID, customerID } = this.props.navigation.state.params;
+    this.props.navigation.navigate('Toss', { storeName, storeID, customerID });
   };
 
   getStoreInfo = () => {
@@ -161,6 +162,7 @@ export default class StampsScreen extends Component {
         <StampsPaper stampsObject={{ stamps, REQUIRED }} />
 
         <RedeemStamps
+          stamps={stamps}
           rewards={rewards}
           customerID={customerID}
           storeID={storeID}
@@ -171,6 +173,10 @@ export default class StampsScreen extends Component {
         <Button
           title={'Toss하기'}
           onPress={() => {
+            if (stamps === 0) {
+              alert('스탬프가 없습니다');
+              return;
+            }
             onPressTossButton(storeName);
           }}
         />

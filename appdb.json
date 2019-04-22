@@ -45,8 +45,8 @@
       "storeID": 5,
       "storeName": "스벅 성수",
       "distance": "234m",
-      "stamps": 10,
-      "rewards": 9,
+      "stamps": 0,
+      "rewards": 0,
       "isOpen": true,
       "haveRewards": true,
       "img": "https://www.royalparks.org.uk/_media/images/the-regents-park-and-primrose-hill/the-broad-walk-cafe/The-Broad-Walk-Cafe-Interior.jpg/w_1200.jpg"
@@ -104,12 +104,12 @@
       "distance": "431"
     },
     {
-      "storeID": 3,
+      "storeID": 2,
       "storeName": "컴포즈커피 성수",
       "distance": "1013"
     },
     {
-      "storeID": 5,
+      "storeID": 3,
       "storeName": "컴포즈커피 성수",
       "distance": "1013"
     },
