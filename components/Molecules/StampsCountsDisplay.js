@@ -26,7 +26,7 @@ const s = StyleSheet.create({
 // 모은 스탬프 수 / 교환에 필요한 개수 텍스트로 표현해주는 컴포넌트
 export default class StampsCountsDisplay extends Component {
   render() {
-    const { stamps, REQUIRED } = this.props.stampsCounts;
+    const { stamps, REQUIRED } = this.props.stampsObject;
     return (
       <View style={s.container}>
         <Text style={s.stampsText}>{stamps}</Text>

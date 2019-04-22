@@ -70,7 +70,7 @@ export default class SignInScreen extends React.Component {
     const { phone, password } = this.state;
     // TODO: 패스워드를 평문 전송하고있음. 암호화해서 서버에 요청 날리면 좋겠다.
     axios
-      .post('/users/signin', {
+      .post('/customers/signin', {
         phone,
         password
       })

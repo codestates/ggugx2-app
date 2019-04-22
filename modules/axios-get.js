@@ -1,7 +1,7 @@
 import axios from './axios-connector';
 
 export default (axiosGet = uri => {
-  axios.defaults.baseURL = 'http://localhost:3000';
+  // axios.defaults.baseURL = 'http://localhost:3000';
   return axios
     .get(uri)
     .then(response => {

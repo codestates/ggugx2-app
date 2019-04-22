@@ -5,19 +5,21 @@ import StampEntry from '../Atoms/StampEntry';
 
 export default class StampsPaper extends Component {
   render() {
-    const { REQUIRED, count } = this.props.stampsObject;
+    const { REQUIRED, stamps } = this.props.stampsObject;
     const coupons = [];
-    for (let i = 0; i < count; i++) {
+
+    for (let i = 0; i < stamps; i++) {
       coupons.push(true);
     }
-    for (let i = 0; i < REQUIRED - count; i++) {
+    for (let i = 0; i < REQUIRED - stamps; i++) {
       coupons.push(false);
     }
+
     return (
-      <View
+      <ScrollView
         style={{
           // width: '90%',
-          // height: 200,
+          height: 134,
           backgroundColor: '#eee',
           alignSelf: 'center'
         }}
@@ -29,7 +31,7 @@ export default class StampsPaper extends Component {
             <StampEntry isChecked={stamp} key={i} />
           ))}
         </View>
-      </View>
+      </ScrollView>
     );
   }
 }

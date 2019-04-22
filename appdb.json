@@ -1,11 +1,12 @@
 {
-  "get-stamps-redeems-counts": { "stamps": 3, "redeems": 1 },
+  "customers-get-stamps-rewards-counts": { "stamps": 3, "rewards": 1 },
   "search-result": [
     {
       "storeID": 0,
       "storeName": "스벅 성수",
       "distance": "234m",
       "stamps": 10,
+      "rewards": 9,
       "isOpen": true,
       "haveRewards": true,
       "img": "https://t1.daumcdn.net/cfile/tistory/261CBC3F5745C5460A"
@@ -15,6 +16,7 @@
       "storeName": "이디야 성수",
       "distance": "646m",
       "stamps": 8,
+      "rewards": 9,
       "isOpen": true,
       "haveRewards": true,
       "img": "http://mblogthumb1.phinf.naver.net/MjAxNzA3MzFfMTUw/MDAxNTAxNDg5Mjc3NzQw.c7pee6vabt7H6LfVvUPU-P9DXRjl8dC474VtfwOuQYQg.zgwO1cUUgA-cSUGpiQJlvbYBjjBLr946rAZgLygP4Dgg.JPEG.mirijae/%EC%82%AC%EC%B2%9C_%EC%9D%B4%EB%94%94%EC%95%BC__%281%29.jpg?type=w800"
@@ -24,6 +26,7 @@
       "storeName": "컴포즈커피 성수점",
       "distance": "700m",
       "stamps": 3,
+      "rewards": 9,
       "isOpen": false,
       "haveRewards": false,
       "img": "http://composecoffee.com/bizdemo58464/component/board/board_6/u_image/1/2051342575_thumb-01.jpg"
@@ -33,6 +36,7 @@
       "storeName": "할리스커피 건대입구점",
       "distance": "1.3km",
       "stamps": 5,
+      "rewards": 9,
       "isOpen": true,
       "haveRewards": false,
       "img": "http://danmee.chosun.com/site/data/img_dir/2013/07/17/2013071700688_0.jpg"
@@ -42,6 +46,7 @@
       "storeName": "스벅 성수",
       "distance": "234m",
       "stamps": 10,
+      "rewards": 9,
       "isOpen": true,
       "haveRewards": true,
       "img": "https://www.royalparks.org.uk/_media/images/the-regents-park-and-primrose-hill/the-broad-walk-cafe/The-Broad-Walk-Cafe-Interior.jpg/w_1200.jpg"
@@ -51,6 +56,7 @@
       "storeName": "스벅 성수",
       "distance": "234m",
       "stamps": 10,
+      "rewards": 9,
       "isOpen": true,
       "haveRewards": true,
       "img": "https://www.royalparks.org.uk/_media/images/the-regents-park-and-primrose-hill/the-broad-walk-cafe/The-Broad-Walk-Cafe-Interior.jpg/w_1200.jpg"
@@ -60,6 +66,7 @@
       "storeName": "스벅 성수",
       "distance": "234m",
       "stamps": 10,
+      "rewards": 9,
       "isOpen": true,
       "haveRewards": true,
       "img": "https://www.royalparks.org.uk/_media/images/the-regents-park-and-primrose-hill/the-broad-walk-cafe/The-Broad-Walk-Cafe-Interior.jpg/w_1200.jpg"
@@ -69,6 +76,7 @@
       "storeName": "스벅 성수",
       "distance": "234m",
       "stamps": 10,
+      "rewards": 9,
       "isOpen": true,
       "haveRewards": true,
       "img": "https://www.royalparks.org.uk/_media/images/the-regents-park-and-primrose-hill/the-broad-walk-cafe/The-Broad-Walk-Cafe-Interior.jpg/w_1200.jpg"
@@ -78,6 +86,7 @@
       "storeName": "스벅 성수",
       "distance": "234m",
       "stamps": 10,
+      "rewards": 9,
       "isOpen": true,
       "haveRewards": true,
       "img": "https://www.royalparks.org.uk/_media/images/the-regents-park-and-primrose-hill/the-broad-walk-cafe/The-Broad-Walk-Cafe-Interior.jpg/w_1200.jpg"

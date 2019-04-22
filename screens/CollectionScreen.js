@@ -15,8 +15,8 @@ import {
 } from 'react-native-elements';
 import StoresEntry from '../components/Molecules/TextTextEntry';
 import axios from '../modules/axios-connector';
-// import socket from '../modules/socket-connector';
-import io from 'socket.io-client';
+import socket from '../modules/socket-connector';
+// import io from 'socket.io-client';
 
 // GPS 현위치를 서버에 보내 (가까운 순서로) storeID, storeName, distance를 응답해주는 API 필요
 // -> 받아온 배열의 0번 인덱스가 가장 가까운 매장이므로, nearbyStoresList[0].storeID를 자동선택된 매장 ID로 주면됨.
@@ -34,7 +34,7 @@ import io from 'socket.io-client';
 // currentStoreID와 customerID로 요청보내서 스탬프와 교환권 수를 응답해주는 API 필요
 // const stampsObject = {
 //   stamps: 3,
-//   redeems: 1
+//   rewards: 1
 // };
 
 export default class CollectionScreen extends Component {
@@ -45,21 +45,26 @@ export default class CollectionScreen extends Component {
     super(props);
     this.state = {
       customerID: null,
-      storeID: 0,
+      storeID: 1,
       modalVisible: false,
       stampsObject: {},
       nearbyStoresList: []
     };
     this.isComplete = false;
     this.getCustomerID();
-    this.getStampsRedeemsCounts();
+    this.getStampsRewardsCounts();
     this.getNearbyStoresList();
-    this.socket = io('http://localhost:3333');
-    this.socket.on('stamp add complete', msg => {
+    // this.socket = io(
+    //   'http://ec2-13-115-51-251.ap-northeast-1.compute.amazonaws.com:3000'
+    // );
+    socket.on('stamp add complete', msg => {
       if (msg && msg.confirm) {
         console.log('stamp add complete :: ', msg);
         this.setState({ modalVisible: true, isComplete: true });
       }
+    });
+    socket.on('errors', msg => {
+      console.log(`[socket.io error] ${msg.message}`);
     });
   }
 
@@ -82,11 +87,11 @@ export default class CollectionScreen extends Component {
   };
 
   emitRegister = id => {
-    this.socket.emit('register', { id: id });
+    socket.emit('register', { id, type: 'customer' });
   };
 
   emitRequestStamp = storeID => {
-    this.socket.emit('stamp add from user', { store: storeID });
+    socket.emit('stamp add from user', { store: storeID });
   };
 
   getCustomerID = async () => {
@@ -101,29 +106,26 @@ export default class CollectionScreen extends Component {
     );
     this.setState({ customerID });
 
-    this.emitRegister(`CSTM:${customerID}:`);
+    this.emitRegister(`${customerID}`);
   };
 
-  getStampsRedeemsCounts = () => {
-    // const response = await axiosGet('/get-stamps-redeems-counts');
-    // this.setState({ stampsObject: response.data });
-
-    axios.defaults.baseURL = 'http://localhost:3000';
+  getStampsRewardsCounts = () => {
+    axios.defaults.baseURL = 'http://localhost:3030';
     axios
-      .get('/get-stamps-redeems-counts')
+      .get('/customers-get-stamps-rewards-counts')
       .then(response => {
-        console.log('getStampsRedeemsCount 성공');
+        console.log('getStampsRewardsCounts 성공', response.data);
         this.setState({ stampsObject: response.data });
       })
       .catch(error => {
-        console.log('getStampsRedeemsCount 실패', error);
+        console.log('getStampsRewardsCounts 실패', error);
       });
     axios.defaults.baseURL =
       'http://ec2-13-115-51-251.ap-northeast-1.compute.amazonaws.com:3000';
   };
 
   getNearbyStoresList = () => {
-    axios.defaults.baseURL = 'http://localhost:3000';
+    axios.defaults.baseURL = 'http://localhost:3030';
     axios
       .get('/nearby-stores-list')
       .then(response => {
@@ -216,7 +218,7 @@ export default class CollectionScreen extends Component {
               }}
             >
               <Text h4>쿠폰🐾: {stampsObject.stamps}개</Text>
-              <Text h4>교환권💵: {stampsObject.redeems}개</Text>
+              <Text h4>교환권💵: {stampsObject.rewards}개</Text>
             </View>
           </View>
           {/* 근처 매장 리스트 */}
