@@ -5,6 +5,7 @@ import RewardsBadge from '../Atoms/RewardsBadge';
 import axios from '../../modules/axios-connector';
 import socket from '../../modules/socket-connector';
 
+// TODO: modal 열고닫히는것 간결하게 컨트롤하도록 state 정리하고 setState도 정리하기
 export default class RedeemStamps extends Component {
   constructor(props) {
     super(props);

@@ -91,7 +91,8 @@ export default class StampsScreen extends Component {
   };
 
   onPressTossButton = storeName => {
-    this.props.navigation.navigate('Toss', storeName);
+    const { storeID, customerID } = this.props.navigation.state.params;
+    this.props.navigation.navigate('Toss', { storeName, storeID, customerID });
   };
 
   getStoreInfo = () => {
