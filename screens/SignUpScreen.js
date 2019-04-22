@@ -69,7 +69,7 @@ export default class SignUpScreen extends React.Component {
     const { phone, username, password } = this.state;
     const { navigate } = this.props.navigation;
     axios
-      .post('/users/signup', {
+      .post('/customers/signup', {
         phone,
         username,
         password

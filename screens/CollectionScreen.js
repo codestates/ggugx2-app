@@ -15,8 +15,8 @@ import {
 } from 'react-native-elements';
 import StoresEntry from '../components/Molecules/TextTextEntry';
 import axios from '../modules/axios-connector';
-// import socket from '../modules/socket-connector';
-import io from 'socket.io-client';
+import socket from '../modules/socket-connector';
+// import io from 'socket.io-client';
 
 // GPS 현위치를 서버에 보내 (가까운 순서로) storeID, storeName, distance를 응답해주는 API 필요
 // -> 받아온 배열의 0번 인덱스가 가장 가까운 매장이므로, nearbyStoresList[0].storeID를 자동선택된 매장 ID로 주면됨.
@@ -45,7 +45,7 @@ export default class CollectionScreen extends Component {
     super(props);
     this.state = {
       customerID: null,
-      storeID: 0,
+      storeID: 1,
       modalVisible: false,
       stampsObject: {},
       nearbyStoresList: []
@@ -54,14 +54,17 @@ export default class CollectionScreen extends Component {
     this.getCustomerID();
     this.getStampsRewardsCounts();
     this.getNearbyStoresList();
-    this.socket = io(
-      'http://ec2-13-115-51-251.ap-northeast-1.compute.amazonaws.com:3000'
-    );
-    this.socket.on('stamp add complete', msg => {
+    // this.socket = io(
+    //   'http://ec2-13-115-51-251.ap-northeast-1.compute.amazonaws.com:3000'
+    // );
+    socket.on('stamp add complete', msg => {
       if (msg && msg.confirm) {
         console.log('stamp add complete :: ', msg);
         this.setState({ modalVisible: true, isComplete: true });
       }
+    });
+    socket.on('errors', msg => {
+      console.log(`[socket.io error] ${msg.message}`);
     });
   }
 
@@ -84,11 +87,11 @@ export default class CollectionScreen extends Component {
   };
 
   emitRegister = id => {
-    this.socket.emit('register', { id, type: 'customer' });
+    socket.emit('register', { id, type: 'customer' });
   };
 
   emitRequestStamp = storeID => {
-    this.socket.emit('stamp add from user', { store: storeID });
+    socket.emit('stamp add from user', { store: storeID });
   };
 
   getCustomerID = async () => {

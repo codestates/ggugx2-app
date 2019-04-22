@@ -1,5 +1,8 @@
-// import io from 'socket.io-client';
+import io from 'socket.io-client';
 
-// var socket = io('http://localhost:3333');
+var socket = io(
+  'http://ec2-13-115-51-251.ap-northeast-1.compute.amazonaws.com:3000'
+  // 'http://localhost:3000'
+);
 
-// export default socket;
+export default socket;

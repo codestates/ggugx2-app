@@ -128,6 +128,7 @@ export default class SearchScreen extends Component {
       .then(response => {
         console.log(`${uri} 성공`);
         this.setState({ searchResult: response.data });
+        console.log('검색결과 : ', response.data);
       })
       .catch(error => {
         console.log(`${uri} 실패`, error);
