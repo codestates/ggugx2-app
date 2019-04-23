@@ -8,8 +8,10 @@ import {
   TouchableHighlight,
   TouchableOpacity,
   ScrollView,
-  StyleSheet
+  StyleSheet,
+  Platform
 } from 'react-native';
+import { Constants, Location, Permissions } from 'expo';
 import {
   Button,
   ListItem,
@@ -97,13 +99,45 @@ export default class SearchScreen extends Component {
     super(props);
     this.state = {
       searchInputValue: '',
-      searchResult: []
+      searchResult: [],
+      errorMessage: null,
+      location: null
     };
     this.getCustomerID();
     this.getSearchResult();
   }
   static navigationOptions = {
     header: null
+  };
+
+  componentWillMount() {
+    if (Platform.OS === 'android' && !Constants.isDevice) {
+      this.setState({
+        errorMessage:
+          'Oops, this will not work on Sketch in an Android emulator. Try it on your device!'
+      });
+    } else {
+      this._getLocationAsync();
+    }
+  }
+
+  _getLocationAsync = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== 'granted') {
+      this.setState({
+        errorMessage: '위치 조회 권한을 설정해주세요'
+      });
+    }
+
+    let location = await Location.getCurrentPositionAsync({});
+    this.setState({ location });
+    console.log('로케이션!!!!', location);
+    console.log(
+      'latitude : ',
+      location.coords.latitude,
+      'longitude : ',
+      location.coords.longitude
+    );
   };
 
   updateSearch = text => {

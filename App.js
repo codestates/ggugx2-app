@@ -1,6 +1,14 @@
 import React from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
-import { AppLoading, Asset, Font, Icon } from 'expo';
+import {
+  AppLoading,
+  Asset,
+  Font,
+  Icon,
+  Constants,
+  Location,
+  Permissions
+} from 'expo';
 import AppNavigator from './navigation/AppNavigator';
 
 // socket.io 헤더 미지정에 의한 warning을 무시하는 설정
@@ -18,7 +26,28 @@ const styles = StyleSheet.create({
 
 export default class App extends React.Component {
   state = {
-    isLoadingComplete: false
+    isLoadingComplete: false,
+    errorMessage: null
+  };
+
+  componentWillMount() {
+    if (Platform.OS === 'android' && !Constants.isDevice) {
+      this.setState({
+        errorMessage:
+          'Oops, this will not work on Sketch in an Android emulator. Try it on your device!'
+      });
+    } else {
+      this._getLocationPermissionAsync();
+    }
+  }
+
+  _getLocationPermissionAsync = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== 'granted') {
+      this.setState({
+        errorMessage: '위치 조회 권한을 설정해주세요'
+      });
+    }
   };
 
   render() {

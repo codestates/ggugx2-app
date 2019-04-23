@@ -23,6 +23,11 @@ const s = StyleSheet.create({
     fontSize: 18,
     paddingTop: 8,
     fontWeight: 'bold'
+  },
+  hoursRow: {
+    flexDirection: 'row',
+    borderWidth: 0,
+    alignItems: 'baseline'
   }
 });
 
@@ -47,13 +52,7 @@ export default class StoreInfo extends Component {
           <View style={{ flexDirection: 'row' }}>
             <Text style={s.title}>영업시간</Text>
             <View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  borderWidth: 0,
-                  alignItems: 'baseline'
-                }}
-              >
+              <View style={s.hoursRow}>
                 <Image
                   source={iconOpen}
                   style={{ width: 30, height: 30, margin: 4 }}
