@@ -48,7 +48,7 @@ const theme = {
   },
   Text: {
     style: {
-      borderWidth: 1,
+      borderWidth: 0,
       borderColor: 'blue'
     }
   },
@@ -104,7 +104,7 @@ export default class SearchScreen extends Component {
       location: null
     };
     this.getCustomerID();
-    this.getSearchResult();
+    this.searchStores();
   }
   static navigationOptions = {
     header: null
@@ -154,19 +154,67 @@ export default class SearchScreen extends Component {
     this.setState({ customerID });
   };
 
-  getSearchResult = () => {
+  searchStores = async query => {
     axios.defaults.baseURL = 'http://localhost:3030';
-    const uri = '/search-result';
-    axios
-      .get(uri)
-      .then(response => {
-        console.log(`${uri} 성공`);
-        this.setState({ searchResult: response.data });
-        console.log('검색결과 : ', response.data);
-      })
-      .catch(error => {
-        console.log(`${uri} 실패`, error);
+    const uri = '/stores-search';
+    try {
+      const response = await axios.get(uri);
+      console.log(`${uri} 성공`);
+      console.log('검색결과 : ', response.data);
+      let rawResult = response.data;
+      // const searchResult = [
+      //   {
+      //     storeID: 0,
+      //     storeName: '스벅 성수',
+      //     distance: '234m',
+      //     stamps: 10,
+      //     isOpen: true,
+      //     haveRewards: true,
+      //     img:
+      //       'https://www.royalparks.org.uk/_media/images/the-regents-park-and-primrose-hill/the-broad-walk-cafe/The-Broad-Walk-Cafe-Interior.jpg/w_1200.jpg'
+      //   }
+      // ];
+      let searchResult = rawResult.map(entry => {
+        const {
+          storeID,
+          storeName,
+          stamps,
+          img,
+          rewards,
+          coordinate,
+          openhour,
+          closehour,
+          menuFound
+        } = entry;
+        const distance = 234; // coordinate 객체 이용해 계산
+        const isOpen = true; // openhour, closehour
+        const currentTime = new Date().toLocaleTimeString;
+        // if (openhour < )
+        const haveRewards = rewards > 0 ? true : false;
+        console.log(
+          coordinate,
+          openhour,
+          closehour,
+          isOpen,
+          haveRewards,
+          menuFound
+        );
+        return {
+          storeID,
+          storeName,
+          stamps,
+          img,
+          distance,
+          isOpen,
+          haveRewards,
+          menuFound
+        };
       });
+
+      this.setState({ searchResult });
+    } catch (error) {
+      console.log(`${uri} 실패`, error);
+    }
     axios.defaults.baseURL =
       'http://ec2-13-115-51-251.ap-northeast-1.compute.amazonaws.com:3000';
   };
@@ -204,7 +252,7 @@ export default class SearchScreen extends Component {
           </View>
           {/* 검색 결과 */}
           <View style={s.searchResultsView}>
-            <ScrollView style={{ borderWidth: 1 }}>
+            <ScrollView style={{ borderWidth: 0 }}>
               {searchResult.map((item, i) => (
                 <SearchResultEntry
                   itemObject={item}
