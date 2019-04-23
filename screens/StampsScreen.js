@@ -25,14 +25,6 @@ import socket from '../modules/socket-connector';
 //// -> + 가게 주소, 영업시간, 휴무일, 전화번호
 //// -> + 메뉴 리스트
 
-// storeID -> 가게 정보
-// const storeInfo = {
-//   address: '서울시 성동구 뚝섬역 근처',
-//   shopHours: '매일 09:00 ~ 20:00',
-//   dayOff: '일',
-//   contact: '02-123-2342'
-// };
-
 // storeID -> 메뉴 정보
 // Menus 테이블에서, SELECT NAME, PRICE FROM MENUS WHERE STORE_ID = ?;
 // const menuList = [
@@ -70,14 +62,14 @@ export default class StampsScreen extends Component {
     };
     this.getStoreInfo();
     this.getMenuList();
-    // this.getStampsRewards(); // params에서 받지않고 서버에 한번더 물어볼거라면 사용할 것
+    this.getStampsRewards(); // params에서 받지않고 서버에 한번더 물어볼거라면 사용할 것
   }
 
   getStampsRewards = () => {
-    axios.defaults.baseURL = 'http://localhost:3030';
-    const uri = '/customers-get-stamps-rewards-counts';
+    const { storeID, customerID } = this.props.navigation.state.params;
+    const uri = '/customers/get-stamps-rewards-counts';
     axios
-      .get(uri) // TODO: JSON서버 사용중일땐 그냥 GET으로 보내서 고정데이터를 받음. 실제 API 사용할땐 post로 바꿔야함
+      .post(uri, { storeID, customerID })
       .then(response => {
         console.log(`${uri} 성공`, response.data);
         const { stamps, rewards } = response.data;
@@ -86,8 +78,6 @@ export default class StampsScreen extends Component {
       .catch(error => {
         console.log(`${uri} 실패`, error);
       });
-    axios.defaults.baseURL =
-      'http://ec2-13-115-51-251.ap-northeast-1.compute.amazonaws.com:3000';
   };
 
   onPressTossButton = storeName => {
@@ -96,10 +86,10 @@ export default class StampsScreen extends Component {
   };
 
   getStoreInfo = () => {
-    axios.defaults.baseURL = 'http://localhost:3030';
-    const uri = '/get-store-info';
+    const { storeID } = this.props.navigation.state.params;
+    const uri = '/stores/get-store-info';
     axios
-      .get(uri)
+      .post(uri, { storeID })
       .then(response => {
         console.log(`${uri} 성공`, response.data);
         this.setState({ storeInfo: response.data });
@@ -107,8 +97,6 @@ export default class StampsScreen extends Component {
       .catch(error => {
         console.log(`${uri} 실패`, error);
       });
-    axios.defaults.baseURL =
-      'http://ec2-13-115-51-251.ap-northeast-1.compute.amazonaws.com:3000';
   };
 
   getMenuList = () => {

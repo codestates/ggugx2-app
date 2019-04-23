@@ -69,9 +69,14 @@ export default class SignInScreen extends React.Component {
   onPressLogin = () => {
     const { phone, password } = this.state;
     // TODO: 패스워드를 평문 전송하고있음. 암호화해서 서버에 요청 날리면 좋겠다.
+
+    // FIXME: 하이픈 입력 없이 로그인 할수있게 포매팅 하도록 임시 처방.
+    const formattedPhone =
+      phone.slice(0, 3) + '-' + phone.slice(3, 7) + '-' + phone.slice(7, 11);
+    console.log('로그인 입력된 폰번호 : ', formattedPhone);
     axios
       .post('/customers/signin', {
-        phone,
+        phone: formattedPhone,
         password
       })
       .then(async response => {
