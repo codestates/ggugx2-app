@@ -139,9 +139,8 @@ export default class StampsScreen extends Component {
       height: Dimensions.get('window').width * 0.65 // 16:9 size = 0.65
     };
 
-    // TODO: 1) navigation에서 전달받은 storeID를 가지고, 서버에서 Stores 테이블의 내용을 다 긁어와야 함
-    //// 긁어온 내용을 StoreInfo 오브젝트로 만들어 StoreInfo 컴포넌트에 props로 넘겨줘야 함
-    // TODO: 2) 한편, CustomerID, StoreID로 Stamps 테이블에 쿼리해서 사용가능한 쿠폰 개수를 받아와야 함
+    // TODO: 토스하기 완료하고 다시 이 스크린으로 돌아왔을때, 변경된 스탬프수를 반영해야 함.
+    // 아마도 stack 변화와 관련한 lifecycle method가 있을 것 같은데..
 
     return (
       <ScrollView style={{ flex: 1 }}>

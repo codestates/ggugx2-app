@@ -6,10 +6,12 @@ import { Avatar } from 'react-native-elements';
 const s = StyleSheet.create({
   containerTouchable: {
     height: 100,
-    borderWidth: 1,
+    borderBottomWidth: 1,
+    borderBottomColor: '#aaa',
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'flex-start'
+    justifyContent: 'flex-start',
+    paddingVertical: 2
   },
   storeImageView: {
     flex: 0,
@@ -38,7 +40,8 @@ export default class SearchResultEntry extends Component {
       stamps,
       isOpen,
       haveRewards,
-      img
+      img,
+      menuFound
     } = this.props.itemObject;
     const { onPress } = this.props;
     const iconOpen = isOpen
@@ -48,6 +51,8 @@ export default class SearchResultEntry extends Component {
       ? require('../../assets/images/icon-redeem.png')
       : require('../../assets/images/icon-redeem-x.png');
     const iconSize = 40;
+    let distanceWithUnit =
+      distance > 1000 ? (distance / 1000).toFixed(1) + 'km' : distance + 'm';
     return (
       <TouchableOpacity style={s.containerTouchable} onPress={onPress}>
         {/* 왼쪽: 매장사진 */}
@@ -59,10 +64,14 @@ export default class SearchResultEntry extends Component {
           <Text style={{ fontSize: 20, fontWeight: 'bold', height: 30 }}>
             {storeName}
           </Text>
-          <Text style={{ fontSize: 14, height: 20 }}>{distance}</Text>
-          <Text style={{ fontSize: 14, height: 20 }}>{stamps}</Text>
           <Text style={{ fontSize: 14, height: 20 }}>
-            {'검색한 메뉴 : 가격'}
+            거리 {distanceWithUnit}
+          </Text>
+          <Text style={{ fontSize: 14, height: 20 }}>
+            적립한 스탬프 수 {stamps}개
+          </Text>
+          <Text style={{ fontSize: 14, height: 20 }}>
+            {menuFound.name} {menuFound.price}원
           </Text>
         </View>
         {/* 오른쪽: 운영중, 교환권여부 */}

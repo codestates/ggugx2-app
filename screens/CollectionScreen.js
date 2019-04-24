@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import {
   View,
-  Modal,
   ScrollView,
   AsyncStorage,
   ActivityIndicator,
-  TouchableOpacity
+  TouchableOpacity,
+  Platform
 } from 'react-native';
+import { Constants, Location, Permissions } from 'expo';
 import {
   Button,
   Text,
@@ -38,6 +39,20 @@ import socket from '../modules/socket-connector';
 //   rewards: 1
 // };
 
+const theme = {
+  View: {
+    style: {
+      borderWidth: 0
+    }
+  },
+  Text: {
+    style: {
+      borderWidth: 0,
+      borderColor: 'blue'
+    }
+  }
+};
+
 export default class CollectionScreen extends Component {
   static navigationOptions = {
     header: null
@@ -49,15 +64,16 @@ export default class CollectionScreen extends Component {
       storeID: 1,
       modalVisible: false,
       stampsObject: {},
-      nearbyStoresList: []
+      nearbyStoresList: [],
+      message: '사장님이 쿠폰을 확인중입니다...',
+      errorMessage: null,
+      location: null
     };
     this.isComplete = false;
     this.getCustomerID();
     this.getStampsRewardsCounts();
     this.getNearbyStoresList();
-    // this.socket = io(
-    //   'http://ec2-13-115-51-251.ap-northeast-1.compute.amazonaws.com:3000'
-    // );
+
     socket.on('stamp add complete', msg => {
       if (msg && msg.confirm) {
         console.log('stamp add complete :: ', msg);
@@ -68,24 +84,6 @@ export default class CollectionScreen extends Component {
       console.log(`[socket.io error] ${msg.message}`);
     });
   }
-
-  theme = {
-    View: {
-      style: {
-        borderWidth: 0
-      }
-    },
-    Text: {
-      style: {
-        borderWidth: 0,
-        borderColor: 'blue'
-      }
-    }
-  };
-  state = {
-    modalVisible: false,
-    message: '사장님이 쿠폰을 확인중입니다...'
-  };
 
   emitRegister = id => {
     socket.emit('register', { id, type: 'customer' });
@@ -140,8 +138,31 @@ export default class CollectionScreen extends Component {
       'http://ec2-13-115-51-251.ap-northeast-1.compute.amazonaws.com:3000';
   };
 
+  componentWillMount() {
+    if (Platform.OS === 'android' && !Constants.isDevice) {
+      this.setState({
+        errorMessage:
+          'Oops, this will not work on Sketch in an Android emulator. Try it on your device!'
+      });
+    } else {
+      this._getLocationAsync();
+    }
+  }
+
+  _getLocationAsync = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== 'granted') {
+      this.setState({
+        errorMessage: '위치 조회 권한을 설정해주세요'
+      });
+    }
+
+    let location = await Location.getCurrentPositionAsync({});
+    this.setState({ location });
+  };
+
   render() {
-    const { theme, emitRequestStamp } = this;
+    const { emitRequestStamp } = this;
     const {
       stampsObject,
       nearbyStoresList,
@@ -257,6 +278,12 @@ export default class CollectionScreen extends Component {
             </ScrollView>
           </View>
           {/* 적립 버튼 */}
+          {this.state.location !== null && (
+            <Text>
+              latitude: {this.state.location.coords.latitude} / longitude:{' '}
+              {this.state.location.coords.longitude}
+            </Text>
+          )}
           <View
             style={{
               flex: 1,
