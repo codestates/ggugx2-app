@@ -6,10 +6,12 @@ import { Avatar } from 'react-native-elements';
 const s = StyleSheet.create({
   containerTouchable: {
     height: 100,
-    borderWidth: 1,
+    borderBottomWidth: 1,
+    borderBottomColor: '#aaa',
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'flex-start'
+    justifyContent: 'flex-start',
+    paddingVertical: 2
   },
   storeImageView: {
     flex: 0,

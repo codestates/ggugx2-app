@@ -257,6 +257,7 @@ export default class SearchScreen extends Component {
           />
 
           {/* 검색결과 정렬 & 필터 버튼들 */}
+          {/* TODO: ButtonGroup 으로 변경하자!!! + 첫화면 기본선택이 거리순 인 것으로 하자 */}
           <View style={s.searchFiltersView}>
             <Button title={'거리'} />
             <Button title={'스탬프'} />
