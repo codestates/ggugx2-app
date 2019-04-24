@@ -176,27 +176,17 @@ export default class SearchScreen extends Component {
           menuFound
         } = entry;
         const distance = 234; // coordinate 객체 이용해 계산
-        let isOpen = false; // openhour, closehour
+        let isOpen = false; // openhour, closehour 이용
         // 방법 1. open, close를 오늘의 open,close로 바꿔 milisec으로 바꾸고, 현시각 milisec과 대소비교
         const currentTime = new Date();
         const currentUnixTime = Number(currentTime);
         const openUnixTime = currentTime.setHours(...openhour.split(':'), 0);
         const closeUnixTime = currentTime.setHours(...closehour.split(':'), 0);
-        console.log('매장 : ', storeName, storeID);
-        console.log(
-          '오픈:',
-          openUnixTime,
-          '마감:',
-          closeUnixTime,
-          '현시간:',
-          currentTime
-        );
         if (
           currentUnixTime >= openUnixTime &&
           currentUnixTime <= closeUnixTime
         ) {
           isOpen = true;
-          console.log('운영중!');
         }
         const haveRewards = rewards > 0 ? true : false;
         console.log(
