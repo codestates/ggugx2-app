@@ -162,18 +162,7 @@ export default class SearchScreen extends Component {
       console.log(`${uri} 성공`);
       console.log('검색결과 : ', response.data);
       let rawResult = response.data;
-      // const searchResult = [
-      //   {
-      //     storeID: 0,
-      //     storeName: '스벅 성수',
-      //     distance: '234m',
-      //     stamps: 10,
-      //     isOpen: true,
-      //     haveRewards: true,
-      //     img:
-      //       'https://www.royalparks.org.uk/_media/images/the-regents-park-and-primrose-hill/the-broad-walk-cafe/The-Broad-Walk-Cafe-Interior.jpg/w_1200.jpg'
-      //   }
-      // ];
+      // 계산해 변환이 필요한 속성들 조작
       let searchResult = rawResult.map(entry => {
         const {
           storeID,
@@ -187,9 +176,28 @@ export default class SearchScreen extends Component {
           menuFound
         } = entry;
         const distance = 234; // coordinate 객체 이용해 계산
-        const isOpen = true; // openhour, closehour
-        const currentTime = new Date().toLocaleTimeString;
-        // if (openhour < )
+        let isOpen = false; // openhour, closehour
+        // 방법 1. open, close를 오늘의 open,close로 바꿔 milisec으로 바꾸고, 현시각 milisec과 대소비교
+        const currentTime = new Date();
+        const currentUnixTime = Number(currentTime);
+        const openUnixTime = currentTime.setHours(...openhour.split(':'), 0);
+        const closeUnixTime = currentTime.setHours(...closehour.split(':'), 0);
+        console.log('매장 : ', storeName, storeID);
+        console.log(
+          '오픈:',
+          openUnixTime,
+          '마감:',
+          closeUnixTime,
+          '현시간:',
+          currentTime
+        );
+        if (
+          currentUnixTime >= openUnixTime &&
+          currentUnixTime <= closeUnixTime
+        ) {
+          isOpen = true;
+          console.log('운영중!');
+        }
         const haveRewards = rewards > 0 ? true : false;
         console.log(
           coordinate,

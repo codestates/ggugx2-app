@@ -46,7 +46,18 @@
       "img": "https://t1.daumcdn.net/cfile/tistory/261CBC3F5745C5460A"
     },
     {
-      "storeID": 5,
+      "storeID": 10,
+      "storeName": "스타벅스 성수점",
+      "menuFound": { "name": "아메리카노", "price": "4200" },
+      "coordinate": { "latitude": "37.33233141", "longitude": "-122.0312186" },
+      "stamps": 11,
+      "rewards": 10,
+      "openhour": "20:30:00",
+      "closehour": "23:00:00",
+      "img": "https://t1.daumcdn.net/cfile/tistory/261CBC3F5745C5460A"
+    },
+    {
+      "storeID": 51,
       "storeName": "스타벅스 성수점",
       "menuFound": { "name": "아메리카노", "price": "4200" },
       "coordinate": { "latitude": "37.33233141", "longitude": "-122.0312186" },
@@ -57,18 +68,7 @@
       "img": "https://t1.daumcdn.net/cfile/tistory/261CBC3F5745C5460A"
     },
     {
-      "storeID": 5,
-      "storeName": "스타벅스 성수점",
-      "menuFound": { "name": "아메리카노", "price": "4200" },
-      "coordinate": { "latitude": "37.33233141", "longitude": "-122.0312186" },
-      "stamps": 11,
-      "rewards": 10,
-      "openhour": "07:30:00",
-      "closehour": "23:00:00",
-      "img": "https://t1.daumcdn.net/cfile/tistory/261CBC3F5745C5460A"
-    },
-    {
-      "storeID": 5,
+      "storeID": 105,
       "storeName": "스타벅스 성수점",
       "menuFound": { "name": "아메리카노", "price": "4200" },
       "coordinate": { "latitude": "37.33233141", "longitude": "-122.0312186" },
