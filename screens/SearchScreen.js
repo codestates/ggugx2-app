@@ -22,6 +22,7 @@ import {
 } from 'react-native-elements';
 import SearchResultEntry from '../components/Molecules/SearchResultEntry';
 import axios from '../modules/axios-connector';
+import geolib from 'geolib';
 
 // TODO: 검색 결과를 서버에서 받아온다
 // 1. 검색어 미입력시 가까운 10개 매장의 리스트를 받는다
@@ -100,8 +101,8 @@ export default class SearchScreen extends Component {
     this.state = {
       searchInputValue: '',
       searchResult: [],
-      errorMessage: null,
-      location: null
+      errorMessage: null
+      // location: null
     };
     this.getCustomerID();
     this.searchStores();
@@ -129,15 +130,15 @@ export default class SearchScreen extends Component {
       });
     }
 
-    let location = await Location.getCurrentPositionAsync({});
-    this.setState({ location });
-    console.log('로케이션!!!!', location);
-    console.log(
-      'latitude : ',
-      location.coords.latitude,
-      'longitude : ',
-      location.coords.longitude
-    );
+    // let location = await Location.getCurrentPositionAsync({});
+    // this.setState({ location });
+    // console.log('로케이션!!!!', location);
+    // console.log(
+    //   'latitude : ',
+    //   location.coords.latitude,
+    //   'longitude : ',
+    //   location.coords.longitude
+    // );
   };
 
   updateSearch = text => {
@@ -155,6 +156,8 @@ export default class SearchScreen extends Component {
   };
 
   searchStores = async query => {
+    // 처음 검색 스크린 띄울때 location을 받아온 다음에 기본리스트를 쿼리할 수 있으므로 여기서 위치를 받아야한다
+    let location = await Location.getCurrentPositionAsync({});
     axios.defaults.baseURL = 'http://localhost:3030';
     const uri = '/stores-search';
     try {
@@ -163,51 +166,64 @@ export default class SearchScreen extends Component {
       console.log('검색결과 : ', response.data);
       let rawResult = response.data;
       // 계산해 변환이 필요한 속성들 조작
-      let searchResult = rawResult.map(entry => {
-        const {
-          storeID,
-          storeName,
-          stamps,
-          img,
-          rewards,
-          coordinate,
-          openhour,
-          closehour,
-          menuFound
-        } = entry;
-        const distance = 234; // coordinate 객체 이용해 계산
-        let isOpen = false; // openhour, closehour 이용
-        // 방법 1. open, close를 오늘의 open,close로 바꿔 milisec으로 바꾸고, 현시각 milisec과 대소비교
-        const currentTime = new Date();
-        const currentUnixTime = Number(currentTime);
-        const openUnixTime = currentTime.setHours(...openhour.split(':'), 0);
-        const closeUnixTime = currentTime.setHours(...closehour.split(':'), 0);
-        if (
-          currentUnixTime >= openUnixTime &&
-          currentUnixTime <= closeUnixTime
-        ) {
-          isOpen = true;
-        }
-        const haveRewards = rewards > 0 ? true : false;
-        console.log(
-          coordinate,
-          openhour,
-          closehour,
-          isOpen,
-          haveRewards,
-          menuFound
-        );
-        return {
-          storeID,
-          storeName,
-          stamps,
-          img,
-          distance,
-          isOpen,
-          haveRewards,
-          menuFound
-        };
-      });
+      let searchResult = rawResult
+        .map(entry => {
+          const {
+            storeID,
+            storeName,
+            stamps,
+            img,
+            rewards,
+            coordinate,
+            openhour,
+            closehour,
+            menuFound
+          } = entry;
+          ////////////////////// 거리계산
+          const from = {
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude
+          };
+          const distance = geolib.getDistance(from, coordinate);
+          console.log('거리: ', distance);
+          ////////////////////// 운영중 여부
+          let isOpen = false; // openhour, closehour 이용
+          // 방법 1. open, close를 오늘의 open,close로 바꿔 milisec으로 바꾸고, 현시각 milisec과 대소비교
+          const currentTime = new Date();
+          const currentUnixTime = Number(currentTime);
+          const openUnixTime = currentTime.setHours(...openhour.split(':'), 0);
+          const closeUnixTime = currentTime.setHours(
+            ...closehour.split(':'),
+            0
+          );
+          if (
+            currentUnixTime >= openUnixTime &&
+            currentUnixTime <= closeUnixTime
+          ) {
+            isOpen = true;
+          }
+          //////////////////////
+          const haveRewards = rewards > 0 ? true : false;
+          console.log(
+            coordinate,
+            openhour,
+            closehour,
+            isOpen,
+            haveRewards,
+            menuFound
+          );
+          return {
+            storeID,
+            storeName,
+            stamps,
+            img,
+            distance,
+            isOpen,
+            haveRewards,
+            menuFound
+          };
+        })
+        .sort((a, b) => a.distance - b.distance);
 
       this.setState({ searchResult });
     } catch (error) {

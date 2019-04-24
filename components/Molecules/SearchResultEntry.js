@@ -49,6 +49,8 @@ export default class SearchResultEntry extends Component {
       ? require('../../assets/images/icon-redeem.png')
       : require('../../assets/images/icon-redeem-x.png');
     const iconSize = 40;
+    let distanceWithUnit =
+      distance > 1000 ? (distance / 1000).toFixed(1) + 'km' : distance + 'm';
     return (
       <TouchableOpacity style={s.containerTouchable} onPress={onPress}>
         {/* 왼쪽: 매장사진 */}
@@ -60,7 +62,9 @@ export default class SearchResultEntry extends Component {
           <Text style={{ fontSize: 20, fontWeight: 'bold', height: 30 }}>
             {storeName}
           </Text>
-          <Text style={{ fontSize: 14, height: 20 }}>거리 {distance}m</Text>
+          <Text style={{ fontSize: 14, height: 20 }}>
+            거리 {distanceWithUnit}
+          </Text>
           <Text style={{ fontSize: 14, height: 20 }}>
             적립한 스탬프 수 {stamps}개
           </Text>
