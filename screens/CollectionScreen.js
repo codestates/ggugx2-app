@@ -62,6 +62,7 @@ export default class CollectionScreen extends Component {
     this.state = {
       customerID: null,
       storeID: 1,
+      storeName: '가까운곳',
       modalVisible: false,
       stampsObject: {},
       nearbyStoresList: [],
@@ -71,7 +72,6 @@ export default class CollectionScreen extends Component {
     };
     this.isComplete = false;
     this.getCustomerID();
-    this.getStampsRewardsCounts();
     this.getNearbyStoresList();
 
     socket.on('stamp add complete', msg => {
@@ -95,45 +95,57 @@ export default class CollectionScreen extends Component {
 
   getCustomerID = async () => {
     // customerID를 읽어온다 (switchNavigator는 params로 전달 불가)
-    const { customerID } = JSON.parse(
-      await AsyncStorage.getItem('ggugCustomerToken')
-    );
+    try {
+      const { customerID } = JSON.parse(
+        await AsyncStorage.getItem('ggugCustomerToken')
+      );
 
-    console.log(
-      'TCL: CollectionScreen -> getCustomerID -> customerID',
-      customerID
-    );
-    this.setState({ customerID });
+      console.log(
+        'TCL: CollectionScreen -> getCustomerID -> customerID',
+        customerID
+      );
+      this.setState({ customerID });
 
-    this.emitRegister(`${customerID}`);
+      this.getStampsRewardsCounts(customerID, this.state.storeID);
+      // FIXME: storeID도 가까운가게 리스트 받아온 다음 정해지는거라 이부분 달라져야함
+
+      this.emitRegister(`${customerID}`);
+    } catch (error) {
+      console.log('getCustomerID 실패 :', error);
+    }
   };
 
-  getStampsRewardsCounts = () => {
-    axios.defaults.baseURL = 'http://localhost:3030';
-    axios
-      .get('/customers-get-stamps-rewards-counts')
-      .then(response => {
-        console.log('getStampsRewardsCounts 성공', response.data);
-        this.setState({ stampsObject: response.data });
-      })
-      .catch(error => {
-        console.log('getStampsRewardsCounts 실패', error);
-      });
+  getStampsRewardsCounts = async (customerID, storeID) => {
+    // FIXME: 동기/비동기 처리 순서상 local에 axios.post 날리는 버그가 있어서 defaults 박아둠.
+    // getNearbyStoresList 요청을 EC2에 날리게 되면 그때는 지워도 됨
     axios.defaults.baseURL =
       'http://ec2-13-115-51-251.ap-northeast-1.compute.amazonaws.com:3000';
+    const uri = '/customers/get-stamps-rewards-counts';
+    try {
+      const response = await axios.post(uri, {
+        customerID,
+        storeID
+      });
+
+      console.log('getStampsRewardsCounts 성공', response.data);
+      this.setState({ stampsObject: response.data });
+    } catch (error) {
+      console.log('getStampsRewardsCounts 실패', error.response);
+    }
   };
 
-  getNearbyStoresList = () => {
+  getNearbyStoresList = async () => {
     axios.defaults.baseURL = 'http://localhost:3030';
-    axios
-      .get('/nearby-stores-list')
-      .then(response => {
-        console.log('nearby-stores-list 성공');
-        this.setState({ nearbyStoresList: response.data });
-      })
-      .catch(error => {
-        console.log('nearby-stores-list 실패', error);
-      });
+    const uri = '/nearby-stores-list';
+    try {
+      const response = await axios.get(uri);
+
+      console.log('nearby-stores-list 성공');
+      this.setState({ nearbyStoresList: response.data });
+    } catch (error) {
+      console.log('nearby-stores-list 실패', error);
+    }
+
     axios.defaults.baseURL =
       'http://ec2-13-115-51-251.ap-northeast-1.compute.amazonaws.com:3000';
   };
@@ -168,18 +180,20 @@ export default class CollectionScreen extends Component {
       nearbyStoresList,
       customerID,
       storeID,
+      storeName,
       isComplete
     } = this.state;
     console.log(
       'CollectionScreen] render() customerID : ',
       this.state.customerID
     );
+
     return (
       <ThemeProvider theme={theme}>
         <Header
           placement={'center'}
           centerComponent={{
-            text: '컴포즈 성수' + storeID,
+            text: storeName,
             style: { fontSize: 30 }
           }}
           backgroundColor={'white'}
@@ -230,7 +244,11 @@ export default class CollectionScreen extends Component {
               justifyContent: 'center'
             }}
           >
-            <Text>고객 ID: {this.state.customerID}</Text>
+            <Text>
+              고객 ID: {this.state.customerID} {'         '}
+              가게 ID: {this.state.storeID}
+            </Text>
+
             <View
               style={{
                 borderWidth: 1,
@@ -260,7 +278,10 @@ export default class CollectionScreen extends Component {
               {nearbyStoresList.map((item, i) => (
                 <TouchableOpacity
                   onPress={() => {
-                    this.setState({ storeID: item.storeID });
+                    this.setState({
+                      storeID: item.storeID,
+                      storeName: item.storeName
+                    });
                   }}
                   key={i}
                 >
