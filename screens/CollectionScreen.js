@@ -75,7 +75,6 @@ export default class CollectionScreen extends Component {
     this.isComplete = false;
     this.willFocus = false;
     this.getCustomerID();
-    this.getNearbyStoresList();
 
     socket.on('stamp add complete', msg => {
       if (msg && msg.confirm) {
@@ -141,6 +140,10 @@ export default class CollectionScreen extends Component {
   };
 
   getNearbyStoresList = async () => {
+    console.log(
+      'getNearbyStoresList 날릴때 보낼 좌표:',
+      this.state.location.coords
+    );
     axios.defaults.baseURL = 'http://localhost:3030';
     const uri = '/nearby-stores-list';
     try {
@@ -177,6 +180,7 @@ export default class CollectionScreen extends Component {
 
     let location = await Location.getCurrentPositionAsync({});
     this.setState({ location });
+    this.getNearbyStoresList();
   };
 
   render() {
