@@ -15,6 +15,8 @@ import {
   Header,
   Overlay
 } from 'react-native-elements';
+import { NavigationEvents } from 'react-navigation';
+
 import StoresEntry from '../components/Molecules/TextTextEntry';
 import axios from '../modules/axios-connector';
 import socket from '../modules/socket-connector';
@@ -71,6 +73,7 @@ export default class CollectionScreen extends Component {
       location: null
     };
     this.isComplete = false;
+    this.willFocus = false;
     this.getCustomerID();
     this.getNearbyStoresList();
 
@@ -78,6 +81,8 @@ export default class CollectionScreen extends Component {
       if (msg && msg.confirm) {
         console.log('stamp add complete :: ', msg);
         this.setState({ modalVisible: true, isComplete: true });
+        const { customerID, storeID } = this.state;
+        this.getStampsRewardsCounts(customerID, storeID);
       }
     });
     socket.on('errors', msg => {
@@ -129,6 +134,7 @@ export default class CollectionScreen extends Component {
 
       console.log('getStampsRewardsCounts 성공', response.data);
       this.setState({ stampsObject: response.data });
+      this.willFocus = true;
     } catch (error) {
       console.log('getStampsRewardsCounts 실패', error.response);
     }
@@ -197,6 +203,13 @@ export default class CollectionScreen extends Component {
             style: { fontSize: 30 }
           }}
           backgroundColor={'white'}
+        />
+
+        <NavigationEvents
+          onWillFocus={() => {
+            console.log('CollectionScreen Will Focus');
+            this.willFocus && this.getStampsRewardsCounts(customerID, storeID);
+          }}
         />
 
         <Overlay
