@@ -248,37 +248,26 @@ export default class SearchScreen extends Component {
 
   sort = index => {
     let { searchResult } = this.state;
+    const SortedSearchResult = searchResult.slice();
     if (index === 0) {
       console.log('거리순!!');
-      searchResult.sort((a, b) => {
+      SortedSearchResult.sort((a, b) => {
         return a.distance - b.distance;
       });
     } else if (index === 1) {
       console.log('스탬프순!!');
-      searchResult.sort((a, b) => {
+      SortedSearchResult.sort((a, b) => {
         return b.stamps - a.stamps;
       });
     } else if (index === 2) {
       console.log('가격순!!');
-      searchResult.sort((a, b) => {
+      SortedSearchResult.sort((a, b) => {
         return a.menuFound.price - b.menuFound.price;
       });
     }
 
-    if (index === 3) {
-      console.log('영업중인곳만!!');
-      searchResult = searchResult.filter(item => {
-        return item.isOpen;
-      });
-    } else if (index === 4) {
-      console.log('교환권있는곳만!!');
-      searchResult = searchResult.filter(item => {
-        return item.haveRewards;
-      });
-    }
-
     this.setState({
-      searchResult
+      searchResult: SortedSearchResult
     });
   };
 
@@ -289,33 +278,28 @@ export default class SearchScreen extends Component {
     let filteredSearchResult = originalSearchResult.slice();
     const filters = { open: index.includes(0), rewards: index.includes(1) };
 
-    if (filters.open) {
-      // 영업중인 곳 필터
+    if (filters.open && filters.rewards) {
+      filteredSearchResult = filteredSearchResult.filter(
+        entry => entry.isOpen && entry.haveRewards
+      );
+      console.log('영업중 + 교환권', filteredSearchResult);
+    } else if (filters.open) {
       filteredSearchResult = filteredSearchResult.filter(entry => entry.isOpen);
       console.log('영업중인곳 : ', filteredSearchResult);
-      this.setState({
-        searchResult: filteredSearchResult
-      });
-    } else if (!filters.open && !filters.rewards) {
-      console.log('영업중 필터 해제!');
-      this.setState({
-        searchResult: originalSearchResult
-      });
-    }
-
-    if (index.rewards) {
-      // 교환권 있는 곳 필터
+    } else if (filters.rewards) {
       filteredSearchResult = filteredSearchResult.filter(
         entry => entry.haveRewards
       );
       console.log('교환권있는곳 : ', filteredSearchResult);
-      this.setState({
-        searchResult: filteredSearchResult
-      });
-    } else if (!filters.rewards && !filters.open) {
-      console.log('교환권 필터 해제!');
+    }
+
+    if (!filters.open && !filters.rewards) {
       this.setState({
         searchResult: originalSearchResult
+      });
+    } else {
+      this.setState({
+        searchResult: filteredSearchResult
       });
     }
   };
@@ -388,6 +372,11 @@ export default class SearchScreen extends Component {
               onPress={index => {
                 updateFilter(index);
                 filter(index);
+                setTimeout(() => {
+                  sort(this.state.selectedIndex);
+                }, 0);
+                // setState가 끝나서 searchResult가 변한 다음 sort가 되어야 해서
+                // setTimeout으로 비동기 처리하게 만들었더니 작동은 하는데 중간과정이 보인다.
               }}
               selectedIndexes={selectedIndexes}
               buttons={['영업중', '교환권']}
