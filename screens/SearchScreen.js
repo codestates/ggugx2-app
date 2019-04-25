@@ -18,7 +18,8 @@ import {
   Text,
   ThemeProvider,
   SearchBar,
-  Header
+  Header,
+  ButtonGroup
 } from 'react-native-elements';
 import SearchResultEntry from '../components/Molecules/SearchResultEntry';
 import axios from '../modules/axios-connector';
@@ -82,11 +83,11 @@ const s = StyleSheet.create({
     width: '100%',
     // height: 40,
     backgroundColor: '#adf',
-    // padding: 10,
     justifyContent: 'space-around',
     flexDirection: 'row',
     flexWrap: 'nowrap',
-    padding: 0
+    padding: 0,
+    margin: 0
   },
   searchResultsView: {
     flex: 2,
@@ -101,7 +102,8 @@ export default class SearchScreen extends Component {
     this.state = {
       searchInputValue: '',
       searchResult: [],
-      errorMessage: null
+      errorMessage: null,
+      selectedIndex: 0
       // location: null
     };
     this.getCustomerID();
@@ -145,6 +147,10 @@ export default class SearchScreen extends Component {
     this.setState({ searchInputValue: text });
   };
 
+  updateIndex = selectedIndex => {
+    this.setState({ selectedIndex });
+  };
+
   getCustomerID = async () => {
     const { customerID } = JSON.parse(
       await AsyncStorage.getItem('ggugCustomerToken')
@@ -156,6 +162,7 @@ export default class SearchScreen extends Component {
   };
 
   searchStores = async query => {
+    console.log('입력된 검색어 ::::', query);
     // 처음 검색 스크린 띄울때 location을 받아온 다음에 기본리스트를 쿼리할 수 있으므로 여기서 위치를 받아야한다
     let location = await Location.getCurrentPositionAsync({});
     axios.defaults.baseURL = 'http://localhost:3030';
@@ -233,9 +240,24 @@ export default class SearchScreen extends Component {
       'http://ec2-13-115-51-251.ap-northeast-1.compute.amazonaws.com:3000';
   };
 
+  sortOfFilter = (index, buttonName) => {
+    console.log('선택한 기준 : ', buttonName, index);
+    const { searchResult } = this.state;
+
+    this.setState({
+      searchResult
+    });
+  };
+
   render() {
-    const { onPressLogout } = this;
-    const { searchInputValue, searchResult, customerID } = this.state;
+    const { searchStores, updateIndex, sortOfFilter } = this;
+    const {
+      searchInputValue,
+      searchResult,
+      customerID,
+      selectedIndex
+    } = this.state;
+    const buttons = ['거리', '스탬프', '가격', '영업중', '교환권'];
 
     return (
       <ThemeProvider theme={theme}>
@@ -252,18 +274,45 @@ export default class SearchScreen extends Component {
                 containerStyle={{
                   backgroundColor: 'white'
                 }}
+                onKeyPress={e => {
+                  // TODO: 엔터 입력시 검색 쿼리 함수 실행해야 하는데 엔터는 이벤트가 발생 안한다
+                  console.log('눌린 키', e.nativeEvent.key);
+                  if (e.nativeEvent.key === 'Enter') {
+                    console.log('엔터눌림!');
+                    searchStores(searchInputValue);
+                  }
+                }}
               />
             }
           />
 
           {/* 검색결과 정렬 & 필터 버튼들 */}
-          {/* TODO: ButtonGroup 으로 변경하자!!! + 첫화면 기본선택이 거리순 인 것으로 하자 */}
           <View style={s.searchFiltersView}>
-            <Button title={'거리'} />
-            <Button title={'스탬프'} />
-            <Button title={'가격'} />
-            <Button title={'교환권'} />
-            <Button title={'영업중'} />
+            <ButtonGroup
+              onPress={index => {
+                updateIndex(index);
+                sortOfFilter(index, buttons[index]);
+              }}
+              selectedIndex={selectedIndex}
+              buttons={buttons}
+              containerStyle={{
+                width: '100%',
+                height: 45,
+                borderWidth: 0,
+                borderRadius: 0,
+                borderBottomWidth: 0,
+                borderBottomColor: 'black',
+                margin: 0,
+                padding: 0,
+                marginTop: 0,
+                marginBottom: 0
+              }}
+              buttonStyle={{ backgroundColor: 'rgb(255, 202, 54)' }}
+              selectedButtonStyle={{ backgroundColor: 'hsl(45, 98%, 70%)' }}
+              selectedTextStyle={{ color: 'rgb(223, 58, 47)' }}
+              innerBorderStyle={{ width: 0, color: 'black' }}
+              textStyle={{ color: '#333', fontSize: 19 }}
+            />
           </View>
           {/* 검색 결과 */}
           <View style={s.searchResultsView}>
