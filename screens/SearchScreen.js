@@ -68,6 +68,21 @@ const theme = {
     containerStyle: {
       backgroundColor: 'white'
     }
+  },
+  ButtonGroup: {
+    containerStyle: {
+      height: 45,
+      borderWidth: 0,
+      borderRadius: 0,
+      borderBottomWidth: 0,
+      marginTop: 0,
+      marginBottom: 0
+    },
+    buttonStyle: { backgroundColor: 'rgb(255, 202, 54)' },
+    selectedButtonStyle: { backgroundColor: 'hsl(45, 98%, 70%)' },
+    selectedTextStyle: { color: 'rgb(223, 58, 47)' },
+    innerBorderStyle: { width: 0, color: 'black' },
+    textStyle: { color: '#333', fontSize: 19 }
   }
 };
 
@@ -133,16 +148,6 @@ export default class SearchScreen extends Component {
         errorMessage: '위치 조회 권한을 설정해주세요'
       });
     }
-
-    // let location = await Location.getCurrentPositionAsync({});
-    // this.setState({ location });
-    // console.log('로케이션!!!!', location);
-    // console.log(
-    //   'latitude : ',
-    //   location.coords.latitude,
-    //   'longitude : ',
-    //   location.coords.longitude
-    // );
   };
 
   updateSearch = text => {
@@ -169,7 +174,7 @@ export default class SearchScreen extends Component {
 
   searchStores = async query => {
     console.log('입력된 검색어 ::::', query);
-    // 처음 검색 스크린 띄울때 location을 받아온 다음에 기본리스트를 쿼리할 수 있으므로 여기서 위치를 받아야한다
+    // 처음 검색 스크린 띄울때 location을 받아온 다음에야 기본리스트를 쿼리할 수 있으므로 여기서 위치를 받아야한다
     let location = await Location.getCurrentPositionAsync({});
     axios.defaults.baseURL = 'http://localhost:3030';
     const uri = '/stores-search';
@@ -273,8 +278,6 @@ export default class SearchScreen extends Component {
 
   filter = index => {
     const { originalSearchResult } = this.state;
-    const { searchResult } = this.state;
-    // let filteredSearchResult = searchResult.slice();
     let filteredSearchResult = originalSearchResult.slice();
     const filters = { open: index.includes(0), rewards: index.includes(1) };
 
@@ -351,22 +354,8 @@ export default class SearchScreen extends Component {
               selectedIndex={selectedIndex}
               buttons={['거리', '스탬프', '가격']}
               containerStyle={{
-                width: '60%',
-                height: 45,
-                borderWidth: 0,
-                borderRadius: 0,
-                borderBottomWidth: 0,
-                borderBottomColor: 'black',
-                margin: 0,
-                padding: 0,
-                marginTop: 0,
-                marginBottom: 0
+                width: '60%'
               }}
-              buttonStyle={{ backgroundColor: 'rgb(255, 202, 54)' }}
-              selectedButtonStyle={{ backgroundColor: 'hsl(45, 98%, 70%)' }}
-              selectedTextStyle={{ color: 'rgb(223, 58, 47)' }}
-              innerBorderStyle={{ width: 0, color: 'black' }}
-              textStyle={{ color: '#333', fontSize: 19 }}
             />
             <ButtonGroup
               onPress={index => {
@@ -381,22 +370,8 @@ export default class SearchScreen extends Component {
               selectedIndexes={selectedIndexes}
               buttons={['영업중', '교환권']}
               containerStyle={{
-                width: '40%',
-                height: 45,
-                borderWidth: 0,
-                borderRadius: 0,
-                borderBottomWidth: 0,
-                borderBottomColor: 'black',
-                margin: 0,
-                padding: 0,
-                marginTop: 0,
-                marginBottom: 0
+                width: '40%'
               }}
-              buttonStyle={{ backgroundColor: 'rgb(255, 202, 54)' }}
-              selectedButtonStyle={{ backgroundColor: 'hsl(45, 98%, 70%)' }}
-              selectedTextStyle={{ color: 'rgb(223, 58, 47)' }}
-              innerBorderStyle={{ width: 0, color: 'black' }}
-              textStyle={{ color: '#333', fontSize: 19 }}
               selectMultiple={true}
             />
           </View>
