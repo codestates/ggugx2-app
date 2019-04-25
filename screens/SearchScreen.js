@@ -107,7 +107,7 @@ const s = StyleSheet.create({
   searchResultsView: {
     flex: 2,
     width: '100%',
-    backgroundColor: '#eee'
+    backgroundColor: 'white'
   }
 });
 
@@ -121,7 +121,6 @@ export default class SearchScreen extends Component {
       errorMessage: null,
       selectedIndex: 0,
       selectedIndexes: []
-      // location: null
     };
     this.getCustomerID();
     this.searchStores();
@@ -332,13 +331,9 @@ export default class SearchScreen extends Component {
                 containerStyle={{
                   backgroundColor: 'white'
                 }}
-                onKeyPress={e => {
-                  // TODO: 엔터 입력시 검색 쿼리 함수 실행해야 하는데 엔터는 이벤트가 발생 안한다
-                  console.log('눌린 키', e.nativeEvent.key);
-                  if (e.nativeEvent.key === 'Enter') {
-                    console.log('엔터눌림!');
-                    searchStores(searchInputValue);
-                  }
+                returnKeyType={'search'}
+                onSubmitEditing={() => {
+                  searchStores(searchInputValue);
                 }}
               />
             }
