@@ -102,8 +102,10 @@ export default class SearchScreen extends Component {
     this.state = {
       searchInputValue: '',
       searchResult: [],
+      originalSearchResult: [],
       errorMessage: null,
-      selectedIndex: 0
+      selectedIndex: 0,
+      selectedIndexes: []
       // location: null
     };
     this.getCustomerID();
@@ -149,6 +151,10 @@ export default class SearchScreen extends Component {
 
   updateIndex = selectedIndex => {
     this.setState({ selectedIndex });
+  };
+  updateFilter = indexes => {
+    console.log('선택된 필터들 : ', indexes);
+    this.setState({ selectedIndexes: indexes });
   };
 
   getCustomerID = async () => {
@@ -232,7 +238,7 @@ export default class SearchScreen extends Component {
         })
         .sort((a, b) => a.distance - b.distance);
 
-      this.setState({ searchResult });
+      this.setState({ searchResult, originalSearchResult: searchResult });
     } catch (error) {
       console.log(`${uri} 실패`, error);
     }
@@ -240,24 +246,89 @@ export default class SearchScreen extends Component {
       'http://ec2-13-115-51-251.ap-northeast-1.compute.amazonaws.com:3000';
   };
 
-  sortOfFilter = (index, buttonName) => {
-    console.log('선택한 기준 : ', buttonName, index);
-    const { searchResult } = this.state;
+  sort = index => {
+    let { searchResult } = this.state;
+    if (index === 0) {
+      console.log('거리순!!');
+      searchResult.sort((a, b) => {
+        return a.distance - b.distance;
+      });
+    } else if (index === 1) {
+      console.log('스탬프순!!');
+      searchResult.sort((a, b) => {
+        return b.stamps - a.stamps;
+      });
+    } else if (index === 2) {
+      console.log('가격순!!');
+      searchResult.sort((a, b) => {
+        return a.menuFound.price - b.menuFound.price;
+      });
+    }
+
+    if (index === 3) {
+      console.log('영업중인곳만!!');
+      searchResult = searchResult.filter(item => {
+        return item.isOpen;
+      });
+    } else if (index === 4) {
+      console.log('교환권있는곳만!!');
+      searchResult = searchResult.filter(item => {
+        return item.haveRewards;
+      });
+    }
 
     this.setState({
       searchResult
     });
   };
 
+  filter = index => {
+    const { originalSearchResult } = this.state;
+    const { searchResult } = this.state;
+    // let filteredSearchResult = searchResult.slice();
+    let filteredSearchResult = originalSearchResult.slice();
+    const filters = { open: index.includes(0), rewards: index.includes(1) };
+
+    if (filters.open) {
+      // 영업중인 곳 필터
+      filteredSearchResult = filteredSearchResult.filter(entry => entry.isOpen);
+      console.log('영업중인곳 : ', filteredSearchResult);
+      this.setState({
+        searchResult: filteredSearchResult
+      });
+    } else if (!filters.open && !filters.rewards) {
+      console.log('영업중 필터 해제!');
+      this.setState({
+        searchResult: originalSearchResult
+      });
+    }
+
+    if (index.rewards) {
+      // 교환권 있는 곳 필터
+      filteredSearchResult = filteredSearchResult.filter(
+        entry => entry.haveRewards
+      );
+      console.log('교환권있는곳 : ', filteredSearchResult);
+      this.setState({
+        searchResult: filteredSearchResult
+      });
+    } else if (!filters.rewards && !filters.open) {
+      console.log('교환권 필터 해제!');
+      this.setState({
+        searchResult: originalSearchResult
+      });
+    }
+  };
+
   render() {
-    const { searchStores, updateIndex, sortOfFilter } = this;
+    const { searchStores, updateIndex, updateFilter, sort, filter } = this;
     const {
       searchInputValue,
       searchResult,
       customerID,
-      selectedIndex
+      selectedIndex,
+      selectedIndexes
     } = this.state;
-    const buttons = ['거리', '스탬프', '가격', '영업중', '교환권'];
 
     return (
       <ThemeProvider theme={theme}>
@@ -291,12 +362,12 @@ export default class SearchScreen extends Component {
             <ButtonGroup
               onPress={index => {
                 updateIndex(index);
-                sortOfFilter(index, buttons[index]);
+                sort(index);
               }}
               selectedIndex={selectedIndex}
-              buttons={buttons}
+              buttons={['거리', '스탬프', '가격']}
               containerStyle={{
-                width: '100%',
+                width: '60%',
                 height: 45,
                 borderWidth: 0,
                 borderRadius: 0,
@@ -312,6 +383,32 @@ export default class SearchScreen extends Component {
               selectedTextStyle={{ color: 'rgb(223, 58, 47)' }}
               innerBorderStyle={{ width: 0, color: 'black' }}
               textStyle={{ color: '#333', fontSize: 19 }}
+            />
+            <ButtonGroup
+              onPress={index => {
+                updateFilter(index);
+                filter(index);
+              }}
+              selectedIndexes={selectedIndexes}
+              buttons={['영업중', '교환권']}
+              containerStyle={{
+                width: '40%',
+                height: 45,
+                borderWidth: 0,
+                borderRadius: 0,
+                borderBottomWidth: 0,
+                borderBottomColor: 'black',
+                margin: 0,
+                padding: 0,
+                marginTop: 0,
+                marginBottom: 0
+              }}
+              buttonStyle={{ backgroundColor: 'rgb(255, 202, 54)' }}
+              selectedButtonStyle={{ backgroundColor: 'hsl(45, 98%, 70%)' }}
+              selectedTextStyle={{ color: 'rgb(223, 58, 47)' }}
+              innerBorderStyle={{ width: 0, color: 'black' }}
+              textStyle={{ color: '#333', fontSize: 19 }}
+              selectMultiple={true}
             />
           </View>
           {/* 검색 결과 */}
