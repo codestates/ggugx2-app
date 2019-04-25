@@ -29,7 +29,7 @@ const theme = {
   },
   Text: {
     style: {
-      borderWidth: 1,
+      borderWidth: 0,
       borderColor: 'blue'
     }
   },
@@ -161,6 +161,7 @@ export default class TossScreen extends Component {
         {/* 최상위 View */}
         <View style={s.container}>
           <Text h3>{this.props.navigation.state.params.storeName}</Text>
+          <Text>스탬프를 보내고 싶은 분의 핸드폰 번호를 입력해 검색하세요</Text>
           <Input
             placeholder={'010-1234-1234'}
             textContentType={'telephoneNumber'}
@@ -170,7 +171,10 @@ export default class TossScreen extends Component {
             }}
           />
           <Button title={'찾기'} onPress={onPressFind} />
-          <Text>스탬프를 보내고 싶은 분의 핸드폰 번호를 입력해 검색하세요</Text>
+          <Text>
+            꾹꾹이 앱을 사용하지 않아도 스탬프를 전달받을 수 있습니다!
+          </Text>
+          <Text>(교환권으로 교환하시려면 앱을 설치해주세요)</Text>
           <View
             style={{
               width: '100%',
@@ -179,7 +183,7 @@ export default class TossScreen extends Component {
               alignContent: 'center'
             }}
           >
-            {name && (
+            {to !== null && (
               <View
                 style={{
                   width: '80%',
@@ -191,7 +195,9 @@ export default class TossScreen extends Component {
                   justifyContent: 'center'
                 }}
               >
-                <Text style={{ fontSize: 23 }}>{name}님</Text>
+                <Text style={{ fontSize: 23 }}>
+                  {name ? `${name}님에게` : '꾹꾹이 앱을 사용하실 분에게'}
+                </Text>
                 <View style={{ flexDirection: 'row' }}>
                   <Input
                     type={'text'}
