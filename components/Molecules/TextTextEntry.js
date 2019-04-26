@@ -14,14 +14,24 @@ export default class TextTextEntry extends Component {
           flexDirection: 'row',
           flexWrap: 'nowrap',
           alignItems: 'stretch',
-          width: '100%'
+          width: '100%',
+          borderBottomWidth: 1,
+          borderColor: '#999',
+          padding: 2,
+          marginTop: 5
         }}
       >
-        <Text style={{ flex: 2.5, borderWidth: 1, ...styleLeft }}>{LEFT}</Text>
+        <Text
+          style={{
+            flex: 2.5,
+            ...styleLeft
+          }}
+        >
+          {LEFT}
+        </Text>
         <Text
           style={{
             flex: 1,
-            borderWidth: 1,
             textAlign: 'right',
             ...styleRight
           }}

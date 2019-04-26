@@ -45,9 +45,16 @@ export default class StoreInfo extends Component {
     return (
       <View style={{ borderWidth: 0, padding: 10 }}>
         <ThemeProvider theme={theme}>
-          <View style={{ flexDirection: 'row' }}>
+          <View style={{ flexDirection: 'row', borderWidth: 1 }}>
             <Text style={s.title}>주소</Text>
-            <Text style={{ fontSize: 29 }}>{address}</Text>
+            <Text
+              style={{
+                fontSize: 19,
+                paddingTop: 6
+              }}
+            >
+              {address}
+            </Text>
           </View>
           <View style={{ flexDirection: 'row' }}>
             <Text style={s.title}>영업시간</Text>
@@ -57,12 +64,12 @@ export default class StoreInfo extends Component {
                   source={iconOpen}
                   style={{ width: 30, height: 30, margin: 4 }}
                 />
-                <Text style={{ fontSize: 28 }}>
+                <Text style={{ fontSize: 23 }}>
                   {openhour ? openhour.slice(0, -3) : 'error'} ~{' '}
                   {closehour ? closehour.slice(0, -3) : 'error'}
                 </Text>
               </View>
-              <Text style={{ fontSize: 24 }}>{dayoff}요일 휴무</Text>
+              <Text style={{ fontSize: 22 }}>{dayoff}요일 휴무</Text>
             </View>
           </View>
           <View style={{ flexDirection: 'row' }}>
