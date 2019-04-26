@@ -45,7 +45,7 @@ export default class CollectionScreen extends Component {
     this.state = {
       customerID: null,
       storeID: 1,
-      storeName: '가까운곳',
+      storeName: '',
       modalVisible: false,
       stampsObject: {},
       nearbyStoresList: [],
@@ -121,23 +121,27 @@ export default class CollectionScreen extends Component {
   };
 
   getNearbyStoresList = async () => {
-    console.log(
-      'getNearbyStoresList 날릴때 보낼 좌표:',
-      this.state.location.coords
-    );
-    axios.defaults.baseURL = 'http://localhost:3030';
-    const uri = '/nearby-stores-list';
+    const { longitude, latitude } = this.state.location.coords;
+    // axios.defaults.baseURL = 'http://localhost:3030';
+    const uri = '/stores/nearby';
     try {
-      const response = await axios.get(uri);
+      const response = await axios.post(uri, {
+        longitude,
+        latitude
+      });
 
-      console.log('nearby-stores-list 성공');
-      this.setState({ nearbyStoresList: response.data });
+      console.log('nearby-stores-list 성공', response.data);
+      this.setState({ nearbyStoresList: response.data.slice(1) }, () => {
+        this.setState({
+          storeName: response.data[0].storeName
+        });
+      });
     } catch (error) {
       console.log('nearby-stores-list 실패', error);
     }
 
-    axios.defaults.baseURL =
-      'http://ec2-13-115-51-251.ap-northeast-1.compute.amazonaws.com:3000';
+    // axios.defaults.baseURL =
+    //   'http://ec2-13-115-51-251.ap-northeast-1.compute.amazonaws.com:3000';
   };
 
   componentWillMount() {
@@ -264,8 +268,9 @@ export default class CollectionScreen extends Component {
           {/* 근처 매장 리스트 */}
           <View
             style={{
-              flex: 2,
-              width: 300,
+              flex: 0,
+              width: '90%',
+              height: 150,
               margin: 10,
               backgroundColor: '#eee',
               padding: 10
@@ -287,6 +292,7 @@ export default class CollectionScreen extends Component {
                     this.getStampsRewardsCounts(customerID, storeID);
                   }}
                   key={i}
+                  // style={{ height: 40 }}
                 >
                   <StoresEntry
                     list={{
@@ -294,8 +300,8 @@ export default class CollectionScreen extends Component {
                       RIGHT: item.distance
                     }}
                     suffix={'m'}
-                    styleLeft={{ fontSize: 23 }}
-                    styleRight={{ fontSize: 20 }}
+                    styleLeft={{ fontSize: 20, padding: 3 }}
+                    styleRight={{ fontSize: 17, padding: 3 }}
                   />
                 </TouchableOpacity>
               ))}

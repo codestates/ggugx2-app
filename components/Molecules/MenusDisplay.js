@@ -7,15 +7,14 @@ export default class MenusDisplay extends Component {
   render() {
     const { menuList } = this.props;
     return (
-      <View style={{ borderWidth: 1 }}>
-        <Text>Molecules/MenusDisplay : 메뉴 정보 보여주는 Molecule</Text>
+      <View style={{ borderWidth: 0 }}>
         {menuList.map((menu, i) => (
           <MenuEntry
-            list={{ LEFT: menu.NAME, RIGHT: menu.PRICE }}
+            list={{ LEFT: menu.name, RIGHT: menu.price }}
             suffix={'원'}
             key={i}
-            styleLeft={{ fontSize: 25 }}
-            styleRight={{ fontSize: 25 }}
+            styleLeft={{ fontSize: 20 }}
+            styleRight={{ fontSize: 20 }}
           />
         ))}
       </View>
