@@ -13,8 +13,8 @@ export default class MenusDisplay extends Component {
             list={{ LEFT: menu.name, RIGHT: menu.price }}
             suffix={'원'}
             key={i}
-            styleLeft={{ fontSize: 22 }}
-            styleRight={{ fontSize: 22 }}
+            styleLeft={{ fontSize: 20 }}
+            styleRight={{ fontSize: 20 }}
           />
         ))}
       </View>

@@ -102,7 +102,6 @@ export default class StampsScreen extends Component {
   getMenuList = async () => {
     const { storeID } = this.props.navigation.state.params;
     console.log('getMenuList 스토어 아이디:', storeID);
-    // axios.defaults.baseURL = 'http://localhost:3030';
     const uri = '/stores/menu-list';
     try {
       const response = await axios.post(uri, {
@@ -114,8 +113,6 @@ export default class StampsScreen extends Component {
     } catch (error) {
       console.log(`${uri} 실패`, error);
     }
-    // axios.defaults.baseURL =
-    //   'http://ec2-13-115-51-251.ap-northeast-1.compute.amazonaws.com:3000';
   };
 
   onUpdateCounts = (stamps, rewards) => {
