@@ -44,7 +44,7 @@ export default class CollectionScreen extends Component {
     super(props);
     this.state = {
       customerID: null,
-      storeID: 1,
+      storeID: null,
       storeName: '',
       modalVisible: false,
       stampsObject: {},
@@ -91,7 +91,7 @@ export default class CollectionScreen extends Component {
       );
       this.setState({ customerID });
 
-      this.getStampsRewardsCounts(customerID, this.state.storeID);
+      // this.getStampsRewardsCounts(customerID, this.state.storeID);
       // FIXME: storeID도 가까운가게 리스트 받아온 다음 정해지는거라 이부분 달라져야함
 
       this.emitRegister(`${customerID}`);
@@ -122,7 +122,6 @@ export default class CollectionScreen extends Component {
 
   getNearbyStoresList = async () => {
     const { longitude, latitude } = this.state.location.coords;
-    // axios.defaults.baseURL = 'http://localhost:3030';
     const uri = '/stores/nearby';
     try {
       const response = await axios.post(uri, {
@@ -131,17 +130,17 @@ export default class CollectionScreen extends Component {
       });
 
       console.log('nearby-stores-list 성공', response.data);
-      this.setState({ nearbyStoresList: response.data.slice(1) }, () => {
+      this.setState({ nearbyStoresList: response.data }, () => {
+        const { storeName, storeID } = response.data[0];
+        this.getStampsRewardsCounts(this.state.customerID, storeID);
         this.setState({
-          storeName: response.data[0].storeName
+          storeName,
+          storeID
         });
       });
     } catch (error) {
       console.log('nearby-stores-list 실패', error);
     }
-
-    // axios.defaults.baseURL =
-    //   'http://ec2-13-115-51-251.ap-northeast-1.compute.amazonaws.com:3000';
   };
 
   componentWillMount() {
