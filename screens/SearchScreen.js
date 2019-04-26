@@ -332,7 +332,6 @@ export default class SearchScreen extends Component {
       selectedIndex,
       selectedIndexes
     } = this.state;
-
     return (
       <ThemeProvider theme={theme}>
         {/* 최상위 View */}
@@ -390,18 +389,24 @@ export default class SearchScreen extends Component {
           {/* 검색 결과 */}
           <View style={s.searchResultsView}>
             <ScrollView style={{ borderWidth: 0 }}>
-              {searchResult.map((item, i) => (
-                <SearchResultEntry
-                  itemObject={item}
-                  key={i}
-                  onPress={() => {
-                    this.props.navigation.navigate('Stamps', {
-                      ...item,
-                      customerID
-                    });
-                  }}
-                />
-              ))}
+              {searchResult.length === 0 ? (
+                <Text style={{ textAlign: 'center', margin: 20 }}>
+                  결과가 없습니다!
+                </Text>
+              ) : (
+                searchResult.map((item, i) => (
+                  <SearchResultEntry
+                    itemObject={item}
+                    key={i}
+                    onPress={() => {
+                      this.props.navigation.navigate('Stamps', {
+                        ...item,
+                        customerID
+                      });
+                    }}
+                  />
+                ))
+              )}
             </ScrollView>
           </View>
         </View>
