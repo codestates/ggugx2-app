@@ -225,17 +225,25 @@ export default class RedeemStamps extends Component {
             }
             this.setState({ modalVisible: true });
           }}
+          buttonStyle={{ width: 100, marginHorizontal: 20 }}
         />
-        <RewardsBadge
-          rewards={rewards}
-          storeID={storeID}
-          onPress={() => {
-            if (rewards === 0) {
-              alert('교환권이 없슴');
-              return;
-            }
-            this.setState({ modalVisibleUse: true });
-          }}
+        <Button
+          title={'교환권 사용'}
+          icon={
+            <RewardsBadge
+              rewards={rewards}
+              storeID={storeID}
+              onPress={() => {
+                if (rewards === 0) {
+                  alert('교환권이 없슴');
+                  return;
+                }
+                this.setState({ modalVisibleUse: true });
+              }}
+            />
+          }
+          iconRight={true}
+          // buttonStyle={{ backgroundColor: 'white' }}
         />
       </View>
     );

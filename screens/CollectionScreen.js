@@ -116,7 +116,7 @@ export default class CollectionScreen extends Component {
       this.setState({ stampsObject: response.data });
       this.willFocus = true;
     } catch (error) {
-      console.log('getStampsRewardsCounts 실패', error.response);
+      console.log('getStampsRewardsCounts 실패', error);
     }
   };
 
@@ -126,9 +126,8 @@ export default class CollectionScreen extends Component {
     try {
       const response = await axios.post(uri, {
         longitude,
-        latitude
+        lattitude: latitude
       });
-
       console.log('nearby-stores-list 성공', response.data);
       this.setState({ nearbyStoresList: response.data }, () => {
         const { storeName, storeID } = response.data[0];
@@ -163,8 +162,7 @@ export default class CollectionScreen extends Component {
     }
 
     let location = await Location.getCurrentPositionAsync({});
-    this.setState({ location });
-    this.getNearbyStoresList();
+    this.setState({ location }, this.getNearbyStoresList);
   };
 
   render() {
@@ -277,33 +275,38 @@ export default class CollectionScreen extends Component {
           >
             <Text>지금 계신 매장이 아닌가요?</Text>
             <ScrollView style={{ borderWidth: 1 }}>
-              {nearbyStoresList.map((item, i) => (
-                <TouchableOpacity
-                  onPress={() => {
-                    const { storeID, storeName } = item;
-                    const { customerID } = this.state;
-                    this.setState({
-                      storeID,
-                      storeName
-                    });
-                    // TODO: getStampsRewardsCounts API 버그 : 매장이 있지만 메뉴는 등록하지 않은경우 서버 에러남
-                    // 매장 등록하면 메뉴를 최소 1개 필수로 등록해야함
-                    this.getStampsRewardsCounts(customerID, storeID);
-                  }}
-                  key={i}
-                  // style={{ height: 40 }}
-                >
-                  <StoresEntry
-                    list={{
-                      LEFT: item.storeName,
-                      RIGHT: item.distance
+              {nearbyStoresList.map((item, i) => {
+                let distanceWithUnit = item.distance;
+                if (item.distance > 1000) {
+                  distanceWithUnit = (item.distance / 1000).toFixed(1);
+                }
+                return (
+                  <TouchableOpacity
+                    onPress={() => {
+                      const { storeID, storeName } = item;
+                      const { customerID } = this.state;
+                      this.setState({
+                        storeID,
+                        storeName
+                      });
+                      // TODO: getStampsRewardsCounts API 버그 : 매장이 있지만 메뉴는 등록하지 않은경우 서버 에러남
+                      // 매장 등록하면 메뉴를 최소 1개 필수로 등록해야함
+                      this.getStampsRewardsCounts(customerID, storeID);
                     }}
-                    suffix={'m'}
-                    styleLeft={{ fontSize: 20, padding: 3 }}
-                    styleRight={{ fontSize: 17, padding: 3 }}
-                  />
-                </TouchableOpacity>
-              ))}
+                    key={i}
+                  >
+                    <StoresEntry
+                      list={{
+                        LEFT: item.storeName,
+                        RIGHT: distanceWithUnit
+                      }}
+                      suffix={item.distance > 1000 ? 'km' : 'm'}
+                      styleLeft={{ fontSize: 20, padding: 3 }}
+                      styleRight={{ fontSize: 17, padding: 3 }}
+                    />
+                  </TouchableOpacity>
+                );
+              })}
             </ScrollView>
           </View>
           {/* 적립 버튼 */}
