@@ -123,7 +123,6 @@ export default class SearchScreen extends Component {
       selectedIndexes: []
     };
     this.getCustomerID();
-    this.searchStores();
   }
   static navigationOptions = {
     header: null
@@ -169,16 +168,31 @@ export default class SearchScreen extends Component {
     console.log('TCL: SearchScreen -> getCustomerID -> customerID', customerID);
 
     this.setState({ customerID });
+
+    this.searchStores('아메리카노', customerID);
   };
 
-  searchStores = async query => {
+  searchStores = async (query, customerID = this.state.customerID) => {
     console.log('입력된 검색어 ::::', query);
+    const limit = 10;
     // 처음 검색 스크린 띄울때 location을 받아온 다음에야 기본리스트를 쿼리할 수 있으므로 여기서 위치를 받아야한다
     let location = await Location.getCurrentPositionAsync({});
-    axios.defaults.baseURL = 'http://localhost:3030';
-    const uri = '/stores-search';
+    const { longitude, latitude } = location.coords;
+    // axios.defaults.baseURL = 'http://localhost:3030';
+    const uri = '/stores/search';
     try {
-      const response = await axios.get(uri);
+      console.log('/stores/search API request', {
+        query,
+        customerID,
+        coordinate: { latitude, longitude },
+        limit
+      });
+      const response = await axios.post(uri, {
+        query,
+        customerID,
+        coordinate: { latitude, longitude },
+        limit
+      });
       console.log(`${uri} 성공`);
       console.log('검색결과 : ', response.data);
       let rawResult = response.data;
@@ -191,18 +205,19 @@ export default class SearchScreen extends Component {
             stamps,
             img,
             rewards,
-            coordinate,
+            // coordinate,
+            distance,
             openhour,
             closehour,
             menuFound
           } = entry;
           ////////////////////// 거리계산
-          const from = {
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude
-          };
-          const distance = geolib.getDistance(from, coordinate);
-          console.log('거리: ', distance);
+          // const from = {
+          //   latitude: location.coords.latitude,
+          //   longitude: location.coords.longitude
+          // };
+          // const distance = geolib.getDistance(from, coordinate);
+          // console.log('거리: ', distance);
           ////////////////////// 운영중 여부
           let isOpen = false; // openhour, closehour 이용
           // 방법 1. open, close를 오늘의 open,close로 바꿔 milisec으로 바꾸고, 현시각 milisec과 대소비교
@@ -222,10 +237,12 @@ export default class SearchScreen extends Component {
           //////////////////////
           const haveRewards = rewards > 0 ? true : false;
           console.log(
-            coordinate,
+            // coordinate,
+            distance,
             openhour,
             closehour,
             isOpen,
+            rewards,
             haveRewards,
             menuFound
           );
@@ -246,8 +263,8 @@ export default class SearchScreen extends Component {
     } catch (error) {
       console.log(`${uri} 실패`, error);
     }
-    axios.defaults.baseURL =
-      'http://ec2-13-115-51-251.ap-northeast-1.compute.amazonaws.com:3000';
+    // axios.defaults.baseURL =
+    //   'http://ec2-13-115-51-251.ap-northeast-1.compute.amazonaws.com:3000';
   };
 
   sort = index => {
