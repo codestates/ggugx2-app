@@ -6,42 +6,22 @@ import {
   Dimensions,
   AsyncStorage
 } from 'react-native';
-import { Text, Button, Image } from 'react-native-elements';
+import { Text, Button, Image, ThemeProvider } from 'react-native-elements';
+// import { YellowButton } from '../components/Atoms/YellowButton';
+import { NavigationEvents } from 'react-navigation';
 import StampsPaper from '../components/Molecules/StampsPaper';
 import RedeemStamps from '../components/Molecules/RedeemStamps';
 import StoreInfo from '../components/Organisms/StoreInfo';
 import StoreLargeMap from '../components/Organisms/StoreLargeMap';
 import StampsCountsDisplay from '../components/Molecules/StampsCountsDisplay';
 import axios from '../modules/axios-connector';
-import socket from '../modules/socket-connector';
 
-// SearchSreen에서 매장을 선택하면 navigation.state.params를 통해 storeID와 customerID를 전달받는다.
-// -> storeID와 customerID를 갖고 데이터들을 받아온다.
-
-// API ==== 이 페이지에 필요한 static한 데이터를 받아온다
-//// API 1. POST { storeID, customerID }
-//// -> 매장에 적립한 스탬프 수, 교환권 수 [이건 적립페이지에서도 필요해서 따로 API 만들어야 함]
-//// API 2. POST { storeID }
-//// -> + 가게 주소, 영업시간, 휴무일, 전화번호
-//// -> + 메뉴 리스트
-
-// storeID -> 메뉴 정보
-// Menus 테이블에서, SELECT NAME, PRICE FROM MENUS WHERE STORE_ID = ?;
-// const menuList = [
-//   {
-//     NAME: '아메리카노',
-//     PRICE: 4000
-//   },
-//   {
-//     NAME: '카페라뗴',
-//     PRICE: 4500
-//   },
-//   {
-//     NAME: '민트초코프라푸치노',
-//     PRICE: 5000
-//   }
-// ];
-
+const theme = {
+  Button: {
+    buttonStyle: { backgroundColor: 'rgb(255, 205, 55)', height: 50 },
+    titleStyle: { color: 'black', fontWeight: 'bold' }
+  }
+};
 export default class StampsScreen extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
@@ -62,7 +42,7 @@ export default class StampsScreen extends Component {
     };
     this.getStoreInfo();
     this.getMenuList();
-    this.getStampsRewards(); // params에서 받지않고 서버에 한번더 물어볼거라면 사용할 것
+    // this.getStampsRewards(); // params에서 받지않고 서버에 한번더 물어볼거라면 사용할 것
   }
 
   getStampsRewards = () => {
@@ -123,7 +103,7 @@ export default class StampsScreen extends Component {
   };
 
   render() {
-    const REQUIRED = 10; // Stores.STAMP
+    const REQUIRED = 10; // Stores.STAMP FIXME: 이놈의 존재를 잊어서 API중에 이걸 응답해주는놈이 없다 ㅋㅋ 서버에서 받아오는게 맞지만 그래봤자 고정값.
     const {
       customerID,
       storeID,
@@ -139,43 +119,53 @@ export default class StampsScreen extends Component {
       height: Dimensions.get('window').width * 0.65 // 16:9 size = 0.65
     };
 
-    // TODO: 토스하기 완료하고 다시 이 스크린으로 돌아왔을때, 변경된 스탬프수를 반영해야 함.
-    // 아마도 stack 변화와 관련한 lifecycle method가 있을 것 같은데..
-
     return (
       <ScrollView style={{ flex: 1 }}>
-        <StampsCountsDisplay stampsObject={{ stamps, REQUIRED }} />
+        <ThemeProvider theme={theme}>
+          <NavigationEvents
+            onWillFocus={() => {
+              console.log('StampsScreen Will Focus');
+              this.getStampsRewards();
+            }}
+          />
 
-        <StampsPaper stampsObject={{ stamps, REQUIRED }} />
+          <StampsCountsDisplay stampsObject={{ stamps, REQUIRED }} />
 
-        <RedeemStamps
-          stamps={stamps}
-          rewards={rewards}
-          customerID={customerID}
-          storeID={storeID}
-          onUpdateCounts={onUpdateCounts}
-        />
+          <StampsPaper stampsObject={{ stamps, REQUIRED }} />
 
-        <Text>FIXME:손님ID:{customerID}</Text>
-        <Button
-          title={'Toss하기'}
-          onPress={() => {
-            if (stamps === 0) {
-              alert('스탬프가 없습니다');
-              return;
-            }
-            onPressTossButton(storeName);
-          }}
-        />
+          <RedeemStamps
+            stamps={stamps}
+            rewards={rewards}
+            customerID={customerID}
+            storeID={storeID}
+            onUpdateCounts={onUpdateCounts}
+          />
 
-        <Image
-          source={{ uri: img }}
-          PlaceholderContent={<ActivityIndicator />}
-          resizeMode={'cover'}
-          style={{ width: storeImage.width, height: storeImage.height }}
-        />
-        <StoreInfo storeInfo={storeInfo} menuList={menuList} />
-        <StoreLargeMap />
+          <Text>FIXME:손님ID:{customerID}</Text>
+          <Button
+            title={'토스하기'}
+            onPress={() => {
+              if (stamps === 0) {
+                alert('스탬프가 없습니다');
+                return;
+              }
+              onPressTossButton(storeName);
+            }}
+          />
+
+          <Image
+            source={{ uri: img }}
+            PlaceholderContent={<ActivityIndicator color={'white'} />}
+            resizeMode={'cover'}
+            style={{
+              width: storeImage.width,
+              height: storeImage.height,
+              marginTop: 10
+            }}
+          />
+          <StoreInfo storeInfo={storeInfo} menuList={menuList} />
+          <StoreLargeMap />
+        </ThemeProvider>
       </ScrollView>
     );
   }

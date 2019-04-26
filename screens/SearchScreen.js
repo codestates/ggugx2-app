@@ -92,7 +92,7 @@ const s = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'white',
     flexDirection: 'column',
-    paddingTop: 22
+    paddingTop: 0
   },
   searchFiltersView: {
     width: '100%',
@@ -195,7 +195,7 @@ export default class SearchScreen extends Component {
       const response = await axios.post(uri, {
         query,
         customerID,
-        coordinate: { latitude, longitude },
+        coordinate: { lattitude: latitude, longitude },
         limit
       });
       console.log(`${uri} 성공`);

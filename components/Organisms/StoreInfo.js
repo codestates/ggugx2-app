@@ -28,6 +28,10 @@ const s = StyleSheet.create({
     flexDirection: 'row',
     borderWidth: 0,
     alignItems: 'baseline'
+  },
+  content: {
+    flex: 1,
+    paddingTop: 4
   }
 });
 
@@ -45,31 +49,33 @@ export default class StoreInfo extends Component {
     return (
       <View style={{ borderWidth: 0, padding: 10 }}>
         <ThemeProvider theme={theme}>
-          <View style={{ flexDirection: 'row', borderWidth: 1 }}>
+          <View
+            style={{
+              flexDirection: 'row'
+            }}
+          >
             <Text style={s.title}>주소</Text>
-            <Text
-              style={{
-                fontSize: 19,
-                paddingTop: 6
-              }}
-            >
-              {address}
-            </Text>
+            <View style={s.content}>
+              <Text
+                style={{ fontSize: 20, borderWidth: 0, height: 80 }}
+                numberOfLines={3}
+              >
+                {address}
+              </Text>
+            </View>
           </View>
           <View style={{ flexDirection: 'row' }}>
             <Text style={s.title}>영업시간</Text>
-            <View>
+            <View style={s.content}>
               <View style={s.hoursRow}>
-                <Image
-                  source={iconOpen}
-                  style={{ width: 30, height: 30, margin: 4 }}
-                />
                 <Text style={{ fontSize: 23 }}>
                   {openhour ? openhour.slice(0, -3) : 'error'} ~{' '}
                   {closehour ? closehour.slice(0, -3) : 'error'}
                 </Text>
               </View>
-              <Text style={{ fontSize: 22 }}>{dayoff}요일 휴무</Text>
+              <Text style={{ fontSize: 22 }}>
+                {dayoff ? `${dayoff}요일 휴무` : '연중무휴'}
+              </Text>
             </View>
           </View>
           <View style={{ flexDirection: 'row' }}>
@@ -86,6 +92,7 @@ export default class StoreInfo extends Component {
             </TouchableOpacity>
           </View>
         </ThemeProvider>
+        <Text style={s.title}>메뉴</Text>
         <MenusDisplay menuList={menuList} />
       </View>
     );

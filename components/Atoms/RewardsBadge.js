@@ -43,7 +43,7 @@ export default class rewardsBadge extends Component {
             {rewards}
           </Text>
         </View>
-        <Text>FIXME:가게ID:{this.props.storeID}</Text>
+        {/* <Text>FIXME:가게ID:{this.props.storeID}</Text> */}
       </TouchableOpacity>
     );
   }
