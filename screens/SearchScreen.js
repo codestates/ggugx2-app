@@ -107,7 +107,7 @@ const s = StyleSheet.create({
   searchResultsView: {
     flex: 2,
     width: '100%',
-    backgroundColor: '#eee'
+    backgroundColor: 'white'
   }
 });
 
@@ -121,10 +121,8 @@ export default class SearchScreen extends Component {
       errorMessage: null,
       selectedIndex: 0,
       selectedIndexes: []
-      // location: null
     };
     this.getCustomerID();
-    this.searchStores();
   }
   static navigationOptions = {
     header: null
@@ -170,16 +168,36 @@ export default class SearchScreen extends Component {
     console.log('TCL: SearchScreen -> getCustomerID -> customerID', customerID);
 
     this.setState({ customerID });
+
+    this.searchStores('아메리카노', customerID);
   };
 
-  searchStores = async query => {
+  searchStores = async (query, customerID = this.state.customerID) => {
     console.log('입력된 검색어 ::::', query);
+    query = query.trim();
+    console.log('trimmed 검색어 ::::', query);
+    if (query === '') {
+      alert('검색어를 입력해주세요!');
+      return;
+    }
+    const limit = 10;
     // 처음 검색 스크린 띄울때 location을 받아온 다음에야 기본리스트를 쿼리할 수 있으므로 여기서 위치를 받아야한다
     let location = await Location.getCurrentPositionAsync({});
-    axios.defaults.baseURL = 'http://localhost:3030';
-    const uri = '/stores-search';
+    const { longitude, latitude } = location.coords;
+    const uri = '/stores/search';
     try {
-      const response = await axios.get(uri);
+      console.log('/stores/search API request', {
+        query,
+        customerID,
+        coordinate: { latitude, longitude },
+        limit
+      });
+      const response = await axios.post(uri, {
+        query,
+        customerID,
+        coordinate: { latitude, longitude },
+        limit
+      });
       console.log(`${uri} 성공`);
       console.log('검색결과 : ', response.data);
       let rawResult = response.data;
@@ -192,18 +210,11 @@ export default class SearchScreen extends Component {
             stamps,
             img,
             rewards,
-            coordinate,
+            distance,
             openhour,
             closehour,
             menuFound
           } = entry;
-          ////////////////////// 거리계산
-          const from = {
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude
-          };
-          const distance = geolib.getDistance(from, coordinate);
-          console.log('거리: ', distance);
           ////////////////////// 운영중 여부
           let isOpen = false; // openhour, closehour 이용
           // 방법 1. open, close를 오늘의 open,close로 바꿔 milisec으로 바꾸고, 현시각 milisec과 대소비교
@@ -223,10 +234,11 @@ export default class SearchScreen extends Component {
           //////////////////////
           const haveRewards = rewards > 0 ? true : false;
           console.log(
-            coordinate,
+            distance,
             openhour,
             closehour,
             isOpen,
+            rewards,
             haveRewards,
             menuFound
           );
@@ -243,29 +255,31 @@ export default class SearchScreen extends Component {
         })
         .sort((a, b) => a.distance - b.distance);
 
-      this.setState({ searchResult, originalSearchResult: searchResult });
+      this.setState(
+        { searchResult, originalSearchResult: searchResult },
+        () => {
+          // 기존에 선택된 정렬, 필터 기준이 있을 경우를 위해
+          this.sort(this.state.selectedIndex);
+          this.filter(this.state.selectedIndexes);
+        }
+      );
     } catch (error) {
       console.log(`${uri} 실패`, error);
     }
-    axios.defaults.baseURL =
-      'http://ec2-13-115-51-251.ap-northeast-1.compute.amazonaws.com:3000';
   };
 
   sort = index => {
     let { searchResult } = this.state;
     const SortedSearchResult = searchResult.slice();
     if (index === 0) {
-      console.log('거리순!!');
       SortedSearchResult.sort((a, b) => {
         return a.distance - b.distance;
       });
     } else if (index === 1) {
-      console.log('스탬프순!!');
       SortedSearchResult.sort((a, b) => {
         return b.stamps - a.stamps;
       });
     } else if (index === 2) {
-      console.log('가격순!!');
       SortedSearchResult.sort((a, b) => {
         return a.menuFound.price - b.menuFound.price;
       });
@@ -277,6 +291,7 @@ export default class SearchScreen extends Component {
   };
 
   filter = index => {
+    const { sort } = this;
     const { originalSearchResult } = this.state;
     let filteredSearchResult = originalSearchResult.slice();
     const filters = { open: index.includes(0), rewards: index.includes(1) };
@@ -297,13 +312,23 @@ export default class SearchScreen extends Component {
     }
 
     if (!filters.open && !filters.rewards) {
-      this.setState({
-        searchResult: originalSearchResult
-      });
+      this.setState(
+        {
+          searchResult: originalSearchResult
+        },
+        () => {
+          sort(this.state.selectedIndex);
+        }
+      );
     } else {
-      this.setState({
-        searchResult: filteredSearchResult
-      });
+      this.setState(
+        {
+          searchResult: filteredSearchResult
+        },
+        () => {
+          sort(this.state.selectedIndex);
+        }
+      );
     }
   };
 
@@ -316,7 +341,6 @@ export default class SearchScreen extends Component {
       selectedIndex,
       selectedIndexes
     } = this.state;
-
     return (
       <ThemeProvider theme={theme}>
         {/* 최상위 View */}
@@ -332,13 +356,9 @@ export default class SearchScreen extends Component {
                 containerStyle={{
                   backgroundColor: 'white'
                 }}
-                onKeyPress={e => {
-                  // TODO: 엔터 입력시 검색 쿼리 함수 실행해야 하는데 엔터는 이벤트가 발생 안한다
-                  console.log('눌린 키', e.nativeEvent.key);
-                  if (e.nativeEvent.key === 'Enter') {
-                    console.log('엔터눌림!');
-                    searchStores(searchInputValue);
-                  }
+                returnKeyType={'search'}
+                onSubmitEditing={() => {
+                  searchStores(searchInputValue);
                 }}
               />
             }
@@ -361,11 +381,6 @@ export default class SearchScreen extends Component {
               onPress={index => {
                 updateFilter(index);
                 filter(index);
-                setTimeout(() => {
-                  sort(this.state.selectedIndex);
-                }, 0);
-                // setState가 끝나서 searchResult가 변한 다음 sort가 되어야 해서
-                // setTimeout으로 비동기 처리하게 만들었더니 작동은 하는데 중간과정이 보인다.
               }}
               selectedIndexes={selectedIndexes}
               buttons={['영업중', '교환권']}
@@ -378,18 +393,24 @@ export default class SearchScreen extends Component {
           {/* 검색 결과 */}
           <View style={s.searchResultsView}>
             <ScrollView style={{ borderWidth: 0 }}>
-              {searchResult.map((item, i) => (
-                <SearchResultEntry
-                  itemObject={item}
-                  key={i}
-                  onPress={() => {
-                    this.props.navigation.navigate('Stamps', {
-                      ...item,
-                      customerID
-                    });
-                  }}
-                />
-              ))}
+              {searchResult.length === 0 ? (
+                <Text style={{ textAlign: 'center', margin: 20 }}>
+                  결과가 없습니다!
+                </Text>
+              ) : (
+                searchResult.map((item, i) => (
+                  <SearchResultEntry
+                    itemObject={item}
+                    key={i}
+                    onPress={() => {
+                      this.props.navigation.navigate('Stamps', {
+                        ...item,
+                        customerID
+                      });
+                    }}
+                  />
+                ))
+              )}
             </ScrollView>
           </View>
         </View>

@@ -22,25 +22,6 @@ import axios from '../modules/axios-connector';
 import socket from '../modules/socket-connector';
 // import io from 'socket.io-client';
 
-// GPS 현위치를 서버에 보내 (가까운 순서로) storeID, storeName, distance를 응답해주는 API 필요
-// -> 받아온 배열의 0번 인덱스가 가장 가까운 매장이므로, nearbyStoresList[0].storeID를 자동선택된 매장 ID로 주면됨.
-// const nearbyStoresList = [
-//   {
-//     storeID: 0,
-//     storeName: '스벅 성수',
-//     distance: '234'
-//   }
-// ];
-
-// 받아온 가까운 매장들 리스트에서 가장 가까운 매장의 storeID를 현 화면의 매장으로 자동선택
-// const currentStoreID = nearbyStoresList[0].storeID;
-
-// currentStoreID와 customerID로 요청보내서 스탬프와 교환권 수를 응답해주는 API 필요
-// const stampsObject = {
-//   stamps: 3,
-//   rewards: 1
-// };
-
 const theme = {
   View: {
     style: {
@@ -75,7 +56,6 @@ export default class CollectionScreen extends Component {
     this.isComplete = false;
     this.willFocus = false;
     this.getCustomerID();
-    this.getNearbyStoresList();
 
     socket.on('stamp add complete', msg => {
       if (msg && msg.confirm) {
@@ -141,6 +121,10 @@ export default class CollectionScreen extends Component {
   };
 
   getNearbyStoresList = async () => {
+    console.log(
+      'getNearbyStoresList 날릴때 보낼 좌표:',
+      this.state.location.coords
+    );
     axios.defaults.baseURL = 'http://localhost:3030';
     const uri = '/nearby-stores-list';
     try {
@@ -177,6 +161,7 @@ export default class CollectionScreen extends Component {
 
     let location = await Location.getCurrentPositionAsync({});
     this.setState({ location });
+    this.getNearbyStoresList();
   };
 
   render() {
@@ -291,10 +276,15 @@ export default class CollectionScreen extends Component {
               {nearbyStoresList.map((item, i) => (
                 <TouchableOpacity
                   onPress={() => {
+                    const { storeID, storeName } = item;
+                    const { customerID } = this.state;
                     this.setState({
-                      storeID: item.storeID,
-                      storeName: item.storeName
+                      storeID,
+                      storeName
                     });
+                    // TODO: getStampsRewardsCounts API 버그 : 매장이 있지만 메뉴는 등록하지 않은경우 서버 에러남
+                    // 매장 등록하면 메뉴를 최소 1개 필수로 등록해야함
+                    this.getStampsRewardsCounts(customerID, storeID);
                   }}
                   key={i}
                 >
@@ -329,9 +319,6 @@ export default class CollectionScreen extends Component {
             <Button
               title={'적립하기'}
               onPress={() => {
-                // this.setModalVisible(true);
-                // this.waitForComplete();
-                //
                 emitRequestStamp(storeID);
                 this.setState({ modalVisible: true });
               }}
