@@ -5,7 +5,8 @@ import {
   AsyncStorage,
   ActivityIndicator,
   TouchableOpacity,
-  Platform
+  Platform,
+  Image
 } from 'react-native';
 import { Constants, Location, Permissions } from 'expo';
 import {
@@ -18,6 +19,7 @@ import {
 import { NavigationEvents } from 'react-navigation';
 
 import StoresEntry from '../components/Molecules/TextTextEntry';
+import StampsCountsDisplay from '../components/Molecules/StampsCountsDisplay';
 import axios from '../modules/axios-connector';
 import socket from '../modules/socket-connector';
 // import io from 'socket.io-client';
@@ -32,6 +34,19 @@ const theme = {
     style: {
       borderWidth: 0,
       borderColor: 'blue'
+    }
+  },
+  Button: {
+    buttonStyle: {
+      backgroundColor: 'rgb(255, 205, 55)',
+      height: 120,
+      width: 120,
+      borderRadius: 100
+    },
+    titleStyle: { color: 'black', fontWeight: 'bold', fontSize: 25 },
+    containerStyle: {
+      borderWidth: 2,
+      borderColor: 'gold'
     }
   }
 };
@@ -58,7 +73,8 @@ export default class CollectionScreen extends Component {
     this.getCustomerID();
 
     socket.on('stamp add complete', msg => {
-      if (msg && msg.confirm) {
+      console.log('수신!', msg);
+      if (msg && msg.customer === String(this.state.customerID)) {
         console.log('stamp add complete :: ', msg);
         this.setState({ modalVisible: true, isComplete: true });
         const { customerID, storeID } = this.state;
@@ -179,17 +195,39 @@ export default class CollectionScreen extends Component {
       'CollectionScreen] render() customerID : ',
       this.state.customerID
     );
+    const loadingImg = require('../assets/images/loadingfriends.gif');
 
     return (
       <ThemeProvider theme={theme}>
         <Header
-          placement={'center'}
-          centerComponent={{
-            text: storeName,
-            style: { fontSize: 30 }
-          }}
+          // placement={'center'}
+          // centerComponent={{
+          //   // text: storeName,
+          //   style: { fontSize: 30 }
+          // }}
           backgroundColor={'white'}
+          containerStyle={{
+            height: 0
+          }}
         />
+        <Text
+          style={{
+            color: 'gray',
+            textAlign: 'center'
+          }}
+        >
+          현재 계신 매장
+        </Text>
+        <Text
+          style={{
+            textAlign: 'center',
+            fontSize: 30,
+            fontWeight: 'bold',
+            padding: 5
+          }}
+        >
+          {storeName}
+        </Text>
 
         <NavigationEvents
           onWillFocus={() => {
@@ -206,16 +244,46 @@ export default class CollectionScreen extends Component {
             isComplete &&
               this.setState({ modalVisible: false, isComplete: false });
           }}
+          overlayStyle={{
+            borderWidth: 1,
+            borderColor: 'lightgray',
+            borderRadius: 10
+          }}
         >
           {!isComplete ? (
-            <View>
-              <ActivityIndicator />
-              <Text>사장님의 확인을 기다리는 중입니다.</Text>
+            <View
+              style={{
+                height: '90%',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'space-around'
+              }}
+            >
+              {/* <ActivityIndicator /> */}
+              <Image source={loadingImg} style={{ width: 70, height: 70 }} />
+              <Text style={{ fontSize: 22, textAlign: 'center' }}>
+                사장님의 확인을 {'\n'}기다리는 중입니다!
+              </Text>
             </View>
           ) : (
-            <View>
-              <Text>적립이 완료됐습니다</Text>
+            <View
+              style={{
+                height: '90%',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'space-around'
+              }}
+            >
+              <Text style={{ fontSize: 20 }}>적립이 완료됐습니다</Text>
               <Button
+                containerStyle={{
+                  width: 200,
+                  height: 50,
+                  borderRadius: 6,
+                  borderWidth: 0
+                  // marginTop: 30
+                }}
+                buttonStyle={{ width: 200, height: 50, borderRadius: 6 }}
                 title={'닫기'}
                 onPress={() => {
                   this.setState({ modalVisible: false, isComplete: false });
@@ -230,51 +298,131 @@ export default class CollectionScreen extends Component {
             flex: 1,
             alignItems: 'center',
             backgroundColor: 'white',
-            flexDirection: 'column',
-            paddingTop: 20
+            flexDirection: 'column'
+            // paddingTop: 20
           }}
         >
           {/* 쿠폰, 교환권 수 */}
           <View
             style={{
-              flex: 2,
-              backgroundColor: '#eee',
+              flex: 0,
+              width: '90%',
+              backgroundColor: '#fff',
               padding: 10,
-              justifyContent: 'center'
+              justifyContent: 'center',
+              alignSelf: 'center'
             }}
           >
-            <Text>
+            {/* <Text>
               고객 ID: {this.state.customerID} {'         '}
               가게 ID: {this.state.storeID}
-            </Text>
-
+            </Text> */}
             <View
               style={{
                 borderWidth: 1,
-                width: 200,
-                height: 100,
-                backgroundColor: 'white',
-                justifyContent: 'space-around',
-                flexWrap: 'nowrap'
+                borderRadius: 10,
+                borderColor: 'gray',
+                padding: 10,
+                backgroundColor: 'hsl(50, 60%, 90%)',
+                height: 108
               }}
             >
-              <Text h4>쿠폰🐾: {stampsObject.stamps}개</Text>
-              <Text h4>교환권💵: {stampsObject.rewards}개</Text>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'baseline',
+                  marginLeft: 10
+                }}
+              >
+                <Text h4>스탬프</Text>
+                <StampsCountsDisplay
+                  stampsObject={{ stamps: stampsObject.stamps, REQUIRED: 10 }}
+                />
+              </View>
+
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'baseline',
+                  marginLeft: 10
+                }}
+              >
+                <Text h4>교환권</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'baseline' }}>
+                  <Text
+                    style={{
+                      color: 'rgb(236, 66, 60)',
+                      fontWeight: 'bold',
+                      fontSize: 34,
+                      marginRight: 7
+                    }}
+                  >
+                    {stampsObject.rewards}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 26,
+                      marginRight: 10
+                    }}
+                  >
+                    개
+                  </Text>
+                </View>
+              </View>
             </View>
+          </View>
+          <View
+            style={{
+              flex: 1,
+              width: '90%',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              padding: 0,
+              borderWidth: 0,
+              marginVertical: 10
+            }}
+          >
+            <Button
+              title={'적립하기'}
+              onPress={() => {
+                emitRequestStamp(storeID);
+                this.setState({ modalVisible: true });
+              }}
+            />
           </View>
           {/* 근처 매장 리스트 */}
           <View
             style={{
-              flex: 0,
-              width: '90%',
+              flex: 1,
               height: 150,
+              width: '90%',
               margin: 10,
-              backgroundColor: '#eee',
+              // marginVertical: 50,
+              backgroundColor: '#fff',
               padding: 10
             }}
           >
-            <Text>지금 계신 매장이 아닌가요?</Text>
-            <ScrollView style={{ borderWidth: 1 }}>
+            <Text
+              style={{
+                fontWeight: 'bold',
+                paddingLeft: 5,
+                marginBottom: 5
+              }}
+            >
+              지금 계신 매장이 아닌가요?
+            </Text>
+            <ScrollView
+              style={{
+                borderWidth: 1,
+                borderRadius: 10,
+                borderColor: 'gray',
+                paddingHorizontal: 10,
+                backgroundColor: 'hsl(50, 60%, 90%)'
+              }}
+            >
               {nearbyStoresList.map((item, i) => {
                 let distanceWithUnit = item.distance;
                 if (item.distance > 1000) {
@@ -310,28 +458,12 @@ export default class CollectionScreen extends Component {
             </ScrollView>
           </View>
           {/* 적립 버튼 */}
-          {this.state.location !== null && (
+          {/* {this.state.location !== null && (
             <Text>
               latitude: {this.state.location.coords.latitude} / longitude:{' '}
               {this.state.location.coords.longitude}
             </Text>
-          )}
-          <View
-            style={{
-              flex: 1,
-              flexDirection: 'row',
-              backgroundColor: '#eee',
-              padding: 10
-            }}
-          >
-            <Button
-              title={'적립하기'}
-              onPress={() => {
-                emitRequestStamp(storeID);
-                this.setState({ modalVisible: true });
-              }}
-            />
-          </View>
+          )} */}
         </View>
       </ThemeProvider>
     );
