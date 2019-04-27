@@ -118,6 +118,8 @@ export default class StampsScreen extends Component {
       width: Dimensions.get('window').width,
       height: Dimensions.get('window').width * 0.65 // 16:9 size = 0.65
     };
+    const imgPlaceholder =
+      'http://img.danawa.com/prod_img/500000/906/579/img/5579906_1.jpg?shrink=500:500&_v=20171024170730';
 
     return (
       <ScrollView style={{ flex: 1 }}>
@@ -154,7 +156,7 @@ export default class StampsScreen extends Component {
           />
 
           <Image
-            source={{ uri: img }}
+            source={{ uri: img || imgPlaceholder }}
             PlaceholderContent={<ActivityIndicator color={'white'} />}
             resizeMode={'cover'}
             style={{
