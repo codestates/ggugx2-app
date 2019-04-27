@@ -421,7 +421,7 @@ export default class SearchScreen extends Component {
                 >
                   <Image source={loading} style={{ width: 40, height: 40 }} />
                   <Text
-                    style={{ textAlign: 'center', margin: 0, fontSize: 20 }}
+                    style={{ textAlign: 'center', margin: 0, fontSize: 15 }}
                   >
                     검색중
                   </Text>

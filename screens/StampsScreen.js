@@ -6,7 +6,13 @@ import {
   Dimensions,
   AsyncStorage
 } from 'react-native';
-import { Text, Button, Image, ThemeProvider } from 'react-native-elements';
+import {
+  Text,
+  Button,
+  Image,
+  ThemeProvider,
+  Header
+} from 'react-native-elements';
 // import { YellowButton } from '../components/Atoms/YellowButton';
 import { NavigationEvents } from 'react-navigation';
 import StampsPaper from '../components/Molecules/StampsPaper';
@@ -23,13 +29,16 @@ const theme = {
   }
 };
 export default class StampsScreen extends Component {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: navigation.getParam('storeName'),
-      headerTitleStyle: {
-        fontSize: 20
-      }
-    };
+  // static navigationOptions = ({ navigation }) => {
+  //   return {
+  //     title: navigation.getParam('storeName'),
+  //     headerTitleStyle: {
+  //       fontSize: 20
+  //     }
+  //   };
+  // };
+  static navigationOptions = {
+    header: null
   };
   constructor(props) {
     super(props);
@@ -118,18 +127,58 @@ export default class StampsScreen extends Component {
       width: Dimensions.get('window').width,
       height: Dimensions.get('window').width * 0.65 // 16:9 size = 0.65
     };
-    const imgPlaceholder =
-      'http://img.danawa.com/prod_img/500000/906/579/img/5579906_1.jpg?shrink=500:500&_v=20171024170730';
-
+    const imgPlaceholder = img
+      ? { uri: img }
+      : require('../assets/images/muzi_placeholder.jpg');
     return (
       <ScrollView style={{ flex: 1 }}>
         <ThemeProvider theme={theme}>
+          <Header
+            backgroundColor={'white'}
+            containerStyle={{
+              height: 0
+            }}
+          />
           <NavigationEvents
             onWillFocus={() => {
               console.log('StampsScreen Will Focus');
               this.getStampsRewards();
             }}
           />
+
+          <View
+            style={{
+              width: '100%',
+              flexDirection: 'row',
+              justifyContent: 'space-between'
+            }}
+          >
+            <Button
+              title={'뒤로'}
+              onPress={() => {
+                this.props.navigation.goBack();
+              }}
+              containerStyle={{ width: 60 }}
+              buttonStyle={{
+                backgroundColor: 'white',
+                paddingVertical: 5,
+                justifyContent: 'flex-end'
+              }}
+              titleStyle={{ color: '#666', fontWeight: 'normal' }}
+            />
+            <Text
+              style={{
+                flex: 1,
+                textAlign: 'center',
+                fontSize: 30,
+                fontWeight: 'bold',
+                paddingTop: 6
+              }}
+            >
+              {storeName}
+            </Text>
+            <View style={{ width: 60 }} />
+          </View>
 
           <StampsCountsDisplay stampsObject={{ stamps, REQUIRED }} />
 
@@ -156,7 +205,7 @@ export default class StampsScreen extends Component {
           />
 
           <Image
-            source={{ uri: img || imgPlaceholder }}
+            source={imgPlaceholder}
             PlaceholderContent={<ActivityIndicator color={'white'} />}
             resizeMode={'cover'}
             style={{
