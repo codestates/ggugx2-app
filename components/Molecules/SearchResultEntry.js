@@ -64,14 +64,17 @@ export default class SearchResultEntry extends Component {
         </View>
         {/* 중간: 매장명, 거리, 스탬프수 */}
         <View style={s.storeInfoTextsView}>
-          <Text style={{ fontSize: 20, fontWeight: 'bold', height: 30 }}>
+          <Text
+            style={{ fontSize: 20, fontWeight: 'bold', height: 30 }}
+            numberOfLines={1}
+          >
             {storeName}
           </Text>
           <Text style={{ fontSize: 14, height: 20 }}>
-            거리 {distanceWithUnit}
+            거리 / {distanceWithUnit}
           </Text>
           <Text style={{ fontSize: 14, height: 20 }}>
-            적립한 스탬프 수 {stamps}개
+            적립한 스탬프 수 / {stamps}개
           </Text>
           <Text style={{ fontSize: 14, height: 20 }}>
             {menuFound.name} {menuFound.price}원
@@ -79,14 +82,86 @@ export default class SearchResultEntry extends Component {
         </View>
         {/* 오른쪽: 운영중, 교환권여부 */}
         <View style={s.iconsView}>
-          <Image
+          {/* <Image
             source={iconOpen}
             style={{ width: iconSize, height: iconSize }}
-          />
-          <Image
+          /> */}
+          <View>
+            {isOpen ? (
+              <Text
+                style={{
+                  width: iconSize,
+                  borderWidth: 2,
+                  borderRadius: 4,
+                  borderColor: 'hsl(100, 60%, 60%)',
+                  fontSize: 12,
+                  fontWeight: 'bold',
+                  textAlign: 'center',
+                  color: 'hsl(100, 70%, 30%)',
+                  paddingVertical: 3
+                }}
+              >
+                영업중
+              </Text>
+            ) : (
+              <Text
+                style={{
+                  width: iconSize,
+                  borderWidth: 2,
+                  borderRadius: 4,
+                  borderColor: 'hsl(100, 20%, 70%)',
+                  padding: 1,
+                  fontSize: 12,
+                  fontWeight: 'bold',
+                  textAlign: 'center',
+                  color: 'hsl(100, 35%, 60%)',
+                  paddingVertical: 3
+                }}
+              >
+                휴무
+              </Text>
+            )}
+          </View>
+          <View>
+            {haveRewards ? (
+              <Text
+                style={{
+                  width: iconSize,
+                  borderWidth: 2,
+                  borderRadius: 4,
+                  borderColor: 'rgb(223, 58, 47)',
+                  fontSize: 12,
+                  fontWeight: 'bold',
+                  textAlign: 'center',
+                  color: 'rgb(223, 58, 47)',
+                  paddingVertical: 3
+                }}
+              >
+                교환권
+              </Text>
+            ) : (
+              <Text
+                style={{
+                  width: iconSize,
+                  borderWidth: 2,
+                  borderRadius: 4,
+                  borderColor: 'hsl(4, 20%, 80%)',
+                  padding: 1,
+                  fontSize: 12,
+                  fontWeight: 'bold',
+                  textAlign: 'center',
+                  color: 'hsl(4, 20%, 60%)',
+                  paddingVertical: 3
+                }}
+              >
+                없음
+              </Text>
+            )}
+          </View>
+          {/* <Image
             source={iconRewards}
             style={{ width: iconSize, height: iconSize }}
-          />
+          /> */}
         </View>
       </TouchableOpacity>
     );
