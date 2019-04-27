@@ -323,7 +323,7 @@ export default class CollectionScreen extends Component {
                 borderRadius: 10,
                 borderColor: 'gray',
                 padding: 10,
-                backgroundColor: 'hsl(50, 60%, 90%)',
+                backgroundColor: 'hsl(15, 100%, 95%)',
                 height: 108
               }}
             >
@@ -420,7 +420,7 @@ export default class CollectionScreen extends Component {
                 borderRadius: 10,
                 borderColor: 'gray',
                 paddingHorizontal: 10,
-                backgroundColor: 'hsl(50, 60%, 90%)'
+                backgroundColor: 'hsl(15, 100%, 95%)'
               }}
             >
               {nearbyStoresList.map((item, i) => {

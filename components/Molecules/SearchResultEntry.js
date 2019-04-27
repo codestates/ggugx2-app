@@ -50,8 +50,9 @@ export default class SearchResultEntry extends Component {
     const iconRewards = haveRewards
       ? require('../../assets/images/icon-redeem.png')
       : require('../../assets/images/icon-redeem-x.png');
-    const imgPlaceholder =
-      'http://img.danawa.com/prod_img/500000/906/579/img/5579906_1.jpg?shrink=500:500&_v=20171024170730';
+    const imgPlaceholder = img
+      ? { uri: img }
+      : require('../../assets/images/muzi_placeholder.jpg');
     const iconSize = 40;
     let distanceWithUnit =
       distance > 1000 ? (distance / 1000).toFixed(1) + 'km' : distance + 'm';
@@ -59,7 +60,7 @@ export default class SearchResultEntry extends Component {
       <TouchableOpacity style={s.containerTouchable} onPress={onPress}>
         {/* 왼쪽: 매장사진 */}
         <View style={s.storeImageView}>
-          <Avatar size={90} rounded source={{ uri: img || imgPlaceholder }} />
+          <Avatar size={90} rounded source={imgPlaceholder} />
         </View>
         {/* 중간: 매장명, 거리, 스탬프수 */}
         <View style={s.storeInfoTextsView}>
