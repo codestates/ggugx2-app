@@ -9,7 +9,8 @@ import {
   TouchableOpacity,
   ScrollView,
   StyleSheet,
-  Platform
+  Platform,
+  Image
 } from 'react-native';
 import { Constants, Location, Permissions } from 'expo';
 import {
@@ -120,7 +121,8 @@ export default class SearchScreen extends Component {
       originalSearchResult: [],
       errorMessage: null,
       selectedIndex: 0,
-      selectedIndexes: []
+      selectedIndexes: [],
+      isSearching: false
     };
     this.getCustomerID();
   }
@@ -173,6 +175,7 @@ export default class SearchScreen extends Component {
   };
 
   searchStores = async (query, customerID = this.state.customerID) => {
+    this.setState({ isSearching: true });
     console.log('입력된 검색어 ::::', query);
     query = query.trim();
     console.log('trimmed 검색어 ::::', query);
@@ -261,6 +264,7 @@ export default class SearchScreen extends Component {
           // 기존에 선택된 정렬, 필터 기준이 있을 경우를 위해
           this.sort(this.state.selectedIndex);
           this.filter(this.state.selectedIndexes);
+          this.setState({ isSearching: false });
         }
       );
     } catch (error) {
@@ -339,8 +343,10 @@ export default class SearchScreen extends Component {
       searchResult,
       customerID,
       selectedIndex,
-      selectedIndexes
+      selectedIndexes,
+      isSearching
     } = this.state;
+    const loading = require('../assets/images/loadingfriends.gif');
     return (
       <ThemeProvider theme={theme}>
         {/* 최상위 View */}
@@ -358,6 +364,7 @@ export default class SearchScreen extends Component {
                 }}
                 returnKeyType={'search'}
                 onSubmitEditing={() => {
+                  // this.setState({ isSearching: true });
                   searchStores(searchInputValue);
                 }}
               />
@@ -393,7 +400,24 @@ export default class SearchScreen extends Component {
           {/* 검색 결과 */}
           <View style={s.searchResultsView}>
             <ScrollView style={{ borderWidth: 0 }}>
-              {searchResult.length === 0 ? (
+              {isSearching && (
+                <View
+                  style={{
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: '#eee',
+                    padding: 10
+                  }}
+                >
+                  <Image source={loading} style={{ width: 40, height: 40 }} />
+                  <Text
+                    style={{ textAlign: 'center', margin: 0, fontSize: 20 }}
+                  >
+                    검색중
+                  </Text>
+                </View>
+              )}
+              {!isSearching && searchResult.length === 0 ? (
                 <Text style={{ textAlign: 'center', margin: 20 }}>
                   결과가 없습니다!
                 </Text>
