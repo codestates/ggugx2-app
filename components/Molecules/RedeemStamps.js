@@ -225,7 +225,7 @@ export default class RedeemStamps extends Component {
             }
             this.setState({ modalVisible: true });
           }}
-          buttonStyle={{ width: 100, marginHorizontal: 20 }}
+          buttonStyle={{ width: 100, marginHorizontal: 20, borderRadius: 50 }}
         />
         <Button
           title={'교환권 사용'}
@@ -243,7 +243,7 @@ export default class RedeemStamps extends Component {
             />
           }
           iconRight={true}
-          // buttonStyle={{ backgroundColor: 'white' }}
+          buttonStyle={{ borderRadius: 50, padding: 0 }}
         />
       </View>
     );
