@@ -6,7 +6,8 @@ import { Button } from 'react-native-elements';
 
 export default class SettingsScreen extends React.Component {
   static navigationOptions = {
-    title: '내 정보'
+    // title: '로그아웃'
+    header: null
   };
   onPressLogout = async () => {
     await AsyncStorage.clear();

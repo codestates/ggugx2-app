@@ -15,15 +15,16 @@ import axios from '../modules/axios-connector';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    width: '100%',
     backgroundColor: '#fff',
     paddingTop: 0,
-    padding: 30,
+    padding: 20,
     justifyContent: 'center',
-    alignContent: 'space-between'
+    alignContent: 'center'
   },
   welcomeImage: {
-    width: 50,
-    height: 50
+    width: 60,
+    height: 60
   },
   button: {
     backgroundColor: 'rgb(255, 205, 55)'
@@ -33,7 +34,13 @@ const styles = StyleSheet.create({
 const theme = {
   Button: {
     buttonStyle: {
-      height: 60
+      height: 60,
+      margin: 5
+    },
+    titleStyle: {
+      color: '#333',
+      fontSize: 24,
+      fontWeight: 'bold'
     }
   },
   Input: {
@@ -41,7 +48,9 @@ const theme = {
       padding: 20
     },
     containerStyle: {
-      margin: 5
+      margin: 5,
+      borderWidth: 0,
+      alignSelf: 'center'
     },
     placeholderTextColor: '#666'
   }
@@ -61,6 +70,15 @@ export default class SignUpScreen extends React.Component {
     title: '회원가입'
   };
   handleInputChange = (text, name) => {
+    if (name === 'phone') {
+      if (text.length === 3) {
+        console.log('asdfasfs', text);
+        text += '-';
+      } else if (text.length === 8) {
+        console.log('asdfasfs', text);
+        text += '-';
+      }
+    }
     this.setState({
       [name]: text
     });
@@ -69,7 +87,7 @@ export default class SignUpScreen extends React.Component {
     const { phone, username, password, passwordConfirm } = this.state;
     const { navigate } = this.props.navigation;
     if (password !== passwordConfirm) {
-      alert('패스워드가 일치하지 않음');
+      alert('패스워드가 일치하지 않습니다');
       return;
     }
     axios
@@ -93,7 +111,7 @@ export default class SignUpScreen extends React.Component {
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
           <View style={styles.container}>
             <Image
-              source={require('../assets/images/muziLogin.png')}
+              source={require('../assets/images/muzi_twinkle.png')}
               style={styles.welcomeImage}
             />
             <ThemeProvider theme={theme}>
@@ -105,8 +123,10 @@ export default class SignUpScreen extends React.Component {
                 }}
               />
               <Input
+                value={this.state.phone}
                 placeholder={'010-1234-1234'}
                 textContentType={'telephoneNumber'}
+                keyboardType={'numeric'}
                 onChangeText={e => {
                   handleInputChange(e, 'phone');
                 }}
@@ -127,7 +147,22 @@ export default class SignUpScreen extends React.Component {
                 }}
                 secureTextEntry={true}
               />
-              <Button title={'가입하기'} onPress={onPressSignup} />
+              <Button
+                title={'가입하기'}
+                onPress={onPressSignup}
+                buttonStyle={{
+                  backgroundColor: 'yellowgreen'
+                }}
+                containerStyle={{
+                  shadowColor: 'gray',
+                  shadowOpacity: 1,
+                  shadowRadius: 4,
+                  shadowOffset: {
+                    width: 2,
+                    height: 2
+                  }
+                }}
+              />
             </ThemeProvider>
           </View>
         </TouchableWithoutFeedback>

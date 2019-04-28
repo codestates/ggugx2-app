@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
-import { View, Image } from 'react-native';
+import { View, Image, Dimensions } from 'react-native';
 
 export default class StampEntry extends Component {
   render() {
     const stampImgChecked = require('../../assets/images/stamp-checked.png');
     const stampImgUnchecked = require('../../assets/images/stamp-unchecked.png');
     const { isChecked } = this.props;
-    const stampSize = 65;
+    const width = Dimensions.get('window').width;
+    // const stampSize = 65;
+    const stampSize = width * 0.17;
     return (
       <View
         style={{

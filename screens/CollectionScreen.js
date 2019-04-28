@@ -213,22 +213,31 @@ export default class CollectionScreen extends Component {
         <Text
           style={{
             color: 'gray',
-            textAlign: 'center'
+            textAlign: 'center',
+            marginTop: 10
           }}
         >
           현재 계신 매장
         </Text>
-        <Text
+        <View
           style={{
-            textAlign: 'center',
-            fontSize: 30,
-            fontWeight: 'bold',
-            padding: 5
+            paddingTop: 5,
+            height: 50
           }}
         >
-          {storeName}
-        </Text>
-
+          <Text
+            style={{
+              textAlign: 'center',
+              fontSize: 30,
+              fontWeight: 'bold',
+              color: '#222'
+              // paddingTop: 15,
+              // height: 50
+            }}
+          >
+            {storeName}
+          </Text>
+        </View>
         <NavigationEvents
           onWillFocus={() => {
             console.log('CollectionScreen Will Focus');
@@ -387,9 +396,19 @@ export default class CollectionScreen extends Component {
           >
             <Button
               title={'적립하기'}
+              titleStyle={{ color: '#222' }}
               onPress={() => {
                 emitRequestStamp(storeID);
                 this.setState({ modalVisible: true });
+              }}
+              containerStyle={{
+                shadowColor: 'gray',
+                shadowOpacity: 1,
+                shadowRadius: 4,
+                shadowOffset: {
+                  width: 1,
+                  height: 1
+                }
               }}
             />
           </View>
