@@ -5,9 +5,14 @@ import StampEntry from '../Atoms/StampEntry';
 
 export default class StampsPaper extends Component {
   render() {
-    const { REQUIRED, stamps } = this.props.stampsObject;
+    const { REQUIRED } = this.props.stampsObject;
+    let { stamps } = this.props.stampsObject;
+
     const coupons = [];
 
+    if (stamps > 10) {
+      stamps = stamps % 10;
+    }
     for (let i = 0; i < stamps; i++) {
       coupons.push(true);
     }
@@ -22,7 +27,7 @@ export default class StampsPaper extends Component {
           borderWidth: 1,
           borderColor: 'gray',
           borderRadius: 10,
-          height: 152,
+          // height: 152,
           backgroundColor: '#eee',
           alignSelf: 'center'
         }}

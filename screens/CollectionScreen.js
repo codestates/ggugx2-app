@@ -401,6 +401,15 @@ export default class CollectionScreen extends Component {
                 emitRequestStamp(storeID);
                 this.setState({ modalVisible: true });
               }}
+              containerStyle={{
+                shadowColor: 'gray',
+                shadowOpacity: 1,
+                shadowRadius: 4,
+                shadowOffset: {
+                  width: 1,
+                  height: 1
+                }
+              }}
             />
           </View>
           {/* 근처 매장 리스트 */}

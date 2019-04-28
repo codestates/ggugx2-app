@@ -15,7 +15,7 @@ export default class RedeemStamps extends Component {
       modalVisibleError: false,
       isComplete: false,
       stage: 0,
-      status: '이 완료됐습니다!'
+      status: '교환이 완료됐습니다!'
       // rewards: this.props.rewards
     };
 
@@ -147,6 +147,14 @@ export default class RedeemStamps extends Component {
                   }
                 }}
               />
+              <Button
+                title={'취소'}
+                containerStyle={{ height: 30 }}
+                buttonStyle={{ height: 40, backgroundColor: 'lightgray' }}
+                onPress={() => {
+                  this.setState({ modalVisible: false, isComplete: false });
+                }}
+              />
             </View>
           ) : !isComplete ? (
             <View
@@ -230,6 +238,14 @@ export default class RedeemStamps extends Component {
                   });
                 }}
               />
+              <Button
+                title={'취소'}
+                containerStyle={{ height: 30 }}
+                buttonStyle={{ height: 40, backgroundColor: 'lightgray' }}
+                onPress={() => {
+                  this.setState({ modalVisibleUse: false, isComplete: false });
+                }}
+              />
             </View>
           ) : !isComplete ? (
             <View
@@ -301,7 +317,8 @@ export default class RedeemStamps extends Component {
               borderRadius: 100,
               backgroundColor: 'rgb(255, 205, 55)',
               justifyContent: 'center',
-              marginVertical: 1
+              marginVertical: 1,
+              paddingLeft: 10
             }}
             onPress={() => {
               if (rewards === 0) {
