@@ -6,8 +6,14 @@ import {
   Dimensions,
   AsyncStorage
 } from 'react-native';
-import { Text, Button, Image, ThemeProvider } from 'react-native-elements';
-// import { YellowButton } from '../components/Atoms/YellowButton';
+import {
+  Text,
+  Button,
+  Image,
+  ThemeProvider,
+  Header
+} from 'react-native-elements';
+import { Constants } from 'expo';
 import { NavigationEvents } from 'react-navigation';
 import StampsPaper from '../components/Molecules/StampsPaper';
 import RedeemStamps from '../components/Molecules/RedeemStamps';
@@ -23,13 +29,16 @@ const theme = {
   }
 };
 export default class StampsScreen extends Component {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: navigation.getParam('storeName'),
-      headerTitleStyle: {
-        fontSize: 20
-      }
-    };
+  // static navigationOptions = ({ navigation }) => {
+  //   return {
+  //     title: navigation.getParam('storeName'),
+  //     headerTitleStyle: {
+  //       fontSize: 20
+  //     }
+  //   };
+  // };
+  static navigationOptions = {
+    header: null
   };
   constructor(props) {
     super(props);
@@ -108,8 +117,9 @@ export default class StampsScreen extends Component {
       customerID,
       storeID,
       storeName,
-      distance,
-      img
+      img,
+      latitude,
+      longitude
     } = this.props.navigation.state.params;
     const { storeInfo, menuList } = this.state;
     const { stamps, rewards } = this.state;
@@ -118,11 +128,11 @@ export default class StampsScreen extends Component {
       width: Dimensions.get('window').width,
       height: Dimensions.get('window').width * 0.65 // 16:9 size = 0.65
     };
-    const imgPlaceholder =
-      'http://img.danawa.com/prod_img/500000/906/579/img/5579906_1.jpg?shrink=500:500&_v=20171024170730';
-
+    const imgPlaceholder = img
+      ? { uri: img }
+      : require('../assets/images/muzi_placeholder.jpg');
     return (
-      <ScrollView style={{ flex: 1 }}>
+      <ScrollView style={{ flex: 1, marginTop: Constants.statusBarHeight }}>
         <ThemeProvider theme={theme}>
           <NavigationEvents
             onWillFocus={() => {
@@ -130,6 +140,40 @@ export default class StampsScreen extends Component {
               this.getStampsRewards();
             }}
           />
+
+          <View
+            style={{
+              width: '100%',
+              flexDirection: 'row',
+              justifyContent: 'space-between'
+            }}
+          >
+            <Button
+              title={'뒤로'}
+              onPress={() => {
+                this.props.navigation.goBack();
+              }}
+              containerStyle={{ width: 60 }}
+              buttonStyle={{
+                backgroundColor: 'white',
+                paddingVertical: 5,
+                justifyContent: 'flex-end'
+              }}
+              titleStyle={{ color: '#666', fontWeight: 'normal' }}
+            />
+            <Text
+              style={{
+                flex: 1,
+                textAlign: 'center',
+                fontSize: 30,
+                fontWeight: 'bold',
+                paddingTop: 6
+              }}
+            >
+              {storeName}
+            </Text>
+            <View style={{ width: 60 }} />
+          </View>
 
           <StampsCountsDisplay stampsObject={{ stamps, REQUIRED }} />
 
@@ -143,9 +187,8 @@ export default class StampsScreen extends Component {
             onUpdateCounts={onUpdateCounts}
           />
 
-          <Text>FIXME:손님ID:{customerID}</Text>
           <Button
-            title={'토스하기'}
+            title={'스탬프 토스하기'}
             onPress={() => {
               if (stamps === 0) {
                 alert('스탬프가 없습니다');
@@ -153,20 +196,23 @@ export default class StampsScreen extends Component {
               }
               onPressTossButton(storeName);
             }}
+            titleStyle={{ fontSize: 22, color: 'hsl(19, 90%, 95%)' }}
+            buttonStyle={{ backgroundColor: 'hsl(19, 67%, 55%)' }}
           />
 
           <Image
-            source={{ uri: img || imgPlaceholder }}
+            source={imgPlaceholder}
             PlaceholderContent={<ActivityIndicator color={'white'} />}
             resizeMode={'cover'}
             style={{
               width: storeImage.width,
-              height: storeImage.height,
-              marginTop: 10
+              height: storeImage.height
+              // marginTop: 10
             }}
           />
           <StoreInfo storeInfo={storeInfo} menuList={menuList} />
-          <StoreLargeMap />
+
+          <StoreLargeMap coordinates={{ latitude, longitude }} />
         </ThemeProvider>
       </ScrollView>
     );

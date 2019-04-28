@@ -8,7 +8,11 @@ export default class StampEntry extends Component {
     const { isChecked } = this.props;
     const stampSize = 65;
     return (
-      <View>
+      <View
+        style={{
+          marginVertical: 3
+        }}
+      >
         <Image
           source={isChecked ? stampImgChecked : stampImgUnchecked}
           style={{ width: stampSize, height: stampSize }}

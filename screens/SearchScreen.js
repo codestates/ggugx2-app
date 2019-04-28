@@ -216,9 +216,13 @@ export default class SearchScreen extends Component {
             distance,
             openhour,
             closehour,
-            menuFound
+            menuFound,
+            dayoff,
+            latitude,
+            longitude
           } = entry;
           ////////////////////// 운영중 여부
+          console.log('휴무일', dayoff);
           let isOpen = false; // openhour, closehour 이용
           // 방법 1. open, close를 오늘의 open,close로 바꿔 milisec으로 바꾸고, 현시각 milisec과 대소비교
           const currentTime = new Date();
@@ -234,6 +238,14 @@ export default class SearchScreen extends Component {
           ) {
             isOpen = true;
           }
+          // 휴무일 반영
+          const currentDay = currentTime.getDay(); // 일요일: 0 ~ 토요일: 6
+          const daysString = '일월화수목금토';
+          const currentDayLocale = daysString[currentDay];
+
+          if (dayoff.includes(currentDayLocale)) {
+            isOpen = false;
+          }
           //////////////////////
           const haveRewards = rewards > 0 ? true : false;
           console.log(
@@ -243,7 +255,9 @@ export default class SearchScreen extends Component {
             isOpen,
             rewards,
             haveRewards,
-            menuFound
+            menuFound,
+            latitude,
+            longitude
           );
           return {
             storeID,
@@ -253,7 +267,9 @@ export default class SearchScreen extends Component {
             distance,
             isOpen,
             haveRewards,
-            menuFound
+            menuFound,
+            latitude,
+            longitude
           };
         })
         .sort((a, b) => a.distance - b.distance);
@@ -411,7 +427,7 @@ export default class SearchScreen extends Component {
                 >
                   <Image source={loading} style={{ width: 40, height: 40 }} />
                   <Text
-                    style={{ textAlign: 'center', margin: 0, fontSize: 20 }}
+                    style={{ textAlign: 'center', margin: 0, fontSize: 15 }}
                   >
                     검색중
                   </Text>
@@ -427,6 +443,7 @@ export default class SearchScreen extends Component {
                     itemObject={item}
                     key={i}
                     onPress={() => {
+                      console.log('!@#!#!@#!@#!@#', item);
                       this.props.navigation.navigate('Stamps', {
                         ...item,
                         customerID
