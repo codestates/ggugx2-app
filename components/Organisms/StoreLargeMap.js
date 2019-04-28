@@ -39,6 +39,7 @@ export default class StoreLargeMap extends Component {
             height: 200,
             width: '90%',
             borderWidth: 1,
+            borderRadius: 10,
             borderColor: 'gray',
             alignSelf: 'center',
             marginVertical: 10

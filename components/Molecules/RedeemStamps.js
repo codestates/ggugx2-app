@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { View, ActivityIndicator } from 'react-native';
-import { Text, Image, Button, Overlay } from 'react-native-elements';
+import { View, ActivityIndicator, TouchableOpacity, Image } from 'react-native';
+import { Text, Button, Overlay } from 'react-native-elements';
 import RewardsBadge from '../Atoms/RewardsBadge';
 import axios from '../../modules/axios-connector';
 import socket from '../../modules/socket-connector';
@@ -15,7 +15,7 @@ export default class RedeemStamps extends Component {
       modalVisibleError: false,
       isComplete: false,
       stage: 0,
-      status: '완료!'
+      status: '이 완료됐습니다!'
       // rewards: this.props.rewards
     };
 
@@ -63,16 +63,19 @@ export default class RedeemStamps extends Component {
       stage,
       status
     } = this.state;
-    const stampImgChecked = require('../../assets/images/stamp-checked.png');
-    const stampSize = 50;
+    // const stampImgChecked = require('../../assets/images/stamp-checked.png');
+    // const stampSize = 50;
+    const loadingImg = require('../../assets/images/loadingfriends.gif');
     return (
       <View
         style={{
-          flexDirection: 'row',
-          flexWrap: 'nowrap',
+          flexDirection: 'column',
+          // flexWrap: 'nowrap',
           alignItems: 'center',
           justifyContent: 'center',
-          padding: 5,
+          alignSelf: 'center',
+          // paddingHorizontal: 40,
+          width: '90%',
           borderWidth: 0
         }}
       >
@@ -111,7 +114,7 @@ export default class RedeemStamps extends Component {
               style={{
                 height: '90%',
                 flexDirection: 'column',
-                alignItems: 'center',
+                alignItems: 'stretch',
                 justifyContent: 'space-around'
               }}
             >
@@ -139,20 +142,39 @@ export default class RedeemStamps extends Component {
                     console.log('message: ', error.response.data.message);
                     this.setState({
                       isComplete: true,
-                      status: '실패!' + error.response.data.message
+                      status: ' 실패!\n교환권이 부족합니다.'
                     });
                   }
                 }}
               />
             </View>
           ) : !isComplete ? (
-            <View>
-              <ActivityIndicator />
-              <Text>교환중..</Text>
+            <View
+              style={{
+                height: '90%',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'space-around'
+              }}
+            >
+              {/* <ActivityIndicator /> */}
+              <Image source={loadingImg} style={{ width: 70, height: 70 }} />
+              <Text style={{ fontSize: 22, textAlign: 'center' }}>
+                교환중..
+              </Text>
             </View>
           ) : (
-            <View>
-              <Text>교환 {status}</Text>
+            <View
+              style={{
+                height: '90%',
+                flexDirection: 'column',
+                alignItems: 'stretch',
+                justifyContent: 'space-around'
+              }}
+            >
+              <Text style={{ fontSize: 20, textAlign: 'center' }}>
+                {status}
+              </Text>
               <Button
                 title={'닫기'}
                 onPress={() => {
@@ -175,10 +197,24 @@ export default class RedeemStamps extends Component {
             isComplete &&
               this.setState({ modalVisibleUse: false, isComplete: false });
           }}
+          overlayStyle={{
+            borderWidth: 1,
+            borderColor: 'lightgray',
+            borderRadius: 10
+          }}
         >
           {stage === 0 ? (
-            <View>
-              <Text>교환권을 1장 사용하시겠습니까?</Text>
+            <View
+              style={{
+                height: '90%',
+                flexDirection: 'column',
+                alignItems: 'stretch',
+                justifyContent: 'space-around'
+              }}
+            >
+              <Text style={{ fontSize: 22, textAlign: 'center' }}>
+                교환권을 1장{'\n'}사용하시겠습니까?
+              </Text>
               <Button
                 title={'사용합시다!'}
                 onPress={() => {
@@ -196,14 +232,26 @@ export default class RedeemStamps extends Component {
               />
             </View>
           ) : !isComplete ? (
-            <View>
-              <Text>교환권 사용을 요청했습니다!</Text>
-              <ActivityIndicator />
-              <Text>사장님의 확인을 기다리는 중입니다.</Text>
+            <View
+              style={{
+                height: '90%',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'space-around',
+                paddingTop: 10
+              }}
+            >
+              {/* <ActivityIndicator /> */}
+              <Image source={loadingImg} style={{ width: 70, height: 70 }} />
+              <Text style={{ fontSize: 22, textAlign: 'center' }}>
+                사장님의 확인을{'\n'}기다리는 중입니다.
+              </Text>
             </View>
           ) : (
             <View>
-              <Text>교환권을 사용했습니다!</Text>
+              <Text style={{ fontSize: 22, textAlign: 'center' }}>
+                교환권을 사용했습니다!
+              </Text>
               <Button
                 title={'닫기'}
                 onPress={() => {
@@ -220,40 +268,54 @@ export default class RedeemStamps extends Component {
 
         <View
           style={{
-            width: '90%',
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between'
+            width: '100%',
+            flexDirection: 'column',
+            alignItems: 'stretch',
+            // justifyContent: 'space-between',
+            borderWidth: 0
           }}
         >
+          {/* <Text style={{ fontSize: 20, fontWeight: 'bold', width: 55 }}>
+            교환권
+          </Text> */}
           <Button
             title={'교환권 받기'}
             onPress={() => {
               console.log(`손님:${customerID}, 가게:${storeID}`);
-              if (stamps === 0) {
-                alert('스탬프가 없슴');
+              if (stamps < 10) {
+                alert('스탬프가 부족합니다');
                 return;
               }
               this.setState({ modalVisible: true });
             }}
-            containerStyle={{ margin: 5, marginHorizontal: 10 }}
+            containerStyle={{ marginTop: 5 }}
+            buttonStyle={{ borderRadius: 100 }}
+            titleStyle={{ fontSize: 20 }}
           />
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <TouchableOpacity
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              // width: 140,
+              height: 50,
+              borderRadius: 100,
+              backgroundColor: 'rgb(255, 205, 55)',
+              justifyContent: 'center',
+              marginVertical: 1
+            }}
+            onPress={() => {
+              if (rewards === 0) {
+                alert('교환권이 없습니다');
+                return;
+              }
+              this.setState({ modalVisibleUse: true });
+            }}
+          >
             <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
               교환권 사용하기
             </Text>
-            <RewardsBadge
-              rewards={rewards}
-              storeID={storeID}
-              onPress={() => {
-                if (rewards === 0) {
-                  alert('교환권이 없습니다');
-                  return;
-                }
-                this.setState({ modalVisibleUse: true });
-              }}
-            />
-          </View>
+            <RewardsBadge rewards={rewards} storeID={storeID} />
+          </TouchableOpacity>
         </View>
       </View>
     );

@@ -19,11 +19,7 @@ export default class rewardsBadge extends Component {
     // }
 
     return (
-      <TouchableOpacity
-        onPress={() => {
-          this.props.onPress();
-        }}
-      >
+      <View>
         <View
           style={{
             height: badgeSize,
@@ -44,7 +40,7 @@ export default class rewardsBadge extends Component {
           </Text>
         </View>
         {/* <Text>FIXME:가게ID:{this.props.storeID}</Text> */}
-      </TouchableOpacity>
+      </View>
     );
   }
 }

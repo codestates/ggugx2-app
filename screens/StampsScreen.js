@@ -188,7 +188,7 @@ export default class StampsScreen extends Component {
           />
 
           <Button
-            title={'토스하기'}
+            title={'스탬프 토스하기'}
             onPress={() => {
               if (stamps === 0) {
                 alert('스탬프가 없습니다');
@@ -196,7 +196,8 @@ export default class StampsScreen extends Component {
               }
               onPressTossButton(storeName);
             }}
-            // containerStyle={{ width: '90%', alignSelf: 'center' }}
+            titleStyle={{ fontSize: 22, color: 'hsl(19, 90%, 95%)' }}
+            buttonStyle={{ backgroundColor: 'hsl(19, 67%, 55%)' }}
           />
 
           <Image

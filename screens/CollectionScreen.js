@@ -45,7 +45,7 @@ const theme = {
     },
     titleStyle: { color: 'black', fontWeight: 'bold', fontSize: 25 },
     containerStyle: {
-      borderWidth: 2,
+      borderWidth: 0,
       borderColor: 'gold'
     }
   }
