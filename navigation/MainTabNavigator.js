@@ -7,7 +7,7 @@ import {
 
 import TabBarIcon from '../components/TabBarIcon';
 import SearchScreen from '../screens/SearchScreen';
-import ChatScreen from '../screens/ChatScreen';
+// import ChatScreen from '../screens/ChatScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import CollectionScreen from '../screens/CollectionScreen';
 import StampsScreen from '../screens/StampsScreen';
@@ -24,8 +24,8 @@ CollectionStack.navigationOptions = {
       focused={focused}
       name={
         Platform.OS === 'ios'
-          ? `ios-information-circle${focused ? '' : '-outline'}`
-          : 'md-information-circle'
+          ? `ios-star${focused ? '' : '-outline'}`
+          : 'md-star'
       }
     />
   )
@@ -56,30 +56,34 @@ SearchStack.navigationOptions = {
   )
 };
 
-const ChatStack = createStackNavigator({
-  Chat: ChatScreen
-});
+// const ChatStack = createStackNavigator({
+//   Chat: ChatScreen
+// });
 
-ChatStack.navigationOptions = {
-  tabBarLabel: '1:1문의',
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon
-      focused={focused}
-      name={Platform.OS === 'ios' ? 'ios-link' : 'md-link'}
-    />
-  )
-};
+// ChatStack.navigationOptions = {
+//   tabBarLabel: '1:1문의',
+//   tabBarIcon: ({ focused }) => (
+//     <TabBarIcon
+//       focused={focused}
+//       name={Platform.OS === 'ios' ? 'ios-link' : 'md-link'}
+//     />
+//   )
+// };
 
 const SettingsStack = createStackNavigator({
   Settings: SettingsScreen
 });
 
 SettingsStack.navigationOptions = {
-  tabBarLabel: '내 정보',
+  tabBarLabel: '로그아웃',
   tabBarIcon: ({ focused }) => (
+    // <TabBarIcon
+    //   focused={focused}
+    //   name={Platform.OS === 'ios' ? 'ios-options' : 'md-options'}
+    // />
     <TabBarIcon
       focused={focused}
-      name={Platform.OS === 'ios' ? 'ios-options' : 'md-options'}
+      name={Platform.OS === 'ios' ? 'ios-log-out' : 'md-log-out'}
     />
   )
 };
@@ -87,6 +91,6 @@ SettingsStack.navigationOptions = {
 export default createBottomTabNavigator({
   CollectionStack,
   SearchStack,
-  ChatStack,
+  // ChatStack,
   SettingsStack
 });
