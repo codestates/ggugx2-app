@@ -124,10 +124,6 @@ export default class SearchScreen extends Component {
       selectedIndexes: [],
       isSearching: false
     };
-    this.coordinates = {
-      longitude: null,
-      latitude: null
-    };
     this.getCustomerID();
   }
   static navigationOptions = {
@@ -191,7 +187,6 @@ export default class SearchScreen extends Component {
     // 처음 검색 스크린 띄울때 location을 받아온 다음에야 기본리스트를 쿼리할 수 있으므로 여기서 위치를 받아야한다
     let location = await Location.getCurrentPositionAsync({});
     const { longitude, latitude } = location.coords;
-    this.coordinates = { longitude, latitude };
     const uri = '/stores/search';
     try {
       console.log('/stores/search API request', {
@@ -352,14 +347,7 @@ export default class SearchScreen extends Component {
   };
 
   render() {
-    const {
-      searchStores,
-      updateIndex,
-      updateFilter,
-      sort,
-      filter,
-      coordinates
-    } = this;
+    const { searchStores, updateIndex, updateFilter, sort, filter } = this;
     const {
       searchInputValue,
       searchResult,
@@ -451,8 +439,7 @@ export default class SearchScreen extends Component {
                     onPress={() => {
                       this.props.navigation.navigate('Stamps', {
                         ...item,
-                        customerID,
-                        coordinates
+                        customerID
                       });
                     }}
                   />

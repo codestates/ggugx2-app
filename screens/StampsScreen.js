@@ -117,8 +117,9 @@ export default class StampsScreen extends Component {
       customerID,
       storeID,
       storeName,
-      distance,
-      img
+      img,
+      latitude,
+      longitude
     } = this.props.navigation.state.params;
     const { storeInfo, menuList } = this.state;
     const { stamps, rewards } = this.state;
@@ -210,9 +211,7 @@ export default class StampsScreen extends Component {
           />
           <StoreInfo storeInfo={storeInfo} menuList={menuList} />
 
-          <StoreLargeMap
-            coordinates={this.props.navigation.state.params.coordinates}
-          />
+          <StoreLargeMap coordinates={{ latitude, longitude }} />
         </ThemeProvider>
       </ScrollView>
     );

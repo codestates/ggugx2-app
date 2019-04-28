@@ -44,12 +44,6 @@ export default class SearchResultEntry extends Component {
       menuFound
     } = this.props.itemObject;
     const { onPress } = this.props;
-    const iconOpen = isOpen
-      ? require('../../assets/images/icon-open.png')
-      : require('../../assets/images/icon-closed.png');
-    const iconRewards = haveRewards
-      ? require('../../assets/images/icon-redeem.png')
-      : require('../../assets/images/icon-redeem-x.png');
     const imgPlaceholder = img
       ? { uri: img }
       : require('../../assets/images/muzi_placeholder.jpg');

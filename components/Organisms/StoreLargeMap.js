@@ -7,8 +7,8 @@ export default class StoreLargeMap extends Component {
     super(props);
     this.state = {
       mapRegion: {
-        latitude: props.coordinates.latitude,
-        longitude: props.coordinates.longitude,
+        latitude: props.latitude,
+        longitude: props.longitude,
         latitudeDelta: 0.0011,
         longitudeDelta: 0.0011
       }
@@ -27,8 +27,8 @@ export default class StoreLargeMap extends Component {
         {/* TODO: 마커가 안찍힌다... */}
         <MapView.Marker
           coordinate={{
-            latitude, //: this.props.coordinates.latitude,
-            longitude //: this.props.coordinates.longitude
+            latitude, //: this.props.latitude,
+            longitude //: this.props.longitude
           }}
           title={'here'}
           description={'desc'}
