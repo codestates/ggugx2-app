@@ -18,14 +18,23 @@ export default class StampsPaper extends Component {
     return (
       <ScrollView
         style={{
-          // width: '90%',
-          height: 134,
+          width: '90%',
+          borderWidth: 1,
+          borderColor: 'gray',
+          borderRadius: 10,
+          height: 152,
           backgroundColor: '#eee',
           alignSelf: 'center'
         }}
       >
         <View
-          style={{ borderWidth: 1, flexDirection: 'row', flexWrap: 'wrap' }}
+          style={{
+            width: '100%',
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            justifyContent: 'space-around',
+            padding: 5
+          }}
         >
           {coupons.map((stamp, i) => (
             <StampEntry isChecked={stamp} key={i} />

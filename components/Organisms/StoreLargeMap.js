@@ -1,20 +1,52 @@
 import React, { Component } from 'react';
 import { Text, View } from 'react-native';
+import { MapView } from 'expo';
 
 export default class StoreLargeMap extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      mapRegion: {
+        latitude: props.coordinates.latitude,
+        longitude: props.coordinates.longitude,
+        latitudeDelta: 0.0011,
+        longitudeDelta: 0.0011
+      }
+    };
+  }
+
+  // _handleMapRegionChange = mapRegion => {
+  //   this.setState({ mapRegion });
+  // };
+
   render() {
+    const { latitude, longitude } = this.state.mapRegion;
+    console.log('좌표: ', latitude, longitude);
     return (
-      <View
-        style={{
-          width: '90%',
-          height: 200,
-          backgroundColor: '#eee',
-          justifyContent: 'center',
-          alignItems: 'center',
-          alignSelf: 'center'
-        }}
-      >
-        <Text>지도</Text>
+      <View>
+        {/* TODO: 마커가 안찍힌다... */}
+        <MapView.Marker
+          coordinate={{
+            latitude, //: this.props.coordinates.latitude,
+            longitude //: this.props.coordinates.longitude
+          }}
+          title={'here'}
+          description={'desc'}
+        />
+        <MapView
+          style={{
+            alignSelf: 'stretch',
+            height: 200,
+            width: '90%',
+            borderWidth: 1,
+            borderColor: 'gray',
+            alignSelf: 'center',
+            marginVertical: 10
+          }}
+          region={this.state.mapRegion}
+          provider={MapView.PROVIDER_GOOGLE}
+          // onRegionChange={this._handleMapRegionChange}
+        />
       </View>
     );
   }

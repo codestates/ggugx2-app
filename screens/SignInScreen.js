@@ -141,11 +141,6 @@ export default class SignInScreen extends React.Component {
                 buttonStyle={styles.buttonKakao}
               />
               <Button title={'가입'} onPress={onPressSignup} />
-              <Button
-                title={'카카오톡으로 로그인'}
-                onPress={onPressKaKao}
-                type={'outline'}
-              />
             </ThemeProvider>
           </View>
         </TouchableWithoutFeedback>

@@ -73,7 +73,7 @@ export default class RedeemStamps extends Component {
           alignItems: 'center',
           justifyContent: 'center',
           padding: 5,
-          borderWidth: 1
+          borderWidth: 0
         }}
       >
         <Overlay
@@ -203,33 +203,31 @@ export default class RedeemStamps extends Component {
             </View>
           )}
         </Overlay>
-        {/* <Image
-          source={stampImgChecked}
-          style={{ width: stampSize, height: stampSize }}
-        />
-        <Text h4> x [10] = </Text>
-        <Text h4>[아메리카노]</Text> */}
-        <Button
-          title={
-            // <Image
-            //   source={stampImgChecked}
-            //   style={{ width: stampSize, height: stampSize }}
-            // />
-            '교환하기'
-          }
-          onPress={() => {
-            console.log(`손님:${customerID}, 가게:${storeID}`);
-            if (stamps === 0) {
-              alert('스탬프가 없슴');
-              return;
-            }
-            this.setState({ modalVisible: true });
+
+        <View
+          style={{
+            width: '90%',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between'
           }}
-          buttonStyle={{ width: 100, marginHorizontal: 20, borderRadius: 50 }}
-        />
-        <Button
-          title={'교환권 사용'}
-          icon={
+        >
+          <Button
+            title={'교환권 받기'}
+            onPress={() => {
+              console.log(`손님:${customerID}, 가게:${storeID}`);
+              if (stamps === 0) {
+                alert('스탬프가 없슴');
+                return;
+              }
+              this.setState({ modalVisible: true });
+            }}
+            containerStyle={{ margin: 5, marginHorizontal: 10 }}
+          />
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
+              교환권 사용하기
+            </Text>
             <RewardsBadge
               rewards={rewards}
               storeID={storeID}
@@ -241,10 +239,8 @@ export default class RedeemStamps extends Component {
                 this.setState({ modalVisibleUse: true });
               }}
             />
-          }
-          iconRight={true}
-          buttonStyle={{ borderRadius: 50, padding: 0 }}
-        />
+          </View>
+        </View>
       </View>
     );
   }

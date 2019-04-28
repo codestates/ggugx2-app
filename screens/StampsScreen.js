@@ -13,7 +13,7 @@ import {
   ThemeProvider,
   Header
 } from 'react-native-elements';
-// import { YellowButton } from '../components/Atoms/YellowButton';
+import { Constants } from 'expo';
 import { NavigationEvents } from 'react-navigation';
 import StampsPaper from '../components/Molecules/StampsPaper';
 import RedeemStamps from '../components/Molecules/RedeemStamps';
@@ -131,14 +131,8 @@ export default class StampsScreen extends Component {
       ? { uri: img }
       : require('../assets/images/muzi_placeholder.jpg');
     return (
-      <ScrollView style={{ flex: 1 }}>
+      <ScrollView style={{ flex: 1, marginTop: Constants.statusBarHeight }}>
         <ThemeProvider theme={theme}>
-          <Header
-            backgroundColor={'white'}
-            containerStyle={{
-              height: 0
-            }}
-          />
           <NavigationEvents
             onWillFocus={() => {
               console.log('StampsScreen Will Focus');
@@ -192,7 +186,6 @@ export default class StampsScreen extends Component {
             onUpdateCounts={onUpdateCounts}
           />
 
-          <Text>FIXME:손님ID:{customerID}</Text>
           <Button
             title={'토스하기'}
             onPress={() => {
@@ -202,6 +195,7 @@ export default class StampsScreen extends Component {
               }
               onPressTossButton(storeName);
             }}
+            // containerStyle={{ width: '90%', alignSelf: 'center' }}
           />
 
           <Image
@@ -210,12 +204,15 @@ export default class StampsScreen extends Component {
             resizeMode={'cover'}
             style={{
               width: storeImage.width,
-              height: storeImage.height,
-              marginTop: 10
+              height: storeImage.height
+              // marginTop: 10
             }}
           />
           <StoreInfo storeInfo={storeInfo} menuList={menuList} />
-          <StoreLargeMap />
+
+          <StoreLargeMap
+            coordinates={this.props.navigation.state.params.coordinates}
+          />
         </ThemeProvider>
       </ScrollView>
     );
