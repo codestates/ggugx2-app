@@ -5,10 +5,11 @@ import { MapView } from 'expo';
 export default class StoreLargeMap extends Component {
   constructor(props) {
     super(props);
+    const { latitude, longitude } = props.coordinates;
     this.state = {
       mapRegion: {
-        latitude: props.latitude,
-        longitude: props.longitude,
+        latitude,
+        longitude,
         latitudeDelta: 0.0011,
         longitudeDelta: 0.0011
       }
@@ -21,7 +22,6 @@ export default class StoreLargeMap extends Component {
 
   render() {
     const { latitude, longitude } = this.state.mapRegion;
-    console.log('좌표: ', latitude, longitude);
     return (
       <View>
         {/* TODO: 마커가 안찍힌다... */}

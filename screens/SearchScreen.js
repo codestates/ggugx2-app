@@ -217,7 +217,9 @@ export default class SearchScreen extends Component {
             openhour,
             closehour,
             menuFound,
-            dayoff
+            dayoff,
+            latitude,
+            longitude
           } = entry;
           ////////////////////// 운영중 여부
           console.log('휴무일', dayoff);
@@ -253,7 +255,9 @@ export default class SearchScreen extends Component {
             isOpen,
             rewards,
             haveRewards,
-            menuFound
+            menuFound,
+            latitude,
+            longitude
           );
           return {
             storeID,
@@ -263,7 +267,9 @@ export default class SearchScreen extends Component {
             distance,
             isOpen,
             haveRewards,
-            menuFound
+            menuFound,
+            latitude,
+            longitude
           };
         })
         .sort((a, b) => a.distance - b.distance);
@@ -437,6 +443,7 @@ export default class SearchScreen extends Component {
                     itemObject={item}
                     key={i}
                     onPress={() => {
+                      console.log('!@#!#!@#!@#!@#', item);
                       this.props.navigation.navigate('Stamps', {
                         ...item,
                         customerID

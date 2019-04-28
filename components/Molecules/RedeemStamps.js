@@ -100,10 +100,24 @@ export default class RedeemStamps extends Component {
             isComplete &&
               this.setState({ modalVisible: false, isComplete: false });
           }}
+          overlayStyle={{
+            borderWidth: 1,
+            borderColor: 'lightgray',
+            borderRadius: 10
+          }}
         >
           {stage === 0 ? (
-            <View>
-              <Text>스탬프 10개를 교환권 1개로 교환하시겠습니까?</Text>
+            <View
+              style={{
+                height: '90%',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'space-around'
+              }}
+            >
+              <Text style={{ fontSize: 22, textAlign: 'center' }}>
+                스탬프 10개를 교환권 1개로{'\n'}교환하시겠습니까?
+              </Text>
               <Button
                 title={'교환합시다!'}
                 onPress={async () => {
@@ -233,7 +247,7 @@ export default class RedeemStamps extends Component {
               storeID={storeID}
               onPress={() => {
                 if (rewards === 0) {
-                  alert('교환권이 없슴');
+                  alert('교환권이 없습니다');
                   return;
                 }
                 this.setState({ modalVisibleUse: true });
