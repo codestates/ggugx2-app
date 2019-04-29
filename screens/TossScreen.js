@@ -86,14 +86,21 @@ export default class TossScreen extends Component {
   }
 
   handleInputChange = (text, name) => {
+    if (name === 'phone') {
+      if (text.length === 3) {
+        text += '-';
+      } else if (text.length === 8) {
+        text += '-';
+      }
+    }
     this.setState({
       [name]: text
     });
   };
 
   onPressFind = async () => {
-    Keyboard.dismiss();
-    this.setState({ remainStamps: null });
+    console.log('토스-찾기 버튼 클릭됨');
+    this.setState({ remainStamps: null, to: null });
     const { phone } = this.state;
     if (phone === null || phone.length < 11) {
       // FIXME: 번호형식이 맞는지 validation 필요
@@ -119,6 +126,7 @@ export default class TossScreen extends Component {
         error: true
       });
     }
+    Keyboard.dismiss();
   };
 
   onPressToss = async () => {
@@ -181,6 +189,7 @@ export default class TossScreen extends Component {
             내가 모은 스탬프를 친구에게 보내보세요!
           </Text>
           <Input
+            value={this.state.phone}
             placeholder={'010-1234-1234'}
             textContentType={'telephoneNumber'}
             keyboardType={'numeric'}
@@ -188,6 +197,7 @@ export default class TossScreen extends Component {
               handleInputChange(e, 'phone');
             }}
             inputStyle={{ padding: 5 }}
+            clearButtonMode={'while-editing'}
           />
           <Button
             title={'찾기'}

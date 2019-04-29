@@ -57,8 +57,8 @@ export default class StoreInfo extends Component {
             <Text style={s.title}>주소</Text>
             <View style={s.content}>
               <Text
-                style={{ fontSize: 20, borderWidth: 0, height: 80 }}
-                numberOfLines={3}
+                style={{ fontSize: 20, borderWidth: 0, height: 60 }}
+                numberOfLines={2}
               >
                 {address}
               </Text>
@@ -86,7 +86,7 @@ export default class StoreInfo extends Component {
               }}
               style={{ borderWidth: 0, width: 200 }}
             >
-              <Text h4 style={{ color: 'darkblue' }}>
+              <Text h4 style={{ color: 'darkblue', width: 250 }}>
                 {contact}
               </Text>
             </TouchableOpacity>
