@@ -158,7 +158,6 @@ export default class SearchScreen extends Component {
     this.setState({ selectedIndex });
   };
   updateFilter = indexes => {
-    console.log('선택된 필터들 : ', indexes);
     this.setState({ selectedIndexes: indexes });
   };
 
@@ -167,8 +166,6 @@ export default class SearchScreen extends Component {
       await AsyncStorage.getItem('ggugCustomerToken')
     );
 
-    console.log('TCL: SearchScreen -> getCustomerID -> customerID', customerID);
-
     this.setState({ customerID });
 
     this.searchStores('아메리카노', customerID);
@@ -176,9 +173,9 @@ export default class SearchScreen extends Component {
 
   searchStores = async (query, customerID = this.state.customerID) => {
     this.setState({ isSearching: true });
-    console.log('입력된 검색어 ::::', query);
+
     query = query.trim();
-    console.log('trimmed 검색어 ::::', query);
+
     if (query === '') {
       alert('검색어를 입력해주세요!');
       return;
@@ -189,20 +186,13 @@ export default class SearchScreen extends Component {
     const { longitude, latitude } = location.coords;
     const uri = '/stores/search';
     try {
-      console.log('/stores/search API request', {
-        query,
-        customerID,
-        coordinate: { latitude, longitude },
-        limit
-      });
       const response = await axios.post(uri, {
         query,
         customerID,
         coordinate: { lattitude: latitude, longitude },
         limit
       });
-      console.log(`${uri} 성공`);
-      console.log('검색결과 : ', response.data);
+
       let rawResult = response.data;
       // 계산해 변환이 필요한 속성들 조작
       let searchResult = rawResult
@@ -222,7 +212,7 @@ export default class SearchScreen extends Component {
             longitude
           } = entry;
           ////////////////////// 운영중 여부
-          console.log('휴무일', dayoff);
+
           let isOpen = false; // openhour, closehour 이용
           // 방법 1. open, close를 오늘의 open,close로 바꿔 milisec으로 바꾸고, 현시각 milisec과 대소비교
           const currentTime = new Date();
@@ -248,17 +238,7 @@ export default class SearchScreen extends Component {
           }
           //////////////////////
           const haveRewards = rewards > 0 ? true : false;
-          console.log(
-            distance,
-            openhour,
-            closehour,
-            isOpen,
-            rewards,
-            haveRewards,
-            menuFound,
-            latitude,
-            longitude
-          );
+
           return {
             storeID,
             storeName,
@@ -283,9 +263,7 @@ export default class SearchScreen extends Component {
           this.setState({ isSearching: false });
         }
       );
-    } catch (error) {
-      console.log(`${uri} 실패`, error);
-    }
+    } catch (error) {}
   };
 
   sort = index => {
@@ -320,15 +298,12 @@ export default class SearchScreen extends Component {
       filteredSearchResult = filteredSearchResult.filter(
         entry => entry.isOpen && entry.haveRewards
       );
-      console.log('영업중 + 교환권', filteredSearchResult);
     } else if (filters.open) {
       filteredSearchResult = filteredSearchResult.filter(entry => entry.isOpen);
-      console.log('영업중인곳 : ', filteredSearchResult);
     } else if (filters.rewards) {
       filteredSearchResult = filteredSearchResult.filter(
         entry => entry.haveRewards
       );
-      console.log('교환권있는곳 : ', filteredSearchResult);
     }
 
     if (!filters.open && !filters.rewards) {
@@ -443,7 +418,6 @@ export default class SearchScreen extends Component {
                     itemObject={item}
                     key={i}
                     onPress={() => {
-                      console.log('!@#!#!@#!@#!@#', item);
                       this.props.navigation.navigate('Stamps', {
                         ...item,
                         customerID

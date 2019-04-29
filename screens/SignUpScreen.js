@@ -72,10 +72,8 @@ export default class SignUpScreen extends React.Component {
   handleInputChange = (text, name) => {
     if (name === 'phone') {
       if (text.length === 3) {
-        console.log('asdfasfs', text);
         text += '-';
       } else if (text.length === 8) {
-        console.log('asdfasfs', text);
         text += '-';
       }
     }

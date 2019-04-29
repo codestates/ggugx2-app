@@ -15,12 +15,11 @@ export default class ChatScreen extends React.Component {
     header: null
   };
   onPressHandler = () => {
-    axios
-      .get('/tests')
-      .then(response => {
-        console.log(response.data);
-      })
-      .catch(error => console.log(error));
+    // axios
+    //   .get('/tests')
+    //   .then(response => {
+    //   })
+    //   .catch(error =>
   };
   render() {
     return (

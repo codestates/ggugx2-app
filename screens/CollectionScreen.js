@@ -73,17 +73,13 @@ export default class CollectionScreen extends Component {
     this.getCustomerID();
 
     socket.on('stamp add complete', msg => {
-      console.log('수신!', msg);
       if (msg && msg.customer === String(this.state.customerID)) {
-        console.log('stamp add complete :: ', msg);
         this.setState({ modalVisible: true, isComplete: true });
         const { customerID, storeID } = this.state;
         this.getStampsRewardsCounts(customerID, storeID);
       }
     });
-    socket.on('errors', msg => {
-      console.log(`[socket.io error] ${msg.message}`);
-    });
+    socket.on('errors', msg => {});
   }
 
   emitRegister = id => {
@@ -101,19 +97,13 @@ export default class CollectionScreen extends Component {
         await AsyncStorage.getItem('ggugCustomerToken')
       );
 
-      console.log(
-        'TCL: CollectionScreen -> getCustomerID -> customerID',
-        customerID
-      );
       this.setState({ customerID });
 
       // this.getStampsRewardsCounts(customerID, this.state.storeID);
       // FIXME: storeID도 가까운가게 리스트 받아온 다음 정해지는거라 이부분 달라져야함
 
       this.emitRegister(`${customerID}`);
-    } catch (error) {
-      console.log('getCustomerID 실패 :', error);
-    }
+    } catch (error) {}
   };
 
   getStampsRewardsCounts = async (customerID, storeID) => {
@@ -128,12 +118,9 @@ export default class CollectionScreen extends Component {
         storeID
       });
 
-      console.log('getStampsRewardsCounts 성공', response.data);
       this.setState({ stampsObject: response.data });
       this.willFocus = true;
-    } catch (error) {
-      console.log('getStampsRewardsCounts 실패', error);
-    }
+    } catch (error) {}
   };
 
   getNearbyStoresList = async () => {
@@ -144,7 +131,7 @@ export default class CollectionScreen extends Component {
         longitude,
         lattitude: latitude
       });
-      console.log('nearby-stores-list 성공', response.data);
+
       this.setState({ nearbyStoresList: response.data }, () => {
         const { storeName, storeID } = response.data[0];
         this.getStampsRewardsCounts(this.state.customerID, storeID);
@@ -153,9 +140,7 @@ export default class CollectionScreen extends Component {
           storeID
         });
       });
-    } catch (error) {
-      console.log('nearby-stores-list 실패', error);
-    }
+    } catch (error) {}
   };
 
   componentWillMount() {
@@ -191,10 +176,7 @@ export default class CollectionScreen extends Component {
       storeName,
       isComplete
     } = this.state;
-    console.log(
-      'CollectionScreen] render() customerID : ',
-      this.state.customerID
-    );
+
     const loadingImg = require('../assets/images/loadingfriends.gif');
 
     return (
@@ -240,7 +222,6 @@ export default class CollectionScreen extends Component {
         </View>
         <NavigationEvents
           onWillFocus={() => {
-            console.log('CollectionScreen Will Focus');
             this.willFocus && this.getStampsRewardsCounts(customerID, storeID);
           }}
         />

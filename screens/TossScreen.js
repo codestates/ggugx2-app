@@ -99,7 +99,6 @@ export default class TossScreen extends Component {
   };
 
   onPressFind = async () => {
-    console.log('토스-찾기 버튼 클릭됨');
     this.setState({ remainStamps: null, to: null });
     const { phone } = this.state;
     if (phone === null || phone.length < 11) {
@@ -108,10 +107,10 @@ export default class TossScreen extends Component {
       return;
     }
     const uri = '/customers/exist';
-    console.log('입력받은 전화번호 : ', phone);
+
     try {
       const response = await axios.post(uri, { phone });
-      console.log(`${uri} 성공`, response.data);
+
       const { id: to, name } = response.data;
       this.setState({
         to,
@@ -119,8 +118,6 @@ export default class TossScreen extends Component {
         error: false
       });
     } catch (error) {
-      console.log(`${uri} 실패`, error);
-      console.log('message: ', error.response.data);
       this.setState({
         name: null,
         error: true
@@ -136,14 +133,9 @@ export default class TossScreen extends Component {
     } = this.props.navigation.state.params;
     const { to, stamps } = this.state;
     const stampsNumber = Number(stamps);
-    console.log('보낼 스탬프 수 :', stampsNumber);
+
     const uri = '/stamps/toss';
-    console.log('토스 보내는 오브젝트', {
-      store,
-      from,
-      to,
-      stamps: stampsNumber
-    });
+
     try {
       const response = await axios.post(uri, {
         store,
@@ -151,15 +143,12 @@ export default class TossScreen extends Component {
         to,
         stamps: stampsNumber
       });
-      console.log(`${uri} 성공`, response.data);
+
       this.setState({
         remainStamps: response.data.stamps,
         name: null
       });
-    } catch (error) {
-      console.log(`${uri} 실패`, error);
-      console.log('message: ', error.response.data);
-    }
+    } catch (error) {}
   };
 
   render() {
