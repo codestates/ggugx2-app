@@ -143,12 +143,19 @@ export default class SignInScreen extends React.Component {
 
             <Input
               value={this.state.phone}
-              placeholder={'010-1234-1234'}
+              placeholder={'전화번호: 010-1234-1234'}
               textContentType={'telephoneNumber'}
               keyboardType={'numeric'}
               onChangeText={e => {
                 handleInputChange(e, 'phone');
               }}
+              // onPress={e => {
+              //   console.log('키 이벤트 ::', e);
+              //   if (e.nativeEvent.key === 'Backspace') {
+              //     this.setState({ phone: '' });
+              //   }
+              // }}
+              clearButtonMode={'while-editing'}
             />
             <Input
               placeholder={'비밀번호'}
