@@ -24,24 +24,6 @@ import {
 } from 'react-native-elements';
 import SearchResultEntry from '../components/Molecules/SearchResultEntry';
 import axios from '../modules/axios-connector';
-import geolib from 'geolib';
-
-// TODO: 검색 결과를 서버에서 받아온다
-// 1. 검색어 미입력시 가까운 10개 매장의 리스트를 받는다
-// 2. 검색어(메뉴명)가 있다면, 해당 메뉴를 등록한 카페들 중 가까운 10개 매장의 리스트를 받는다
-// 3. sort와 filter 기능은 나중에 생각하자..
-// const searchResult = [
-//   {
-//     storeID: 0,
-//     storeName: '스벅 성수',
-//     distance: '234m',
-//     stamps: 10,
-//     isOpen: true,
-//     haveRewards: true,
-//     img:
-//       'https://www.royalparks.org.uk/_media/images/the-regents-park-and-primrose-hill/the-broad-walk-cafe/The-Broad-Walk-Cafe-Interior.jpg/w_1200.jpg'
-//   }
-// ];
 
 const theme = {
   View: {

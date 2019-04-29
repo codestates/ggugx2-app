@@ -25,14 +25,7 @@ export default class StoreLargeMap extends Component {
     return (
       <View>
         {/* TODO: 마커가 안찍힌다... */}
-        <MapView.Marker
-          coordinate={{
-            latitude, //: this.props.latitude,
-            longitude //: this.props.longitude
-          }}
-          title={'here'}
-          description={'desc'}
-        />
+
         <MapView
           style={{
             alignSelf: 'stretch',
@@ -47,7 +40,14 @@ export default class StoreLargeMap extends Component {
           region={this.state.mapRegion}
           provider={MapView.PROVIDER_GOOGLE}
           // onRegionChange={this._handleMapRegionChange}
-        />
+        >
+          <MapView.Marker
+            coordinate={{
+              latitude,
+              longitude
+            }}
+          />
+        </MapView>
       </View>
     );
   }

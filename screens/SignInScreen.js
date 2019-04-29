@@ -155,6 +155,7 @@ export default class SignInScreen extends React.Component {
               onChangeText={e => {
                 handleInputChange(e, 'password');
               }}
+              clearButtonMode={'while-editing'}
             />
             <Button
               title={'로그인'}

@@ -99,18 +99,11 @@ export default class CollectionScreen extends Component {
 
       this.setState({ customerID });
 
-      // this.getStampsRewardsCounts(customerID, this.state.storeID);
-      // FIXME: storeID도 가까운가게 리스트 받아온 다음 정해지는거라 이부분 달라져야함
-
       this.emitRegister(`${customerID}`);
     } catch (error) {}
   };
 
   getStampsRewardsCounts = async (customerID, storeID) => {
-    // FIXME: 동기/비동기 처리 순서상 local에 axios.post 날리는 버그가 있어서 defaults 박아둠.
-    // getNearbyStoresList 요청을 EC2에 날리게 되면 그때는 지워도 됨
-    axios.defaults.baseURL =
-      'http://ec2-13-115-51-251.ap-northeast-1.compute.amazonaws.com:3000';
     const uri = '/customers/get-stamps-rewards-counts';
     try {
       const response = await axios.post(uri, {

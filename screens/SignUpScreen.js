@@ -119,6 +119,7 @@ export default class SignUpScreen extends React.Component {
                 onChangeText={e => {
                   handleInputChange(e, 'username');
                 }}
+                clearButtonMode={'while-editing'}
               />
               <Input
                 value={this.state.phone}
@@ -128,6 +129,7 @@ export default class SignUpScreen extends React.Component {
                 onChangeText={e => {
                   handleInputChange(e, 'phone');
                 }}
+                clearButtonMode={'while-editing'}
               />
               <Input
                 placeholder={'비밀번호'}
@@ -136,6 +138,7 @@ export default class SignUpScreen extends React.Component {
                   handleInputChange(e, 'password');
                 }}
                 secureTextEntry={true}
+                clearButtonMode={'while-editing'}
               />
               <Input
                 placeholder={'비밀번호 확인'}
@@ -144,6 +147,7 @@ export default class SignUpScreen extends React.Component {
                   handleInputChange(e, 'passwordConfirm');
                 }}
                 secureTextEntry={true}
+                clearButtonMode={'while-editing'}
               />
               <Button
                 title={'가입하기'}
