@@ -41,12 +41,6 @@ export default class App extends React.Component {
     }
   }
 
-  // componentDidMount() {
-  //   Font.loadAsync({
-  //     'Gamja-Flower-Regular': require('./assets/font/GamjaFlower-Regular.ttf')
-  //   });
-  // }
-
   _getLocationPermissionAsync = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
     if (status !== 'granted') {

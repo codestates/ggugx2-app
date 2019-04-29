@@ -27,14 +27,8 @@ export default class RedeemStamps extends Component {
       //   stamps: stampsData.length,
       //   rewards: rewardsData.length
       // };
-      console.log('교환권 사용 이벤트 수신!!!!!', msg);
+
       if (msg) {
-        console.log(
-          `[reward use complete] ${msg.customer} 고객님! ${
-            msg.store
-          } 에서 reward 사용이 완료되었습니다.`,
-          msg
-        );
         this.setState({
           modalVisibleUse: true,
           isComplete: true
@@ -43,7 +37,6 @@ export default class RedeemStamps extends Component {
       }
     });
     socket.on('errors', msg => {
-      console.log(`RedeemStamps] [socket.io error] ${msg.message}`);
       this.setState({
         modalVisible: false,
         modalVisibleUse: false,
@@ -131,15 +124,13 @@ export default class RedeemStamps extends Component {
                       customerID,
                       storeID
                     });
-                    console.log(`${uri} 성공`, response.data);
+
                     const { stamps, rewards } = response.data;
                     onUpdateCounts(stamps, rewards);
                     this.setState({
                       isComplete: true
                     });
                   } catch (error) {
-                    console.log(`${uri} 실패`, error);
-                    console.log('message: ', error.response.data.message);
                     this.setState({
                       isComplete: true,
                       status: ' 실패!\n교환권이 부족합니다.'
@@ -229,10 +220,7 @@ export default class RedeemStamps extends Component {
                   this.setState({
                     stage: 1
                   });
-                  console.log(
-                    '교환권 사용 이벤트 emit!!!!',
-                    this.props.storeID
-                  );
+
                   socket.emit('reward use from user', {
                     store: this.props.storeID
                   });
@@ -297,7 +285,6 @@ export default class RedeemStamps extends Component {
           <Button
             title={'교환권 받기'}
             onPress={() => {
-              console.log(`손님:${customerID}, 가게:${storeID}`);
               if (stamps < 10) {
                 alert('스탬프가 부족합니다');
                 return;

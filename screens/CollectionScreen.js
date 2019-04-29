@@ -73,17 +73,13 @@ export default class CollectionScreen extends Component {
     this.getCustomerID();
 
     socket.on('stamp add complete', msg => {
-      console.log('수신!', msg);
       if (msg && msg.customer === String(this.state.customerID)) {
-        console.log('stamp add complete :: ', msg);
         this.setState({ modalVisible: true, isComplete: true });
         const { customerID, storeID } = this.state;
         this.getStampsRewardsCounts(customerID, storeID);
       }
     });
-    socket.on('errors', msg => {
-      console.log(`[socket.io error] ${msg.message}`);
-    });
+    socket.on('errors', msg => {});
   }
 
   emitRegister = id => {
@@ -101,26 +97,13 @@ export default class CollectionScreen extends Component {
         await AsyncStorage.getItem('ggugCustomerToken')
       );
 
-      console.log(
-        'TCL: CollectionScreen -> getCustomerID -> customerID',
-        customerID
-      );
       this.setState({ customerID });
 
-      // this.getStampsRewardsCounts(customerID, this.state.storeID);
-      // FIXME: storeID도 가까운가게 리스트 받아온 다음 정해지는거라 이부분 달라져야함
-
       this.emitRegister(`${customerID}`);
-    } catch (error) {
-      console.log('getCustomerID 실패 :', error);
-    }
+    } catch (error) {}
   };
 
   getStampsRewardsCounts = async (customerID, storeID) => {
-    // FIXME: 동기/비동기 처리 순서상 local에 axios.post 날리는 버그가 있어서 defaults 박아둠.
-    // getNearbyStoresList 요청을 EC2에 날리게 되면 그때는 지워도 됨
-    axios.defaults.baseURL =
-      'http://ec2-13-115-51-251.ap-northeast-1.compute.amazonaws.com:3000';
     const uri = '/customers/get-stamps-rewards-counts';
     try {
       const response = await axios.post(uri, {
@@ -128,12 +111,9 @@ export default class CollectionScreen extends Component {
         storeID
       });
 
-      console.log('getStampsRewardsCounts 성공', response.data);
       this.setState({ stampsObject: response.data });
       this.willFocus = true;
-    } catch (error) {
-      console.log('getStampsRewardsCounts 실패', error);
-    }
+    } catch (error) {}
   };
 
   getNearbyStoresList = async () => {
@@ -144,7 +124,7 @@ export default class CollectionScreen extends Component {
         longitude,
         lattitude: latitude
       });
-      console.log('nearby-stores-list 성공', response.data);
+
       this.setState({ nearbyStoresList: response.data }, () => {
         const { storeName, storeID } = response.data[0];
         this.getStampsRewardsCounts(this.state.customerID, storeID);
@@ -153,9 +133,7 @@ export default class CollectionScreen extends Component {
           storeID
         });
       });
-    } catch (error) {
-      console.log('nearby-stores-list 실패', error);
-    }
+    } catch (error) {}
   };
 
   componentWillMount() {
@@ -191,10 +169,7 @@ export default class CollectionScreen extends Component {
       storeName,
       isComplete
     } = this.state;
-    console.log(
-      'CollectionScreen] render() customerID : ',
-      this.state.customerID
-    );
+
     const loadingImg = require('../assets/images/loadingfriends.gif');
 
     return (
@@ -240,7 +215,6 @@ export default class CollectionScreen extends Component {
         </View>
         <NavigationEvents
           onWillFocus={() => {
-            console.log('CollectionScreen Will Focus');
             this.willFocus && this.getStampsRewardsCounts(customerID, storeID);
           }}
         />

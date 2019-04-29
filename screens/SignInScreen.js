@@ -75,7 +75,6 @@ export default class SignInScreen extends React.Component {
     const { phone, password } = this.state;
     // TODO: 패스워드를 평문 전송하고있음. 암호화해서 서버에 요청 날리면 좋겠다.
 
-    console.log('로그인 입력된 폰번호 : ', phone);
     axios
       .post('/customers/signin', {
         phone,
@@ -83,7 +82,7 @@ export default class SignInScreen extends React.Component {
       })
       .then(async response => {
         const { token: userToken, customerID } = response.data;
-        console.log('로그인 성공 - token : ', userToken);
+
         await AsyncStorage.setItem(
           'ggugCustomerToken',
           JSON.stringify({ userToken, customerID })
@@ -91,7 +90,6 @@ export default class SignInScreen extends React.Component {
         this.props.navigation.navigate('AuthLoading', { customerID });
       })
       .catch(error => {
-        console.log('로그인 실패 : ', error.message);
         alert(`실패! ${error}`);
       });
   };
@@ -149,12 +147,6 @@ export default class SignInScreen extends React.Component {
               onChangeText={e => {
                 handleInputChange(e, 'phone');
               }}
-              // onPress={e => {
-              //   console.log('키 이벤트 ::', e);
-              //   if (e.nativeEvent.key === 'Backspace') {
-              //     this.setState({ phone: '' });
-              //   }
-              // }}
               clearButtonMode={'while-editing'}
             />
             <Input
@@ -163,6 +155,7 @@ export default class SignInScreen extends React.Component {
               onChangeText={e => {
                 handleInputChange(e, 'password');
               }}
+              clearButtonMode={'while-editing'}
             />
             <Button
               title={'로그인'}

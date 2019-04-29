@@ -24,24 +24,6 @@ import {
 } from 'react-native-elements';
 import SearchResultEntry from '../components/Molecules/SearchResultEntry';
 import axios from '../modules/axios-connector';
-import geolib from 'geolib';
-
-// TODO: 검색 결과를 서버에서 받아온다
-// 1. 검색어 미입력시 가까운 10개 매장의 리스트를 받는다
-// 2. 검색어(메뉴명)가 있다면, 해당 메뉴를 등록한 카페들 중 가까운 10개 매장의 리스트를 받는다
-// 3. sort와 filter 기능은 나중에 생각하자..
-// const searchResult = [
-//   {
-//     storeID: 0,
-//     storeName: '스벅 성수',
-//     distance: '234m',
-//     stamps: 10,
-//     isOpen: true,
-//     haveRewards: true,
-//     img:
-//       'https://www.royalparks.org.uk/_media/images/the-regents-park-and-primrose-hill/the-broad-walk-cafe/The-Broad-Walk-Cafe-Interior.jpg/w_1200.jpg'
-//   }
-// ];
 
 const theme = {
   View: {
@@ -158,7 +140,6 @@ export default class SearchScreen extends Component {
     this.setState({ selectedIndex });
   };
   updateFilter = indexes => {
-    console.log('선택된 필터들 : ', indexes);
     this.setState({ selectedIndexes: indexes });
   };
 
@@ -167,8 +148,6 @@ export default class SearchScreen extends Component {
       await AsyncStorage.getItem('ggugCustomerToken')
     );
 
-    console.log('TCL: SearchScreen -> getCustomerID -> customerID', customerID);
-
     this.setState({ customerID });
 
     this.searchStores('아메리카노', customerID);
@@ -176,9 +155,9 @@ export default class SearchScreen extends Component {
 
   searchStores = async (query, customerID = this.state.customerID) => {
     this.setState({ isSearching: true });
-    console.log('입력된 검색어 ::::', query);
+
     query = query.trim();
-    console.log('trimmed 검색어 ::::', query);
+
     if (query === '') {
       alert('검색어를 입력해주세요!');
       return;
@@ -189,20 +168,13 @@ export default class SearchScreen extends Component {
     const { longitude, latitude } = location.coords;
     const uri = '/stores/search';
     try {
-      console.log('/stores/search API request', {
-        query,
-        customerID,
-        coordinate: { latitude, longitude },
-        limit
-      });
       const response = await axios.post(uri, {
         query,
         customerID,
         coordinate: { lattitude: latitude, longitude },
         limit
       });
-      console.log(`${uri} 성공`);
-      console.log('검색결과 : ', response.data);
+
       let rawResult = response.data;
       // 계산해 변환이 필요한 속성들 조작
       let searchResult = rawResult
@@ -222,7 +194,7 @@ export default class SearchScreen extends Component {
             longitude
           } = entry;
           ////////////////////// 운영중 여부
-          console.log('휴무일', dayoff);
+
           let isOpen = false; // openhour, closehour 이용
           // 방법 1. open, close를 오늘의 open,close로 바꿔 milisec으로 바꾸고, 현시각 milisec과 대소비교
           const currentTime = new Date();
@@ -248,17 +220,7 @@ export default class SearchScreen extends Component {
           }
           //////////////////////
           const haveRewards = rewards > 0 ? true : false;
-          console.log(
-            distance,
-            openhour,
-            closehour,
-            isOpen,
-            rewards,
-            haveRewards,
-            menuFound,
-            latitude,
-            longitude
-          );
+
           return {
             storeID,
             storeName,
@@ -283,9 +245,7 @@ export default class SearchScreen extends Component {
           this.setState({ isSearching: false });
         }
       );
-    } catch (error) {
-      console.log(`${uri} 실패`, error);
-    }
+    } catch (error) {}
   };
 
   sort = index => {
@@ -320,15 +280,12 @@ export default class SearchScreen extends Component {
       filteredSearchResult = filteredSearchResult.filter(
         entry => entry.isOpen && entry.haveRewards
       );
-      console.log('영업중 + 교환권', filteredSearchResult);
     } else if (filters.open) {
       filteredSearchResult = filteredSearchResult.filter(entry => entry.isOpen);
-      console.log('영업중인곳 : ', filteredSearchResult);
     } else if (filters.rewards) {
       filteredSearchResult = filteredSearchResult.filter(
         entry => entry.haveRewards
       );
-      console.log('교환권있는곳 : ', filteredSearchResult);
     }
 
     if (!filters.open && !filters.rewards) {
@@ -443,7 +400,6 @@ export default class SearchScreen extends Component {
                     itemObject={item}
                     key={i}
                     onPress={() => {
-                      console.log('!@#!#!@#!@#!@#', item);
                       this.props.navigation.navigate('Stamps', {
                         ...item,
                         customerID

@@ -60,13 +60,10 @@ export default class StampsScreen extends Component {
     axios
       .post(uri, { storeID, customerID })
       .then(response => {
-        console.log(`${uri} 성공`, response.data);
         const { stamps, rewards } = response.data;
         this.onUpdateCounts(stamps, rewards);
       })
-      .catch(error => {
-        console.log(`${uri} 실패`, error);
-      });
+      .catch(error => {});
   };
 
   onPressTossButton = storeName => {
@@ -80,28 +77,22 @@ export default class StampsScreen extends Component {
     axios
       .post(uri, { storeID })
       .then(response => {
-        console.log(`${uri} 성공`, response.data);
         this.setState({ storeInfo: response.data });
       })
-      .catch(error => {
-        console.log(`${uri} 실패`, error);
-      });
+      .catch(error => {});
   };
 
   getMenuList = async () => {
     const { storeID } = this.props.navigation.state.params;
-    console.log('getMenuList 스토어 아이디:', storeID);
+
     const uri = '/stores/menu-list';
     try {
       const response = await axios.post(uri, {
         storeID
       });
 
-      console.log(`${uri} 성공`, response.data);
       this.setState({ menuList: response.data });
-    } catch (error) {
-      console.log(`${uri} 실패`, error);
-    }
+    } catch (error) {}
   };
 
   onUpdateCounts = (stamps, rewards) => {
@@ -136,7 +127,6 @@ export default class StampsScreen extends Component {
         <ThemeProvider theme={theme}>
           <NavigationEvents
             onWillFocus={() => {
-              console.log('StampsScreen Will Focus');
               this.getStampsRewards();
             }}
           />
