@@ -252,7 +252,14 @@ export default class RedeemStamps extends Component {
               </Text>
             </View>
           ) : (
-            <View>
+            <View
+              style={{
+                height: '90%',
+                flexDirection: 'column',
+                alignItems: 'stretch',
+                justifyContent: 'space-around'
+              }}
+            >
               <Text style={{ fontSize: 22, textAlign: 'center' }}>
                 교환권을 사용했습니다!
               </Text>
